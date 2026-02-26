@@ -4,10 +4,12 @@ public class PlayerController : MonoBehaviour
 {
     [Header("Hareket Ayarları")]
     [SerializeField] private float moveSpeed = 5f;
+    
 
     private Rigidbody2D rb;
     private GameInput inputActions;
     private Vector2 moveInput;
+    [HideInInspector] public Vector2 lastFacingDirection = Vector2.right;
 
     private void Awake()
     {
@@ -29,6 +31,10 @@ public class PlayerController : MonoBehaviour
     private void Update()
     {
         moveInput = inputActions.Player.Move.ReadValue<Vector2>();
+        if (moveInput != Vector2.zero)
+        {
+            lastFacingDirection = moveInput.normalized;
+        }
     }
 
     private void FixedUpdate()
