@@ -10,16 +10,21 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7f630c358e0cac9478da3d0f35190934, type: 3}
-  m_Name: Word_Fireball
+  m_Name: Word_Iceball
   m_EditorClassIdentifier: Assembly-CSharp::WordData
-  runeText: HARI
-  translatedText: Fireball
+  runeText: GLAMO
+  translatedText: Iceball
   wordIcon: {fileID: 0}
-  projectilePrefab: {fileID: 2507854483434154795, guid: 74d279d6c41608840806f46b9ec91a87, type: 3}
+  projectilePrefab: {fileID: 2507854483434154795, guid: b93a30212de3cf14f9b7d7174ca3324b, type: 3}
   spawnsOnTarget: 0
   wordType: 0
-  targetingLogic: 4
+  targetingLogic: 2
   condition: 0
-  baseCooldown: 1.5
+  baseCooldown: 1
+  baseDamage: 5
+  readingPattern: 2
+  damageBonus: 0
+  cooldownReduction: 0
+  mechanicToAdd: 0
   isUnlocked: 0
   secretHint: 

@@ -133,7 +133,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6566546631694627016, guid: 949e4aeac0d9c384fa82aaad2d5e50bc, type: 3}
       propertyPath: currentHealth
-      value: 10
+      value: 500
       objectReference: {fileID: 0}
     - target: {fileID: 7855576802912167532, guid: 949e4aeac0d9c384fa82aaad2d5e50bc, type: 3}
       propertyPath: m_LocalPosition.x
@@ -470,6 +470,7 @@ GameObject:
   - component: {fileID: 1660669770}
   - component: {fileID: 1660669769}
   - component: {fileID: 1660669774}
+  - component: {fileID: 1660669775}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -650,13 +651,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 899f4960243caea46a74dc605b002053, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerAutoAttack
-  activeWord: {fileID: 11400000, guid: 54ca2723538fbdb4eadfdf6782cc66b0, type: 2}
-  projectilePrefab: {fileID: 0}
+  sentenceManager: {fileID: 1660669775}
   firePoint: {fileID: 1660669773}
   attackRange: 7
   enemyLayer:
     serializedVersion: 2
     m_Bits: 64
+--- !u!114 &1660669775
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1660669768}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8d20e9dad012f7548b8cdce9c814ff79, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SentenceManager
+  currentSentence:
+  - {fileID: 11400000, guid: 54ca2723538fbdb4eadfdf6782cc66b0, type: 2}
+  - {fileID: 11400000, guid: 9ada27cd3f4a3e149a4df6f1367da3b3, type: 2}
+  - {fileID: 11400000, guid: 32cd3e2c51bc5854187faef0f1ca6465, type: 2}
 --- !u!1001 &3789344687922494483
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -668,6 +684,14 @@ PrefabInstance:
     - target: {fileID: 4395884553050428915, guid: 949e4aeac0d9c384fa82aaad2d5e50bc, type: 3}
       propertyPath: m_Name
       value: Enemy
+      objectReference: {fileID: 0}
+    - target: {fileID: 4395884553050428915, guid: 949e4aeac0d9c384fa82aaad2d5e50bc, type: 3}
+      propertyPath: m_TagString
+      value: Enemy
+      objectReference: {fileID: 0}
+    - target: {fileID: 6566546631694627016, guid: 949e4aeac0d9c384fa82aaad2d5e50bc, type: 3}
+      propertyPath: currentHealth
+      value: 500
       objectReference: {fileID: 0}
     - target: {fileID: 7855576802912167532, guid: 949e4aeac0d9c384fa82aaad2d5e50bc, type: 3}
       propertyPath: m_LocalPosition.x
