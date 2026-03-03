@@ -11,24 +11,13 @@ public class RangedEnemy : MonoBehaviour
     // Oyuncunun ne kadar yaklaştığına bağlı kaçmaya başlayacağı mesafe
     [SerializeField] private float retreatDistance = 3f;
     
-    
-    [Header("Saldırı Ayarları")]
-    // Enemynin atacağı mermi prefabı
-    [SerializeField] private GameObject bulletPrefab;
-    // Merminin çıktığı nokta
-    [SerializeField] private Transform firePoint;
-    // Kaç saniyede ateş ediceğinin belirlendiği yer
-    [SerializeField] private float fireRate = 1.5f;      
-    private float _nextFireTime;
-    
-    
     [Header("İstatistikler")]
     // Enemy Canı
     [SerializeField] private float currentHealth = 15f;
     
     private Transform _playerTransform;
     private Rigidbody2D _rb;
-    
+    private Vector3 _initialScale;
     private void Awake()
     {
         // Rigidbody eriştik
@@ -37,6 +26,7 @@ public class RangedEnemy : MonoBehaviour
     
     private void Start()
     {
+        _initialScale = transform.localScale;
         // Oyuncuyu Tag ile bulduk ve transformunu bulduk
         GameObject player = GameObject.FindGameObjectWithTag("Player");
         if (player != null) _playerTransform = player.transform;
@@ -70,10 +60,7 @@ public class RangedEnemy : MonoBehaviour
         FlipTowardsPlayer();
     }
     
-    private void Update()
-    {
-        
-    }
+  
     private void Move(Vector2 direction)
     {
         // Hareket et
@@ -81,12 +68,19 @@ public class RangedEnemy : MonoBehaviour
     }
     private void FlipTowardsPlayer()
     {
-        // Her zaman oyuncuya bakması için
+        // Her zaman oyuncuya dönsün diye yazıldı ( Eskiden sabit bir scale di artık Kendi girdiğimiz scale i tutuyor)
         if (_playerTransform.position.x > transform.position.x)
-            transform.localScale = new Vector3(1, 1, 1);
+        {
+            transform.localScale = _initialScale;
+        }
+        
         else
-            transform.localScale = new Vector3(-1, 1, 1);
+        {
+            transform.localScale = new Vector3(-_initialScale.x, _initialScale.y, _initialScale.z);
+        }
     }
+
+  
     public void TakeDamage(float damage)
     {
         currentHealth -= damage;
