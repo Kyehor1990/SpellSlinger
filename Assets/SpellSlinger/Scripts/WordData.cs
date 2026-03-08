@@ -36,7 +36,16 @@ public class WordData : ScriptableObject
 public enum WordType { Object, Modifier }
 public enum TargetType { None, Straight, NearestEnemy, RandomEnemy, LowestHealth }
 public enum PlacementCondition { Anywhere, MustBeFirst, MustBeLast, NextToElement }
-public enum ReadingPattern { None, RightwardUntilBlocked, LeftwardUntilBlocked, EvenSpacesRight }
+public enum ReadingPattern
+{
+    None,
+    SpreadRadius3,
+    Leftward,
+    Rightward,
+    ForwardOddSteps,
+    BackwardOddSteps,
+    Unlimited
+}
 
 public enum SpecialMechanic
 {

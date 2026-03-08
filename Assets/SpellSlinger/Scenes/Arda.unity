@@ -133,7 +133,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6566546631694627016, guid: 949e4aeac0d9c384fa82aaad2d5e50bc, type: 3}
       propertyPath: currentHealth
-      value: 500
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 7855576802912167532, guid: 949e4aeac0d9c384fa82aaad2d5e50bc, type: 3}
       propertyPath: m_LocalPosition.x
@@ -214,9 +214,6 @@ MonoBehaviour:
   moveSpeed: 2
   stopDistance: 5
   retreatDistance: 3
-  bulletPrefab: {fileID: 0}
-  firePoint: {fileID: 0}
-  fireRate: 1.5
   currentHealth: 15
 --- !u!212 &1168478594
 SpriteRenderer:
@@ -672,7 +669,8 @@ MonoBehaviour:
   currentSentence:
   - {fileID: 11400000, guid: 54ca2723538fbdb4eadfdf6782cc66b0, type: 2}
   - {fileID: 11400000, guid: 9ada27cd3f4a3e149a4df6f1367da3b3, type: 2}
-  - {fileID: 11400000, guid: 32cd3e2c51bc5854187faef0f1ca6465, type: 2}
+  - {fileID: 11400000, guid: e934a8b810b1d77478c798b8485e9fe0, type: 2}
+  - {fileID: 11400000, guid: e934a8b810b1d77478c798b8485e9fe0, type: 2}
 --- !u!1001 &3789344687922494483
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -691,7 +689,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6566546631694627016, guid: 949e4aeac0d9c384fa82aaad2d5e50bc, type: 3}
       propertyPath: currentHealth
-      value: 500
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 7855576802912167532, guid: 949e4aeac0d9c384fa82aaad2d5e50bc, type: 3}
       propertyPath: m_LocalPosition.x

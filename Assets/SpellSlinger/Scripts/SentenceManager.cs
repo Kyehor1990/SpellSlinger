@@ -52,41 +52,60 @@ public class SentenceManager : MonoBehaviour
     {
         switch (objWord.readingPattern)
         {
-            case ReadingPattern.RightwardUntilBlocked:
+            case ReadingPattern.Rightward:
                 for (int i = startIndex + 1; i < currentSentence.Count; i++)
                 {
-                    if (currentSentence[i].wordType == WordType.Object) 
-                    {
-                        Debug.Log($"{objWord.translatedText}, sağındaki {currentSentence[i].translatedText} yüzünden BLOKLANDI!");
-                        break;
-                    }
-                    
+                    if (currentSentence[i].wordType == WordType.Object) break;
                     AddModifierToSpell(currentSentence[i], spell);
                 }
                 break;
 
-            case ReadingPattern.LeftwardUntilBlocked:
+            case ReadingPattern.Leftward:
                 for (int i = startIndex - 1; i >= 0; i--)
                 {
-                    if (currentSentence[i].wordType == WordType.Object) 
-                    {
-                        Debug.Log($"{objWord.translatedText}, solundaki {currentSentence[i].translatedText} yüzünden BLOKLANDI!");
-                        break;
-                    }
-
+                    if (currentSentence[i].wordType == WordType.Object) break;
                     AddModifierToSpell(currentSentence[i], spell);
                 }
                 break;
 
-            case ReadingPattern.EvenSpacesRight:
-                for (int i = startIndex + 2; i < currentSentence.Count; i += 2)
+            case ReadingPattern.SpreadRadius3:
+                for (int i = startIndex - 1; i >= Mathf.Max(0, startIndex - 3); i--)
                 {
-                    if (currentSentence[i].wordType == WordType.Object) 
-                    {
-                        Debug.Log($"{objWord.translatedText}'ın +{i - startIndex} noktasındaki okuması BLOKLANDI!");
-                        break;
-                    }
+                    if (currentSentence[i].wordType == WordType.Object) break;
+                    AddModifierToSpell(currentSentence[i], spell);
+                }
+                for (int i = startIndex + 1; i <= Mathf.Min(currentSentence.Count - 1, startIndex + 3); i++)
+                {
+                    if (currentSentence[i].wordType == WordType.Object) break;
+                    AddModifierToSpell(currentSentence[i], spell);
+                }
+                break;
 
+            case ReadingPattern.ForwardOddSteps:
+                for (int i = startIndex + 1; i < currentSentence.Count; i += 2)
+                {
+                    if (currentSentence[i].wordType == WordType.Object) break;
+                    AddModifierToSpell(currentSentence[i], spell);
+                }
+                break;
+
+            case ReadingPattern.BackwardOddSteps:
+                for (int i = startIndex - 1; i >= 0; i -= 2)
+                {
+                    if (currentSentence[i].wordType == WordType.Object) break;
+                    AddModifierToSpell(currentSentence[i], spell);
+                }
+                break;
+
+            case ReadingPattern.Unlimited:
+                for (int i = startIndex - 1; i >= 0; i--)
+                {
+                    if (currentSentence[i].wordType == WordType.Object) break;
+                    AddModifierToSpell(currentSentence[i], spell);
+                }
+                for (int i = startIndex + 1; i < currentSentence.Count; i++)
+                {
+                    if (currentSentence[i].wordType == WordType.Object) break;
                     AddModifierToSpell(currentSentence[i], spell);
                 }
                 break;
