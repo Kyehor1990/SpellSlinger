@@ -9,6 +9,10 @@ public class Enemy : MonoBehaviour
     private Transform playerTransform;
     private Rigidbody2D rb;
 
+    [Header("Mürekkep Ölüm Efektleri")]
+    public GameObject deathSmokePrefab;
+    public GameObject inkStainPrefab;
+
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -45,7 +49,14 @@ public class Enemy : MonoBehaviour
 
     private void Die()
     {
-        // XP düşme ve diğer ölme efektleri burada
+        if (deathSmokePrefab != null) Instantiate(deathSmokePrefab, transform.position, Quaternion.identity);
+
+        if (inkStainPrefab != null)
+        {
+            GameObject stain = Instantiate(inkStainPrefab, transform.position, Quaternion.Euler(0, 0, Random.Range(0f, 360f)));
+            Destroy(stain, 5f); 
+        }
+
         Destroy(gameObject);
     }
 }
