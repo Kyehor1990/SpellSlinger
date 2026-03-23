@@ -330,6 +330,7 @@ GameObject:
   - component: {fileID: 1660669769}
   - component: {fileID: 1660669774}
   - component: {fileID: 1660669775}
+  - component: {fileID: 1660669776}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -533,6 +534,21 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 9ada27cd3f4a3e149a4df6f1367da3b3, type: 2}
   - {fileID: 11400000, guid: e934a8b810b1d77478c798b8485e9fe0, type: 2}
   - {fileID: 11400000, guid: e934a8b810b1d77478c798b8485e9fe0, type: 2}
+--- !u!114 &1660669776
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1660669768}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 014980e73ed42954f9db6a2e9cb8b246, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerExperience
+  currentLevel: 1
+  currentXP: 0
+  xpToNextLevel: 100
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

@@ -183,3 +183,4 @@ MonoBehaviour:
   moveSpeed: 2
   deathSmokePrefab: {fileID: 0}
   inkStainPrefab: {fileID: 0}
+  xpDropPrefab: {fileID: 2576153625396086608, guid: 826eac3f001858b4e9728fab94edccfd, type: 3}

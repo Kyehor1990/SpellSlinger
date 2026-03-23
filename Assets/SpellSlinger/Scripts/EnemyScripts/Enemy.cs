@@ -13,6 +13,9 @@ public class Enemy : MonoBehaviour
     public GameObject deathSmokePrefab;
     public GameObject inkStainPrefab;
 
+    [Header("Ganimet (Loot)")]
+    public GameObject xpDropPrefab;
+
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -49,6 +52,11 @@ public class Enemy : MonoBehaviour
 
     private void Die()
     {
+        if (xpDropPrefab != null)
+        {
+            Instantiate(xpDropPrefab, transform.position, Quaternion.identity);
+        }
+
         if (deathSmokePrefab != null) Instantiate(deathSmokePrefab, transform.position, Quaternion.identity);
 
         if (inkStainPrefab != null)
