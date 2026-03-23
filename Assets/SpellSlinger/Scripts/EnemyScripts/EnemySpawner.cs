@@ -28,31 +28,41 @@ public class EnemySpawner : MonoBehaviour
     [Header("Düşman Havuzu")]
     public EnemySpawnData[] enemiesToSpawn;
 
-    private void Start()
+    private void OnEnable()
     {
+        StopAllCoroutines(); 
         StartCoroutine(SpawnRoutine());
     }
 
+    private void OnDisable()
+    {
+        StopAllCoroutines(); 
+    }
+
+
     private IEnumerator SpawnRoutine()
     {
-        while (true)
-        {
-            yield return new WaitForSeconds(timeBetweenSpawns);
-
-            float randomX = Random.Range(-mapBounds.x, mapBounds.x);
-            float randomY = Random.Range(-mapBounds.y, mapBounds.y);
-            Vector3 spawnPosition = new Vector3(randomX, randomY, 0f);
-
-            EnemySpawnData selectedEnemy = enemiesToSpawn[Random.Range(0, enemiesToSpawn.Length)];
-
-            GameObject indicator = Instantiate(spawnIndicatorPrefab, spawnPosition, Quaternion.identity);
-            
-            EnemySpawnIndicator indicatorScript = indicator.GetComponent<EnemySpawnIndicator>();
-            if(indicatorScript != null)
+         while (enabled) 
             {
-                indicatorScript.SetupIndicator(selectedEnemy, spawnWarningTime);
+                yield return new WaitForSeconds(timeBetweenSpawns);
+
+                
+                if (!enabled) break; 
+
+                float randomX = Random.Range(-mapBounds.x, mapBounds.x);
+                float randomY = Random.Range(-mapBounds.y, mapBounds.y);
+                Vector3 spawnPosition = new Vector3(randomX, randomY, 0f);
+
+                EnemySpawnData selectedEnemy = enemiesToSpawn[Random.Range(0, enemiesToSpawn.Length)];
+
+                GameObject indicator = Instantiate(spawnIndicatorPrefab, spawnPosition, Quaternion.identity);
+        
+                EnemySpawnIndicator indicatorScript = indicator.GetComponent<EnemySpawnIndicator>();
+                if(indicatorScript != null)
+                {
+                    indicatorScript.SetupIndicator(selectedEnemy, spawnWarningTime);
+                }
             }
-        }
     }
 
     private void OnDrawGizmos()

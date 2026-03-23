@@ -13,7 +13,7 @@ public class EnemyWaveManager : MonoBehaviour
     public float difficultyMultiplier = 0.8f; 
 
     [Header("Referanslar")]
-    public EnemyspawnGök spawner;
+    public EnemySpawner spawner;
 
     private float timer;
     private bool isWaveActive;
