@@ -14,6 +14,8 @@ public class EnemyWaveManager : MonoBehaviour
 
     [Header("Referanslar")]
     public EnemySpawner spawner;
+    public PlayerExperience playerExp;
+    public UpgradeManager upgradeManager;
 
     private float timer;
     private bool isWaveActive;
@@ -31,7 +33,6 @@ public class EnemyWaveManager : MonoBehaviour
             isWaveActive = true;
             timer = waveDuration;
             
-           
             float currentDelay = initialSpawnDelay * Mathf.Pow(difficultyMultiplier, currentWave - 1);
             spawner.timeBetweenSpawns = currentDelay;
             spawner.enabled = true; 
@@ -52,17 +53,25 @@ public class EnemyWaveManager : MonoBehaviour
             ClearAllEnemies(); // Ekrandakileri düşmanlar silinir.
             
             Debug.Log($"Dalga {currentWave} Bitti. Hazırlan!");
-            
-            yield return new WaitForSeconds(breakDuration);
+
+            if (playerExp != null && playerExp.pendingLevelUps > 0)
+            {
+                upgradeManager.StartUpgradePhase(playerExp.pendingLevelUps);
+                yield return new WaitUntil(() => upgradeManager.isUpgradePhaseActive == false);
+                playerExp.pendingLevelUps = 0; 
+            }
+            else
+            {
+                yield return new WaitForSeconds(breakDuration);
+            }
             
             currentWave++;
         }
+            
     }
 
     private void ClearAllEnemies()
     {
-       
-       
         GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
         foreach (GameObject enemy in enemies)
         {
