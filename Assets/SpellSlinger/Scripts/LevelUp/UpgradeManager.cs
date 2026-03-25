@@ -6,30 +6,71 @@ public class UpgradeManager : MonoBehaviour
     [Header("Stat Seçenekleri (Havuz)")]
     public List<StatUpgradeData> allPossibleUpgrades; 
     
+    [Header("UI Referansları")]
+    public GameObject upgradePanel;
+    public Transform cardContainer;
+    public GameObject upgradeCardPrefab;
+
     [Header("Durum")]
     public bool isUpgradePhaseActive = false;
     private int remainingPicks = 0;
+
+    private void Start()
+    {
+        upgradePanel.SetActive(false);
+    }
 
     public void StartUpgradePhase(int levelUpsToProcess)
     {
         isUpgradePhaseActive = true;
         remainingPicks = levelUpsToProcess;
         
-        Debug.Log($"<color=cyan>Yükseltme Ekranı Açıldı! Oyuncunun {remainingPicks} adet seçim hakkı var.</color>");
+        upgradePanel.SetActive(true);
+        Time.timeScale = 0f; 
         
         ShowUpgradeChoices();
     }
 
     private void ShowUpgradeChoices()
     {
-        Debug.Log("Ekranda 3 adet rastgele Stat belirdi...");
-        
-        Invoke("SimulatePlayerMakingAChoice", 1f); 
+        foreach (Transform child in cardContainer)
+        {
+            Destroy(child.gameObject);
+        }
+
+        List<StatUpgradeData> chosenUpgrades = GetRandomUpgrades(3);
+
+        foreach (StatUpgradeData data in chosenUpgrades)
+        {
+            GameObject newCard = Instantiate(upgradeCardPrefab, cardContainer);
+            newCard.GetComponent<UpgradeCardUI>().SetupCard(data, this);
+        }
+    }
+
+    private List<StatUpgradeData> GetRandomUpgrades(int count)
+    {
+        List<StatUpgradeData> poolCopy = new List<StatUpgradeData>(allPossibleUpgrades);
+        List<StatUpgradeData> selected = new List<StatUpgradeData>();
+
+        for (int i = 0; i < count; i++)
+        {
+            if (poolCopy.Count == 0) break;
+
+            int randomIndex = Random.Range(0, poolCopy.Count);
+            selected.Add(poolCopy[randomIndex]);
+            
+            poolCopy.RemoveAt(randomIndex); 
+        }
+
+        return selected;
     }
 
     public void OnUpgradeSelected(StatUpgradeData chosenUpgrade)
     {
-        Debug.Log($"Oyuncu {chosenUpgrade.upgradeName} seçeneğini seçti!");
+        Debug.Log($"<color=orange>Seçilen Yükseltme: {chosenUpgrade.upgradeName}</color>");
+        
+        // Statlar burda arttırlacak. Örneğin:
+        // PlayerStats.Instance.IncreaseHealth(chosenUpgrade.healthIncrease); gibisinden
 
         remainingPicks--;
 
@@ -45,22 +86,8 @@ public class UpgradeManager : MonoBehaviour
 
     private void CloseUpgradePhase()
     {
-        Debug.Log("<color=cyan>Tüm seçimler yapıldı. Yeni dalga başlıyor!</color>");
         isUpgradePhaseActive = false;
-    }
-
-    private void SimulatePlayerMakingAChoice()
-    {
-        if (allPossibleUpgrades.Count > 0)
-        {
-            StatUpgradeData randomChoice = allPossibleUpgrades[Random.Range(0, allPossibleUpgrades.Count)];
-            OnUpgradeSelected(randomChoice);
-        }
-        else
-        {
-            Debug.LogError("Yükseltme havuzu boş! En az 1 tane StatUpgradeData ekleyin.");
-            remainingPicks--;
-            if (remainingPicks <= 0) CloseUpgradePhase();
-        }
+        upgradePanel.SetActive(false);
+        Time.timeScale = 1f;
     }
 }

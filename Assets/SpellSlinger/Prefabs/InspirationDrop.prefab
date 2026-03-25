@@ -105,7 +105,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0611038338a0c3746b8b327e6eab151b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspirationDrop
-  xpAmount: 40
+  xpAmount: 70
 --- !u!58 &62974647284129384
 CircleCollider2D:
   m_ObjectHideFlags: 0
