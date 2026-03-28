@@ -1,7 +1,6 @@
 using UnityEngine;
-using System.Collections;
 
-public class Enemy : MonoBehaviour
+public class EnemyScriptYedek : MonoBehaviour
 {
     [Header("Düşman Ayarları")]
     public float currentHealth = 20f;
@@ -13,7 +12,6 @@ public class Enemy : MonoBehaviour
     [Header("Mürekkep Ölüm Efektleri")]
     public GameObject deathSmokePrefab;
     public GameObject inkStainPrefab;
-    private bool isDying = false;
 
     [Header("Ganimet (Loot)")]
     public GameObject xpDropPrefab;
@@ -36,11 +34,6 @@ public class Enemy : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (isDying) 
-        {
-            rb.linearVelocity = Vector2.zero;
-            return;
-        }
         if (playerTransform != null)
         {
             Vector2 direction = (playerTransform.position - transform.position).normalized;
@@ -50,37 +43,12 @@ public class Enemy : MonoBehaviour
 
     public void TakeDamage(float damageAmount)
     {
-        if (isDying) return;
         currentHealth -= damageAmount;
         
         if (currentHealth <= 0)
         {
-            StartCoroutine(PrepareToExplode());
+            Die();
         }
-    }
-    IEnumerator PrepareToExplode()
-    {
-        isDying = true;
-        float delay = 1.0f; 
-        float timer = 0;
-        Vector3 originalScale = transform.localScale;
-
-        while (timer < delay)
-        {
-            timer += Time.deltaTime;
-
-           
-          
-            float pulse = 1f + Mathf.PingPong(timer * 15f, 0.2f); 
-            transform.localScale = originalScale * pulse;
-
-            
-            GetComponent<SpriteRenderer>().color = Color.Lerp(Color.white, Color.red, Mathf.PingPong(timer * 10f, 1f));
-
-            yield return null; 
-        }
-
-        Die(); 
     }
 
     private void Die()
@@ -95,7 +63,7 @@ public class Enemy : MonoBehaviour
             Instantiate(coinDropPrefab, transform.position, Quaternion.identity);
         }
 
-        EffectPoolManager.instance.PlayOrganEffect(transform.position);
+        if (deathSmokePrefab != null) Instantiate(deathSmokePrefab, transform.position, Quaternion.identity);
 
         if (inkStainPrefab != null)
         {

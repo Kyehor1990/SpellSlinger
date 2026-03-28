@@ -227,6 +227,7 @@ Transform:
   - {fileID: 535933526}
   - {fileID: 1013682872}
   - {fileID: 571090157}
+  - {fileID: 954250048}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &250463329
@@ -479,7 +480,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6430455ac900f5346b9bc1f4031d89f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ShopManager
-  allAvailableWords: []
+  allAvailableWords:
+  - {fileID: 11400000, guid: 9ada27cd3f4a3e149a4df6f1367da3b3, type: 2}
+  - {fileID: 11400000, guid: 54ca2723538fbdb4eadfdf6782cc66b0, type: 2}
+  - {fileID: 11400000, guid: 32cd3e2c51bc5854187faef0f1ca6465, type: 2}
   wordCost: 10
   rerollCost: 5
   playerWallet: {fileID: 1660669779}
@@ -514,7 +518,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a4b0c3324c9c8e4ca5a01ae7d227cfe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyWaveManager
-  waveDuration: 10
+  waveDuration: 30
   breakDuration: 5
   currentWave: 1
   initialSpawnDelay: 2
@@ -537,6 +541,52 @@ Transform:
   m_Children: []
   m_Father: {fileID: 193689536}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &954250047
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 954250048}
+  - component: {fileID: 954250049}
+  m_Layer: 0
+  m_Name: PoolManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &954250048
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 954250047}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 193689536}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &954250049
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 954250047}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: acec7e407161105428b91be7772d01db, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EffectPoolManager
+  effectPrefab: {fileID: 342674940860547439, guid: 0a74764b64150d3408c769443cb5bb60, type: 3}
+  poolSize: 20
 --- !u!1 &1013682870
 GameObject:
   m_ObjectHideFlags: 0
