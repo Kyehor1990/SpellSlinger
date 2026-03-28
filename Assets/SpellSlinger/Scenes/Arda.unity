@@ -195,6 +195,40 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 70023491}
   m_CullTransparentMesh: 1
+--- !u!1 &193689535
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 193689536}
+  m_Layer: 0
+  m_Name: Managers
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &193689536
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 193689535}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.81988, y: -2.30295, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 535933526}
+  - {fileID: 1013682872}
+  - {fileID: 571090157}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &250463329
 GameObject:
   m_ObjectHideFlags: 0
@@ -401,6 +435,56 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::HealthBarShake
   shakeDuration: 0.2
   shakeMagnitude: 5
+--- !u!1 &535933525
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 535933526}
+  - component: {fileID: 535933527}
+  m_Layer: 0
+  m_Name: ShopManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &535933526
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 535933525}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 193689536}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &535933527
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 535933525}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6430455ac900f5346b9bc1f4031d89f8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ShopManager
+  allAvailableWords: []
+  wordCost: 10
+  rerollCost: 5
+  playerWallet: {fileID: 1660669779}
+  playerInventory: {fileID: 1660669778}
+  waveManager: {fileID: 571090156}
 --- !u!1 &571090155
 GameObject:
   m_ObjectHideFlags: 0
@@ -446,12 +530,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 571090155}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.93625, y: -0.32414, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 3.75613, y: 1.9788098, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 193689536}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1013682870
 GameObject:
@@ -499,12 +583,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1013682870}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.41718, y: -0.20047, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 3.23706, y: 2.10248, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 193689536}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1036327031
 GameObject:
@@ -1032,7 +1116,9 @@ GameObject:
   - component: {fileID: 1660669774}
   - component: {fileID: 1660669775}
   - component: {fileID: 1660669776}
+  - component: {fileID: 1660669779}
   - component: {fileID: 1660669777}
+  - component: {fileID: 1660669778}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -1233,9 +1319,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SentenceManager
   currentSentence:
   - {fileID: 11400000, guid: 54ca2723538fbdb4eadfdf6782cc66b0, type: 2}
-  - {fileID: 11400000, guid: 9ada27cd3f4a3e149a4df6f1367da3b3, type: 2}
-  - {fileID: 11400000, guid: e934a8b810b1d77478c798b8485e9fe0, type: 2}
-  - {fileID: 11400000, guid: e934a8b810b1d77478c798b8485e9fe0, type: 2}
 --- !u!114 &1660669776
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1268,6 +1351,32 @@ MonoBehaviour:
   currentHealth: 0
   healthSlider: {fileID: 250463334}
   shakeEffect: {fileID: 412240566}
+--- !u!114 &1660669778
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1660669768}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 119021746d6522249bfb9d9963155765, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerInventory
+  myWords: []
+--- !u!114 &1660669779
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1660669768}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 02a14f0f197d80b4cba97f7ca08c2812, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerWallet
+  currentMoney: 0
 --- !u!1 &1724494618
 GameObject:
   m_ObjectHideFlags: 0
@@ -1354,8 +1463,7 @@ SceneRoots:
   - {fileID: 1544442571}
   - {fileID: 1660669773}
   - {fileID: 1638670089}
-  - {fileID: 571090157}
-  - {fileID: 1013682872}
   - {fileID: 1534219852}
   - {fileID: 1724494621}
   - {fileID: 250463333}
+  - {fileID: 193689536}

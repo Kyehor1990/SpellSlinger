@@ -88,6 +88,7 @@ public class UpgradeManager : MonoBehaviour
     {
         isUpgradePhaseActive = false;
         upgradePanel.SetActive(false);
-        Time.timeScale = 1f;
+        
+        FindObjectOfType<ShopManager>().OpenShop();
     }
 }

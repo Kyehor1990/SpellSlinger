@@ -15,6 +15,7 @@ public class Enemy : MonoBehaviour
 
     [Header("Ganimet (Loot)")]
     public GameObject xpDropPrefab;
+    public GameObject coinDropPrefab;
 
     private void Awake()
     {
@@ -55,6 +56,11 @@ public class Enemy : MonoBehaviour
         if (xpDropPrefab != null)
         {
             Instantiate(xpDropPrefab, transform.position, Quaternion.identity);
+        }
+
+        if (coinDropPrefab != null)
+        {
+            Instantiate(coinDropPrefab, transform.position, Quaternion.identity);
         }
 
         if (deathSmokePrefab != null) Instantiate(deathSmokePrefab, transform.position, Quaternion.identity);
