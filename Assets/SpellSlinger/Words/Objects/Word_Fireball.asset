@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f630c358e0cac9478da3d0f35190934, type: 3}
   m_Name: Word_Fireball
   m_EditorClassIdentifier: Assembly-CSharp::WordData
-  runeText: HARI
+  runeText: Fireball
   translatedText: Fireball
   wordIcon: {fileID: 0}
   projectilePrefab: {fileID: 2507854483434154795, guid: 74d279d6c41608840806f46b9ec91a87, type: 3}
@@ -28,3 +28,4 @@ MonoBehaviour:
   mechanicToAdd: 0
   isUnlocked: 0
   secretHint: 
+  manaCost: 1

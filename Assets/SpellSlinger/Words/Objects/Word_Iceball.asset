@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f630c358e0cac9478da3d0f35190934, type: 3}
   m_Name: Word_Iceball
   m_EditorClassIdentifier: Assembly-CSharp::WordData
-  runeText: GLAMO
+  runeText: Iceball
   translatedText: Iceball
   wordIcon: {fileID: 0}
   projectilePrefab: {fileID: 2507854483434154795, guid: b93a30212de3cf14f9b7d7174ca3324b, type: 3}
@@ -28,3 +28,4 @@ MonoBehaviour:
   mechanicToAdd: 0
   isUnlocked: 0
   secretHint: 
+  manaCost: 1

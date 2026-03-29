@@ -3,6 +3,8 @@ using UnityEngine.InputSystem;
 
 public class InventoryUIManager : MonoBehaviour
 {
+    private bool wasGameAlreadyPaused = false;
+
     [Header("UI Referansları")]
     public GameObject inventoryUIContainer;
     private void Start()
@@ -25,15 +27,25 @@ public class InventoryUIManager : MonoBehaviour
     {
         if (inventoryUIContainer != null)
         {
-            bool isActive = inventoryUIContainer.activeSelf;
-            inventoryUIContainer.SetActive(!isActive);
+            bool isOpening = !inventoryUIContainer.activeSelf;
 
-            if (!isActive) // Açılıyorsa
-                Time.timeScale = 0f;
-            else           // Kapanıyorsa
-                Time.timeScale = 1f;
+            if (isOpening)
+            {
+            wasGameAlreadyPaused = (Time.timeScale == 0f); 
             
-            Debug.Log(isActive ? "Envanter Kapandı" : "Envanter Açıldı");
+            inventoryUIContainer.SetActive(true);
+            Time.timeScale = 0f; 
+            }
+            else
+            {
+                inventoryUIContainer.SetActive(false);
+            
+                if (!wasGameAlreadyPaused)
+                {
+                    Time.timeScale = 1f; 
+                }
+            }
         }
+
     }
 }

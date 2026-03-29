@@ -24,26 +24,34 @@ public class SentenceManager : MonoBehaviour
 
     public void RebuildSentenceFromUI()
     {
-        currentSentence.Clear();
+        currentSentence.Clear(); 
 
         if (sentencePanel == null) return;
 
-        foreach (Transform slot in sentencePanel)
+        foreach (Transform child in sentencePanel)
         {
-            if (slot.childCount > 0)
+            DraggableWord wordUI = child.GetComponent<DraggableWord>();
+            if (wordUI != null)
             {
-                DraggableWord wordUI = slot.GetChild(0).GetComponent<DraggableWord>();
-                if (wordUI != null)
-                {
-                    currentSentence.Add(wordUI.myWordData.wordData);
-                }
+                currentSentence.Add(wordUI.myWordData.wordData);
             }
         }
 
-        Debug.Log($"<color=cyan>Cümle Güncellendi! Toplam Kelime: {currentSentence.Count}</color>");
-        
+        PlayerAutoAttack autoAttack = FindFirstObjectByType<PlayerAutoAttack>();
+        if (autoAttack != null)
+        {
+            autoAttack.UpdateActiveSpells();
+        }
+
+        Debug.Log($"<color=cyan>Cümle Güncellendi! Sıra: {GetSentenceNames()}</color>");
     }
 
+    private string GetSentenceNames()
+    {
+        string names = "";
+        foreach(var word in currentSentence) names += word.runeText + " - ";
+        return names;
+    }
     public List<CompiledSpell> ParseSentence()
     {
         List<CompiledSpell> activeSpells = new List<CompiledSpell>();

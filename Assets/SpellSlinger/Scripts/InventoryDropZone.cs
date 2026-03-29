@@ -8,8 +8,8 @@ public class InventoryDropZone : MonoBehaviour, IDropHandler
 
     private void Start()
     {
-        manaCapacity = FindObjectOfType<PlayerManaCapacity>(); 
-        sentenceManager = FindObjectOfType<SentenceManager>();
+        manaCapacity = FindFirstObjectByType<PlayerManaCapacity>(); 
+        sentenceManager = FindFirstObjectByType<SentenceManager>();
     }
 
     public void OnDrop(PointerEventData eventData)
@@ -19,11 +19,16 @@ public class InventoryDropZone : MonoBehaviour, IDropHandler
 
         if (draggedWord != null)
         {
-            if (draggedWord.parentAfterDrag.GetComponent<SentenceSlot>() != null)
+            if (draggedWord.placeholder != null)
+            {
+                draggedWord.placeholder.transform.SetParent(null);
+                Destroy(draggedWord.placeholder);
+            }
+
+            if (draggedWord.parentAfterDrag.GetComponent<SentenceDropZone>() != null)
             {
                 manaCapacity.UnequipWord(draggedWord.myWordData.wordData.manaCost);
                 
-                // HATA ÇÖZÜMÜ: Anında ebeveyni envanter yapıyoruz
                 draggedWord.parentAfterDrag = transform;
                 draggedWord.transform.SetParent(transform); 
                 
@@ -34,6 +39,8 @@ public class InventoryDropZone : MonoBehaviour, IDropHandler
                 draggedWord.parentAfterDrag = transform; 
                 draggedWord.transform.SetParent(transform); 
             }
+
+            draggedWord.Setup(draggedWord.myWordData);
         }
     }
 }
