@@ -30,7 +30,10 @@ public class WordData : ScriptableObject
     [Header("Gizem & İlerleme")]
     public bool isUnlocked;       
     [TextArea]
-    public string secretHint;     
+    public string secretHint;
+
+    [Header("Ekonomi ve Denge")]
+    public int manaCost = 1;
 }
 
 public enum WordType { Object, Modifier }

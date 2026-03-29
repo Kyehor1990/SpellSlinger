@@ -6,7 +6,8 @@ public enum StatType
     MoveSpeed, 
     Armor, 
     DamageMultiplier, 
-    CooldownReduction 
+    CooldownReduction,
+    MaxMana
 }
 
 [CreateAssetMenu(fileName = "NewStatUpgrade", menuName = "Spellslinger/Stat Upgrade")]

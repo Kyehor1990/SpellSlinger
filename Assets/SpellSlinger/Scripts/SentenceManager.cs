@@ -19,6 +19,31 @@ public class SentenceManager : MonoBehaviour
     [Header("Oyuncunun Dizdiği Cümle")]
     public List<WordData> currentSentence = new List<WordData>(); 
 
+    [Header("UI Bağlantıları (YENİ)")]
+    public Transform sentencePanel;
+
+    public void RebuildSentenceFromUI()
+    {
+        currentSentence.Clear();
+
+        if (sentencePanel == null) return;
+
+        foreach (Transform slot in sentencePanel)
+        {
+            if (slot.childCount > 0)
+            {
+                DraggableWord wordUI = slot.GetChild(0).GetComponent<DraggableWord>();
+                if (wordUI != null)
+                {
+                    currentSentence.Add(wordUI.myWordData.wordData);
+                }
+            }
+        }
+
+        Debug.Log($"<color=cyan>Cümle Güncellendi! Toplam Kelime: {currentSentence.Count}</color>");
+        
+    }
+
     public List<CompiledSpell> ParseSentence()
     {
         List<CompiledSpell> activeSpells = new List<CompiledSpell>();

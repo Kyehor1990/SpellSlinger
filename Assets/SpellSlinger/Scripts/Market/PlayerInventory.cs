@@ -16,13 +16,21 @@ public class OwnedWord
 
 public class PlayerInventory : MonoBehaviour
 {
+    [Header("UI Referansları")]
+    public GameObject wordUIPrefab;
+    public Transform inventoryPanel;
+
     [Header("Sahip Olunan Kelimeler")]
     public List<OwnedWord> myWords = new List<OwnedWord>();
 
     public void AddWord(WordData newWord)
     {
-        myWords.Add(new OwnedWord(newWord));
-        Debug.Log($"<color=green>Envantere Eklendi: {newWord.runeText} (Seviye 1)</color>");
+        OwnedWord addedWord = new OwnedWord(newWord);
+        myWords.Add(addedWord);
+        Debug.Log($"<color=green>Envantere Eklendi: {newWord.runeText}</color>");
+
+        GameObject newWordUI = Instantiate(wordUIPrefab, inventoryPanel);
+        newWordUI.GetComponent<DraggableWord>().Setup(addedWord);
     }
 
     public void TryUpgradeWord(OwnedWord wordToUpgrade)

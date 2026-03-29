@@ -15,6 +15,9 @@ public class UpgradeManager : MonoBehaviour
     public bool isUpgradePhaseActive = false;
     private int remainingPicks = 0;
 
+    [Header("Oyuncu Referansları")]
+    public PlayerManaCapacity playerMana;
+
     private void Start()
     {
         upgradePanel.SetActive(false);
@@ -69,8 +72,20 @@ public class UpgradeManager : MonoBehaviour
     {
         Debug.Log($"<color=orange>Seçilen Yükseltme: {chosenUpgrade.upgradeName}</color>");
         
-        // Statlar burda arttırlacak. Örneğin:
-        // PlayerStats.Instance.IncreaseHealth(chosenUpgrade.healthIncrease); gibisinden
+        switch (chosenUpgrade.statToIncrease)
+        {
+            case StatType.MaxMana:
+                playerMana.IncreaseMaxMana(Mathf.RoundToInt(chosenUpgrade.increaseAmount));
+                break;
+                
+            case StatType.MaxHealth:
+                Debug.Log("Can artırıldı!");
+                break;
+                
+            case StatType.MoveSpeed:
+                Debug.Log("Hız artırıldı!");
+                break;
+        }
 
         remainingPicks--;
 
