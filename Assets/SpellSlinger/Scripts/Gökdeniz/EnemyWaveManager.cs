@@ -16,6 +16,7 @@ public class EnemyWaveManager : MonoBehaviour
     public EnemySpawner spawner;
     public PlayerExperience playerExp;
     public UpgradeManager upgradeManager;
+    public ShopManager shopManager;
 
     private float timer;
     private bool isWaveActive;
@@ -60,10 +61,11 @@ public class EnemyWaveManager : MonoBehaviour
                 yield return new WaitUntil(() => upgradeManager.isUpgradePhaseActive == false);
                 playerExp.pendingLevelUps = 0; 
             }
-            else
-            {
-                yield return new WaitForSeconds(breakDuration);
-            }
+
+            shopManager.OpenShop();
+            yield return new WaitUntil(() => shopManager.isShopActive == false);
+
+            yield return new WaitForSeconds(breakDuration);
             
             currentWave++;
         }

@@ -1,13 +1,20 @@
 using UnityEngine;
+using TMPro;
 
 public class PlayerWallet : MonoBehaviour
 {
     public int currentMoney = 0;
+    public TextMeshProUGUI moneyTextUI;
+
+    private void Start()
+    {
+        UpdateUI();
+    }
 
     public void AddMoney(int amount)
     {
         currentMoney += amount;
-        Debug.Log($"<color=yellow>Altın Alındı! Toplam Para: {currentMoney}</color>");
+        UpdateUI();
     }
 
     public bool SpendMoney(int amount)
@@ -15,10 +22,17 @@ public class PlayerWallet : MonoBehaviour
         if (currentMoney >= amount)
         {
             currentMoney -= amount;
-            Debug.Log($"<color=red>Para Harcandı! Kalan: {currentMoney}</color>");
+            UpdateUI();
             return true;
         }
-        Debug.Log("Yeterli paran yok!");
         return false;
+    }
+
+    private void UpdateUI()
+    {
+        if (moneyTextUI != null)
+        {
+            moneyTextUI.text = "Altın: " + currentMoney;
+        }
     }
 }

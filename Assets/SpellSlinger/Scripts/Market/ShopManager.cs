@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
 
 public class ShopManager : MonoBehaviour
 {
@@ -8,27 +10,45 @@ public class ShopManager : MonoBehaviour
     public int wordCost = 10;
     public int rerollCost = 5;
 
-    [Header("Referanslar")]
+    [Header("Arka Plan Referansları")]
     public PlayerWallet playerWallet;
     public PlayerInventory playerInventory;
-    public EnemyWaveManager waveManager;
 
-    private WordData[] currentShopWords = new WordData[3]; 
+    [Header("UI Referansları")]
+    public GameObject shopPanel;
+    public TextMeshProUGUI moneyText;
+    public Button[] slotButtons;
+    public TextMeshProUGUI[] slotNames;
+    public TextMeshProUGUI[] slotPrices;
+    private WordData[] currentShopWords = new WordData[3];
+
+    [HideInInspector] public bool isShopActive = false;
+
+    private void Start()
+    {
+        shopPanel.SetActive(false);
+    }
 
     public void OpenShop()
     {
-        Debug.Log("<color=cyan>--- MARKET AÇILDI ---</color>");
-        
+        isShopActive = true;
+        shopPanel.SetActive(true);
+        Time.timeScale = 0f;
+
         RollShopItems();
     }
 
     public void RollShopItems()
     {
-        Debug.Log("Market Rafları Yenileniyor...");
         for (int i = 0; i < currentShopWords.Length; i++)
         {
-            currentShopWords[i] = allAvailableWords[Random.Range(0, allAvailableWords.Count)];
-            Debug.Log($"Raf {i+1}: {currentShopWords[i].runeText} ({wordCost} Altın)");
+            WordData randomWord = allAvailableWords[Random.Range(0, allAvailableWords.Count)];
+            currentShopWords[i] = randomWord;
+
+            slotNames[i].text = randomWord.runeText;
+            slotPrices[i].text = wordCost.ToString() + " Altın";
+            
+            slotButtons[i].interactable = true; 
         }
     }
 
@@ -42,26 +62,24 @@ public class ShopManager : MonoBehaviour
 
     public void TryBuyWord(int slotIndex)
     {
-        if (currentShopWords[slotIndex] == null) 
-        {
-            Debug.Log("Bu raf boş!");
-            return;
-        }
+        if (currentShopWords[slotIndex] == null) return;
 
         if (playerWallet.SpendMoney(wordCost))
         {
             playerInventory.AddWord(currentShopWords[slotIndex]);
             
-            currentShopWords[slotIndex] = null; 
-            Debug.Log("Satın alım başarılı!");
-            
+            currentShopWords[slotIndex] = null;
+            slotButtons[slotIndex].interactable = false;
+            slotNames[slotIndex].text = "SATILDI";
+            slotPrices[slotIndex].text = "-";
         }
     }
 
     public void CloseShop()
     {
-        Debug.Log("<color=cyan>--- MARKET KAPANDI, YENİ DALGA BAŞLIYOR ---</color>");
-        
+        isShopActive = false;
+        shopPanel.SetActive(false);
         Time.timeScale = 1f;
     }
+
 }

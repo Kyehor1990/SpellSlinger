@@ -19,6 +19,14 @@ public class Enemy : MonoBehaviour
     public GameObject xpDropPrefab;
     public GameObject coinDropPrefab;
 
+    [Tooltip("Düşecek Minimum ve Maksimum XP Adedi")]
+    public Vector2Int xpDropAmount = new Vector2Int(1, 3);
+
+    [Tooltip("Düşecek Minimum ve Maksimum Altın Adedi")]
+    public Vector2Int coinDropAmount = new Vector2Int(1, 2);
+
+    public float scatterRadius = 0.6f;
+
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -85,15 +93,11 @@ public class Enemy : MonoBehaviour
 
     private void Die()
     {
-        if (xpDropPrefab != null)
-        {
-            Instantiate(xpDropPrefab, transform.position, Quaternion.identity);
-        }
+        int xpCount = Random.Range(xpDropAmount.x, xpDropAmount.y + 1);
+        ScatterDrops(xpDropPrefab, xpCount);
 
-        if (coinDropPrefab != null)
-        {
-            Instantiate(coinDropPrefab, transform.position, Quaternion.identity);
-        }
+        int coinCount = Random.Range(coinDropAmount.x, coinDropAmount.y + 1);
+        ScatterDrops(coinDropPrefab, coinCount);
 
         EffectPoolManager.instance.PlayOrganEffect(transform.position);
 
@@ -104,5 +108,18 @@ public class Enemy : MonoBehaviour
         }
 
         Destroy(gameObject);
+    }
+
+    private void ScatterDrops(GameObject prefab, int count)
+    {
+        if (prefab == null) return;
+
+        for (int i = 0; i < count; i++)
+        {
+            Vector2 randomOffset = Random.insideUnitCircle * scatterRadius;
+            Vector3 spawnPos = transform.position + new Vector3(randomOffset.x, randomOffset.y, 0f);
+
+            Instantiate(prefab, spawnPos, Quaternion.identity);
+        }
     }
 }
