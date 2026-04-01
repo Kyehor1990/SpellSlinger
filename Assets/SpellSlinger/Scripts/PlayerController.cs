@@ -10,6 +10,7 @@ public class PlayerController : MonoBehaviour
     private GameInput inputActions;
     private Vector2 moveInput;
     [HideInInspector] public Vector2 lastFacingDirection = Vector2.right;
+    private bool isFacingRight = true;
 
     private void Awake()
     {
@@ -35,6 +36,15 @@ public class PlayerController : MonoBehaviour
         {
             lastFacingDirection = moveInput.normalized;
         }
+
+        if (moveInput.x > 0 && !isFacingRight)
+        {
+            Flip();
+        }
+        else if (moveInput.x < 0 && isFacingRight)
+        {
+            Flip();
+        }
     }
 
     private void FixedUpdate()
@@ -45,5 +55,14 @@ public class PlayerController : MonoBehaviour
     private void Move()
     {
         rb.linearVelocity = moveInput.normalized * moveSpeed;
+    }
+
+    private void Flip()
+    {
+        isFacingRight = !isFacingRight;
+        
+        Vector3 localScale = transform.localScale;
+        localScale.x *= -1f; // X eksenini -1 ile çarparak aynalıyoruz
+        transform.localScale = localScale;
     }
 }
