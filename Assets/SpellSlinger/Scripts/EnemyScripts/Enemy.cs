@@ -14,10 +14,19 @@ public class Enemy : MonoBehaviour
     public GameObject deathSmokePrefab;
     public GameObject inkStainPrefab;
     private bool isDying = false;
+    
+    [Header("Death State")]
+    private int deadEnemyLayer;
 
     [Header("Ganimet (Loot)")]
     public GameObject xpDropPrefab;
     public GameObject coinDropPrefab;
+    
+    [Header("Organ Debris Pool")]
+    [SerializeField] private GameObject[] organPrefabs = new GameObject[0]; 
+    public int debrisCount = 3;
+    public float debrisScatterRadius = 1f;
+
 
     [Tooltip("Düşecek Minimum ve Maksimum XP Adedi")]
     public Vector2Int xpDropAmount = new Vector2Int(1, 3);
@@ -30,6 +39,7 @@ public class Enemy : MonoBehaviour
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        deadEnemyLayer = LayerMask.NameToLayer("DeadEnemy");
     }
 
     private void Start()
@@ -69,6 +79,9 @@ public class Enemy : MonoBehaviour
     IEnumerator PrepareToExplode()
     {
         isDying = true;
+        gameObject.layer = LayerMask.NameToLayer("DeadEnemy");
+        Collider2D col = GetComponent<Collider2D>();
+        if (col != null) col.enabled = false;
         float delay = 1.0f; 
         float timer = 0;
         Vector3 originalScale = transform.localScale;
