@@ -22,10 +22,7 @@ public class Enemy : MonoBehaviour
     public GameObject xpDropPrefab;
     public GameObject coinDropPrefab;
     
-    [Header("Organ Debris Pool")]
-    [SerializeField] private GameObject[] organPrefabs = new GameObject[0]; 
-    public int debrisCount = 3;
-    public float debrisScatterRadius = 1f;
+   
 
 
     [Tooltip("Düşecek Minimum ve Maksimum XP Adedi")]

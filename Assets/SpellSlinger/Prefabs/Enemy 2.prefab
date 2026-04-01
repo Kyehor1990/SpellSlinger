@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 2821505782430550158}
   - component: {fileID: 6566546631694627016}
   - component: {fileID: 6446690272483297473}
+  - component: {fileID: 7783712024182067882}
   m_Layer: 6
   m_Name: Enemy 2
   m_TagString: Enemy
@@ -31,7 +32,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 6.6, y: 0.94, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.8, y: 0.8, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -86,8 +87,8 @@ SpriteRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: 629553134381121590, guid: 79a342e3a4c6d6943b6e0b49b6dcace0, type: 3}
-  m_Color: {r: 1, g: 0.7737833, b: 0, a: 1}
-  m_FlipX: 0
+  m_Color: {r: 0.9607844, g: 0.9607844, b: 0.9607844, a: 1}
+  m_FlipX: 1
   m_FlipY: 0
   m_DrawMode: 0
   m_Size: {x: 1, y: 1}
@@ -184,8 +185,8 @@ MonoBehaviour:
   moveSpeed: 2
   deathSmokePrefab: {fileID: 0}
   inkStainPrefab: {fileID: 0}
-  xpDropPrefab: {fileID: 2576153625396086608, guid: 826eac3f001858b4e9728fab94edccfd, type: 3}
-  coinDropPrefab: {fileID: 2270888829200734881, guid: 82480318e013400469d6fd8abf27e1b0, type: 3}
+  xpDropPrefab: {fileID: 4404637123539996590, guid: 525fc5d2299ad9240893a3480787b002, type: 3}
+  coinDropPrefab: {fileID: 366768702120322022, guid: b04d1a36b37cc99438518988ad1e7f34, type: 3}
   organPrefabs:
   - {fileID: 0}
   - {fileID: 0}
@@ -209,3 +210,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyDamage
   damageAmount: 10
+--- !u!114 &7783712024182067882
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4395884553050428915}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d15dcc41ea0f7c244bafdba2d6599245, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyFacePlayer
