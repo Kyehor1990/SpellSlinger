@@ -42,5 +42,20 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Ground
+    uniqueID: 4278984401
+    locked: 0
+  - name: Collectables
+    uniqueID: 813953835
+    locked: 0
+  - name: "Ind\u0131cators"
+    uniqueID: 2744148351
+    locked: 0
+  - name: Enemies
+    uniqueID: 3485837531
+    locked: 0
+  - name: Player
+    uniqueID: 3870468705
+    locked: 0
   m_RenderingLayers:
   - Default

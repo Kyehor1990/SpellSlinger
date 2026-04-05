@@ -82,8 +82,8 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -809129765
+  m_SortingLayer: 2
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: 629553134381121590, guid: 79a342e3a4c6d6943b6e0b49b6dcace0, type: 3}
@@ -187,13 +187,6 @@ MonoBehaviour:
   inkStainPrefab: {fileID: 0}
   xpDropPrefab: {fileID: 4404637123539996590, guid: 525fc5d2299ad9240893a3480787b002, type: 3}
   coinDropPrefab: {fileID: 366768702120322022, guid: b04d1a36b37cc99438518988ad1e7f34, type: 3}
-  organPrefabs:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  debrisCount: 3
-  debrisScatterRadius: 1
   xpDropAmount: {x: 1, y: 3}
   coinDropAmount: {x: 1, y: 2}
   scatterRadius: 0.6
