@@ -3,12 +3,13 @@ using TMPro;
 
 public class PlayerManaCapacity : MonoBehaviour
 {
-    [Header("Mana Kapasitesi")]
-    public int maxMana = 10;
     public int currentUsedMana = 0;
 
     [Header("UI Referansı")]
     public TextMeshProUGUI capacityTextUI;
+
+    [Header("Stat Referansı")]
+    public PlayerStatsManager playerStats;
 
     private void Start()
     {
@@ -17,9 +18,11 @@ public class PlayerManaCapacity : MonoBehaviour
 
     public bool CanEquipWord(int cost)
     {
+        int maxMana = (int)playerStats.GetStat(StatType.MaxMana);
+
         if (currentUsedMana + cost <= maxMana)
         {
-            return true; // Kapasite yeterli, takabilirsin!
+            return true;
         }
         else
         {
@@ -44,16 +47,16 @@ public class PlayerManaCapacity : MonoBehaviour
 
     public void IncreaseMaxMana(int amount)
     {
-        maxMana += amount;
         UpdateCapacityUI();
-        Debug.Log($"<color=cyan>Maksimum Mana Artırıldı! Yeni Kapasite: {maxMana}</color>");
+        Debug.Log($"<color=cyan>Maksimum Mana Artırıldı! Yeni Kapasite: {playerStats.GetStat(StatType.MaxMana)}</color>");
     }
 
     private void UpdateCapacityUI()
     {
-        if (capacityTextUI != null)
+        if (capacityTextUI != null && playerStats != null)
         {
-            capacityTextUI.text = $"Mana: {currentUsedMana} / {maxMana}";
+            int currentMaxMana = (int)playerStats.GetStat(StatType.MaxMana);
+            capacityTextUI.text = $"Mana: {currentUsedMana} / {currentMaxMana}";
         }
     }
 }

@@ -17,6 +17,8 @@ public class UpgradeManager : MonoBehaviour
 
     [Header("Oyuncu Referansları")]
     public PlayerManaCapacity playerMana;
+    public PlayerHealth playerHealth;
+    public PlayerStatsManager playerStats;
 
     private void Start()
     {
@@ -50,19 +52,27 @@ public class UpgradeManager : MonoBehaviour
         }
     }
 
-    private List<StatUpgradeData> GetRandomUpgrades(int count)
+   private List<StatUpgradeData> GetRandomUpgrades(int count)
     {
-        List<StatUpgradeData> poolCopy = new List<StatUpgradeData>(allPossibleUpgrades);
+        List<StatUpgradeData> availablePool = new List<StatUpgradeData>();
+        foreach (var upgrade in allPossibleUpgrades)
+        {
+            if (!playerStats.IsStatMaxed(upgrade.statToIncrease))
+            {
+                availablePool.Add(upgrade);
+            }
+        }
+
         List<StatUpgradeData> selected = new List<StatUpgradeData>();
 
         for (int i = 0; i < count; i++)
         {
-            if (poolCopy.Count == 0) break;
+            if (availablePool.Count == 0) break;
 
-            int randomIndex = Random.Range(0, poolCopy.Count);
-            selected.Add(poolCopy[randomIndex]);
+            int randomIndex = Random.Range(0, availablePool.Count);
+            selected.Add(availablePool[randomIndex]);
             
-            poolCopy.RemoveAt(randomIndex); 
+            availablePool.RemoveAt(randomIndex); 
         }
 
         return selected;
@@ -72,6 +82,8 @@ public class UpgradeManager : MonoBehaviour
     {
         Debug.Log($"<color=orange>Seçilen Yükseltme: {chosenUpgrade.upgradeName}</color>");
         
+        playerStats.ApplyUpgrade(chosenUpgrade.statToIncrease, chosenUpgrade.increaseAmount);
+
         switch (chosenUpgrade.statToIncrease)
         {
             case StatType.MaxMana:
@@ -79,11 +91,7 @@ public class UpgradeManager : MonoBehaviour
                 break;
                 
             case StatType.MaxHealth:
-                Debug.Log("Can artırıldı!");
-                break;
-                
-            case StatType.MoveSpeed:
-                Debug.Log("Hız artırıldı!");
+                playerHealth.Heal(chosenUpgrade.increaseAmount);
                 break;
         }
 

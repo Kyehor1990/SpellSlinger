@@ -15,5 +15,5 @@ MonoBehaviour:
   upgradeName: Max Mana
   description: 
   icon: {fileID: 0}
-  statToIncrease: 5
+  statToIncrease: 4
   increaseAmount: 2

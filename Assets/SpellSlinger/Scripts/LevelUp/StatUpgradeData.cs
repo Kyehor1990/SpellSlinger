@@ -5,9 +5,13 @@ public enum StatType
     MaxHealth, 
     MoveSpeed, 
     Armor, 
-    DamageMultiplier, 
-    CooldownReduction,
-    MaxMana
+    DamageMultiplier,
+    MaxMana,
+    Evasion,
+    Luck,
+    PickupRadius,
+    HealthRegen,
+    LifeSteal
 }
 
 [CreateAssetMenu(fileName = "NewStatUpgrade", menuName = "Spellslinger/Stat Upgrade")]

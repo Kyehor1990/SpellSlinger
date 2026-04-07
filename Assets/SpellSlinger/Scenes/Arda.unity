@@ -7715,6 +7715,8 @@ MonoBehaviour:
   upgradeCardPrefab: {fileID: 7243263923823769905, guid: 1bcc4c67f6b92c7499c02d87adadfff2, type: 3}
   isUpgradePhaseActive: 0
   playerMana: {fileID: 1660669780}
+  playerHealth: {fileID: 1660669777}
+  playerStats: {fileID: 1660669782}
 --- !u!4 &1013682872
 Transform:
   m_ObjectHideFlags: 0
@@ -8580,15 +8582,16 @@ GameObject:
   - component: {fileID: 1660669772}
   - component: {fileID: 1660669771}
   - component: {fileID: 1660669770}
-  - component: {fileID: 1660669769}
+  - component: {fileID: 1660669783}
+  - component: {fileID: 1660669777}
+  - component: {fileID: 1660669780}
   - component: {fileID: 1660669774}
   - component: {fileID: 1660669775}
   - component: {fileID: 1660669776}
   - component: {fileID: 1660669779}
-  - component: {fileID: 1660669777}
   - component: {fileID: 1660669778}
-  - component: {fileID: 1660669780}
   - component: {fileID: 1660669781}
+  - component: {fileID: 1660669782}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -8596,20 +8599,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1660669769
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1660669768}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6af655b6084c3ee4ab2b9f980da89eb9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerController
-  moveSpeed: 5
-  lastFacingDirection: {x: 1, y: 0}
 --- !u!50 &1660669770
 Rigidbody2D:
   serializedVersion: 5
@@ -8819,10 +8808,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5a503473c4a5084479ddd713a222058b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerHealth
-  maxHealth: 100
   currentHealth: 0
   healthSlider: {fileID: 250463334}
   shakeEffect: {fileID: 412240566}
+  playerStats: {fileID: 1660669782}
 --- !u!114 &1660669778
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8864,9 +8853,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3af2cca8c0bccbd43a72393bf8107980, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerManaCapacity
-  maxMana: 10
   currentUsedMana: 0
   capacityTextUI: {fileID: 0}
+  playerStats: {fileID: 1660669782}
 --- !u!114 &1660669781
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8879,6 +8868,78 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 11d811bf8dede4441a0b8fa547f08433, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InventoryDropZone
+--- !u!114 &1660669782
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1660669768}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 30fe4301f80d618449b3114b970fd510, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerStatsManager
+  startingStats:
+  - statType: 0
+    baseValue: 100
+    maxUpgradeLimit: 10000
+    currentUpgrades: 0
+    currentValue: 0
+  - statType: 1
+    baseValue: 10
+    maxUpgradeLimit: 100
+    currentUpgrades: 0
+    currentValue: 0
+  - statType: 2
+    baseValue: 0
+    maxUpgradeLimit: 0
+    currentUpgrades: 0
+    currentValue: 0
+  - statType: 3
+    baseValue: 1
+    maxUpgradeLimit: 1000
+    currentUpgrades: 0
+    currentValue: 0
+  - statType: 5
+    baseValue: 5
+    maxUpgradeLimit: 100
+    currentUpgrades: 0
+    currentValue: 0
+  - statType: 6
+    baseValue: 5
+    maxUpgradeLimit: 90
+    currentUpgrades: 0
+    currentValue: 0
+  - statType: 7
+    baseValue: 1
+    maxUpgradeLimit: 100
+    currentUpgrades: 0
+    currentValue: 0
+  - statType: 8
+    baseValue: 1
+    maxUpgradeLimit: 100
+    currentUpgrades: 0
+    currentValue: 0
+  - statType: 9
+    baseValue: 0
+    maxUpgradeLimit: 0
+    currentUpgrades: 0
+    currentValue: 0
+--- !u!114 &1660669783
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1660669768}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6af655b6084c3ee4ab2b9f980da89eb9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerController
+  playerStats: {fileID: 1660669782}
+  lastFacingDirection: {x: 1, y: 0}
 --- !u!1 &1676891816
 GameObject:
   m_ObjectHideFlags: 0

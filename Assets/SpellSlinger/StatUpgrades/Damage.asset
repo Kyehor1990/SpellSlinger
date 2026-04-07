@@ -16,4 +16,4 @@ MonoBehaviour:
   description: 
   icon: {fileID: 0}
   statToIncrease: 3
-  increaseAmount: 0
+  increaseAmount: 1
