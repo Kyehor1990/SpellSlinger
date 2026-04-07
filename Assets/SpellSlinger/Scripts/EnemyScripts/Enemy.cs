@@ -67,7 +67,11 @@ public class Enemy : MonoBehaviour
     {
         if (isDying) return;
         currentHealth -= damageAmount;
-        
+        DamagePopupManager.Instance.ShowDamage(
+            transform.position, 
+            damageAmount,
+            Color.white
+        );
         if (currentHealth <= 0)
         {
             StartCoroutine(PrepareToExplode());
@@ -119,6 +123,7 @@ public class Enemy : MonoBehaviour
 
         Destroy(gameObject);
     }
+   
 
     private void ScatterDrops(GameObject prefab, int count)
     {

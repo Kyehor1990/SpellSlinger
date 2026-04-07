@@ -83,7 +83,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: -809129765
-  m_SortingLayer: 2
+  m_SortingLayer: 4
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: 629553134381121590, guid: 79a342e3a4c6d6943b6e0b49b6dcace0, type: 3}
@@ -187,6 +187,7 @@ MonoBehaviour:
   inkStainPrefab: {fileID: 0}
   xpDropPrefab: {fileID: 4404637123539996590, guid: 525fc5d2299ad9240893a3480787b002, type: 3}
   coinDropPrefab: {fileID: 366768702120322022, guid: b04d1a36b37cc99438518988ad1e7f34, type: 3}
+  damagePopupPrefab: {fileID: 4313821420831485237, guid: cf7aa19af731f384ab3e7ee1e2de4c44, type: 3}
   xpDropAmount: {x: 1, y: 3}
   coinDropAmount: {x: 1, y: 2}
   scatterRadius: 0.6
