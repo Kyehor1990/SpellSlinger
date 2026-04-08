@@ -9028,6 +9028,11 @@ MonoBehaviour:
     maxUpgradeLimit: 0
     currentUpgrades: 0
     currentValue: 0
+  - statType: 4
+    baseValue: 6
+    maxUpgradeLimit: 1000
+    currentUpgrades: 0
+    currentValue: 0
 --- !u!114 &1660669783
 MonoBehaviour:
   m_ObjectHideFlags: 0
