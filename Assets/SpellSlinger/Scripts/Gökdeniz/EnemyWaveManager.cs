@@ -50,8 +50,15 @@ public class EnemyWaveManager : MonoBehaviour
          
             isWaveActive = false;
             spawner.enabled = false; 
+            ClearAllEnemies();
             
-            ClearAllEnemies(); // Ekrandakileri düşmanlar silinir.
+            CollectAllCoinsInScene();
+            CollectAllXpInScene();
+            
+            
+            yield return new WaitForSeconds(1f);
+            
+            
             
             Debug.Log($"Dalga {currentWave} Bitti. Hazırlan!");
 
@@ -70,6 +77,28 @@ public class EnemyWaveManager : MonoBehaviour
             currentWave++;
         }
             
+    }
+
+    private void CollectAllCoinsInScene()
+    {
+        CoinDrop[] coins = Object.FindObjectsByType<CoinDrop>(FindObjectsSortMode.None);
+
+        Transform playerTransform = playerExp.transform;
+
+        foreach (var coin in coins)
+        {
+            coin.ForceFollow(playerTransform);
+        }
+    }
+
+    private void CollectAllXpInScene()
+    {
+        InspirationDrop [] xp = Object.FindObjectsByType<InspirationDrop>(FindObjectsSortMode.None);
+        Transform playerTransform = playerExp.transform;
+        foreach (var Xp in xp)
+        {
+            Xp.ForceFollow(playerTransform);
+        }
     }
 
     private void ClearAllEnemies()

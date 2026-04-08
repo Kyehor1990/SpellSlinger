@@ -31,6 +31,13 @@ public class InspirationDrop : MonoBehaviour
             }
         }
     }
+    public void ForceFollow(Transform playerTransform)
+    {
+        target = playerTransform;
+        isFollowing = true;
+        
+        moveSpeed = 15f; 
+    }
     private void Collect()
     {
         if (target.TryGetComponent(out PlayerExperience playerXp)) 
