@@ -13,6 +13,7 @@ public class ShopManager : MonoBehaviour
     [Header("Arka Plan Referansları")]
     public PlayerWallet playerWallet;
     public PlayerInventory playerInventory;
+    public PlayerStatsManager playerStats;
 
     [Header("UI Referansları")]
     public GameObject shopPanel;
@@ -23,6 +24,13 @@ public class ShopManager : MonoBehaviour
     private WordData[] currentShopWords = new WordData[3];
 
     [HideInInspector] public bool isShopActive = false;
+
+    [Header("Olasılık Ağırlıkları")]
+    public float baseCommon = 50f;
+    public float baseUncommon = 25f;
+    public float baseRare = 15f;
+    public float baseEpic = 9f;
+    public float baseLegendary = 1f;
 
     private void Start()
     {
@@ -40,16 +48,54 @@ public class ShopManager : MonoBehaviour
 
     public void RollShopItems()
     {
+        float luck = playerStats != null ? playerStats.GetStat(StatType.Luck) : 0f;
+
+        float currentCommon = Mathf.Max(0, baseCommon - (luck * 1.5f)); 
+        float currentUncommon = Mathf.Max(0, baseUncommon - (luck * 1f));
+        float currentRare = baseRare + (luck * 0.5f);
+        float currentEpic = baseEpic + (luck * 0.7f);
+        float currentLegendary = baseLegendary + (luck * 0.3f);
+        
+        float totalWeight = currentCommon + currentUncommon + currentRare + currentEpic + currentLegendary;
+
         for (int i = 0; i < currentShopWords.Length; i++)
         {
-            WordData randomWord = allAvailableWords[Random.Range(0, allAvailableWords.Count)];
-            currentShopWords[i] = randomWord;
-
-            slotNames[i].text = randomWord.runeText;
-            slotPrices[i].text = wordCost.ToString() + " Altın";
+            WordRarity selectedRarity = RollRarity(currentCommon, currentUncommon, currentRare, currentEpic, currentLegendary, totalWeight);
             
+            List<WordData> filteredWords = allAvailableWords.FindAll(w => w.rarity == selectedRarity);
+
+            WordData selectedWord;
+            
+            if (filteredWords.Count > 0)
+            {
+                selectedWord = filteredWords[Random.Range(0, filteredWords.Count)];
+            }
+            else
+            {
+                selectedWord = allAvailableWords[Random.Range(0, allAvailableWords.Count)];
+            }
+
+            currentShopWords[i] = selectedWord;
+
+            slotNames[i].text = selectedWord.runeText;
+            slotPrices[i].text = wordCost.ToString() + " Altın";
             slotButtons[i].interactable = true; 
         }
+    }
+
+    private WordRarity RollRarity(float c, float u,float r, float e, float l, float total)
+    {
+        float randomVal = Random.Range(0f, total);
+        
+        if (randomVal <= c) return WordRarity.Common;
+        randomVal -= c;
+        if (randomVal <= u) return WordRarity.Uncommon;
+        randomVal -= u;
+        if (randomVal <= r) return WordRarity.Rare;
+        randomVal -= r;
+        if (randomVal <= e) return WordRarity.Epic;
+        
+        return WordRarity.Legendary;
     }
 
     public void TryReroll()

@@ -11,6 +11,7 @@ public class PlayerHealth : MonoBehaviour
 
     [Header("Stat Referansı")]
     public PlayerStatsManager playerStats;
+    private float regenTimer = 0f;
 
     void Start()
     {
@@ -19,6 +20,20 @@ public class PlayerHealth : MonoBehaviour
         
         healthSlider.maxValue = maxHealth;
         healthSlider.value = maxHealth;
+    }
+
+    void Update()
+    {
+        float regenAmount = playerStats.GetStat(StatType.HealthRegen);
+        if (regenAmount > 0 && currentHealth < playerStats.GetStat(StatType.MaxHealth))
+        {
+            regenTimer += Time.deltaTime;
+            if (regenTimer >= 1f)
+            {
+                Heal(regenAmount);
+                regenTimer = 0f;
+            }
+        }
     }
 
     public void TakeDamage(int damage)
@@ -58,6 +73,21 @@ public class PlayerHealth : MonoBehaviour
         if (currentHealth > maxHealth) currentHealth = maxHealth;
         
         healthSlider.value = currentHealth;
+    }
+
+    public void ApplyLifeSteal(float damageDealtToEnemy)
+    {
+        float lifeStealChance = playerStats.GetStat(StatType.LifeSteal);
+        
+        if (Random.Range(0f, 100f) < lifeStealChance)
+        {
+            float healAmount = damageDealtToEnemy * 0.5f; 
+            
+            if (healAmount < 1f) healAmount = 1f;
+            
+            Heal(healAmount);
+            Debug.Log($"<color=red>Can Çalma Tetiklendi! +{healAmount} Can</color>");
+        }
     }
 
     void Die() {  }

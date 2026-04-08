@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f630c358e0cac9478da3d0f35190934, type: 3}
   m_Name: Word_Iceball
   m_EditorClassIdentifier: Assembly-CSharp::WordData
+  rarity: 1
   runeText: Iceball
   translatedText: Iceball
   wordIcon: {fileID: 0}

@@ -10,6 +10,8 @@ public class Projectile : MonoBehaviour
     [Header("Davranış Ayarları")]
     public bool destroyOnHit = true;
 
+    [HideInInspector] public PlayerHealth sourcePlayerHealth;
+
     private void Start()
     {
         Destroy(gameObject, lifeTime);
@@ -32,6 +34,10 @@ public class Projectile : MonoBehaviour
             if (enemyScript != null)
             {
                 enemyScript.TakeDamage(baseDamage);
+                if (sourcePlayerHealth != null)
+                {
+                    sourcePlayerHealth.ApplyLifeSteal(baseDamage);
+                }
             }
 
             if (destroyOnHit)

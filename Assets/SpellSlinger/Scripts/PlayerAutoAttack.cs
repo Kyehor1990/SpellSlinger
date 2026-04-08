@@ -17,6 +17,10 @@ public class PlayerAutoAttack : MonoBehaviour
     public float attackRange = 10f;
     public LayerMask enemyLayer;
 
+    [Header("Stat & Oyuncu Referansları")]
+    public PlayerStatsManager playerStats;
+    public PlayerHealth playerHealth;
+
     private List<ActiveSpellTimer> spellTimers = new List<ActiveSpellTimer>();
 
     private void Start()
@@ -115,7 +119,9 @@ public class PlayerAutoAttack : MonoBehaviour
         Projectile bulletScript = bullet.GetComponent<Projectile>();
         if (bulletScript != null)
         {
-            bulletScript.baseDamage = spell.totalDamage;
+            float multiplier = playerStats != null ? playerStats.GetStat(StatType.DamageMultiplier) : 1f;
+            bulletScript.baseDamage = spell.totalDamage * multiplier;
+            bulletScript.sourcePlayerHealth = this.playerHealth;
             
             // İleride buraya: bulletScript.activeMechanics = spell.specialMechanics; ekleyeceğiz
             // Böylece mermi hedefe çarpınca zehirli mi delici mi olduğunu anlayacak.

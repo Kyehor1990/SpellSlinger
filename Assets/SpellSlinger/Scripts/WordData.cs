@@ -3,6 +3,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "NewWord", menuName = "Spellslinger/Word Data")]
 public class WordData : ScriptableObject
 {
+    public WordRarity rarity = WordRarity.Common;
     [Header("Kelime Kimliği")]
     public string runeText;       
     public string translatedText; 
@@ -39,6 +40,7 @@ public class WordData : ScriptableObject
 public enum WordType { Object, Modifier }
 public enum TargetType { None, Straight, NearestEnemy, RandomEnemy, LowestHealth }
 public enum PlacementCondition { Anywhere, MustBeFirst, MustBeLast, NextToElement }
+public enum WordRarity { Common, Uncommon, Rare, Epic, Legendary }
 public enum ReadingPattern
 {
     None,

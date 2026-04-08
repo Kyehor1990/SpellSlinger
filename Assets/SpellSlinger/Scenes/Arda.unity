@@ -1593,6 +1593,7 @@ MonoBehaviour:
   rerollCost: 5
   playerWallet: {fileID: 1660669779}
   playerInventory: {fileID: 1660669778}
+  playerStats: {fileID: 0}
   shopPanel: {fileID: 1941147730}
   moneyText: {fileID: 531972864}
   slotButtons:
@@ -1608,6 +1609,11 @@ MonoBehaviour:
   - {fileID: 664149526}
   - {fileID: 1841946207}
   isShopActive: 0
+  baseCommon: 50
+  baseUncommon: 25
+  baseRare: 15
+  baseEpic: 9
+  baseLegendary: 1
 --- !u!1 &571090155
 GameObject:
   m_ObjectHideFlags: 0
@@ -8867,6 +8873,8 @@ MonoBehaviour:
   enemyLayer:
     serializedVersion: 2
     m_Bits: 64
+  playerStats: {fileID: 1660669782}
+  playerHealth: {fileID: 1660669777}
 --- !u!114 &1660669775
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9014,7 +9022,7 @@ MonoBehaviour:
     currentUpgrades: 0
     currentValue: 0
   - statType: 7
-    baseValue: 1
+    baseValue: 0.5
     maxUpgradeLimit: 100
     currentUpgrades: 0
     currentValue: 0
@@ -9328,6 +9336,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1703427135}
   - component: {fileID: 1703427136}
+  - component: {fileID: 1703427137}
   m_Layer: 0
   m_Name: Magnet area
   m_TagString: Player
@@ -9386,6 +9395,20 @@ CircleCollider2D:
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
   m_Radius: 0.5
+--- !u!114 &1703427137
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1703427134}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d1d0861908e35a84bb4d841e3d8dd09f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LootMagnet
+  playerStats: {fileID: 1660669782}
+  baseRadius: 0
 --- !u!1 &1724494618
 GameObject:
   m_ObjectHideFlags: 0
