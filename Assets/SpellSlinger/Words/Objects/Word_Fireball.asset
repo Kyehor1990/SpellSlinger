@@ -26,7 +26,7 @@ MonoBehaviour:
   readingPattern: 4
   damageBonus: 0
   cooldownReduction: 0
-  mechanicToAdd: 0
+  mechanicToAdd: 1
   isUnlocked: 0
   secretHint: 
   manaCost: 1

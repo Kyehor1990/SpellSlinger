@@ -52,7 +52,7 @@ public class SentenceManager : MonoBehaviour
         foreach(var word in currentSentence) names += word.runeText + " - ";
         return names;
     }
-    public List<CompiledSpell> ParseSentence()
+   public List<CompiledSpell> ParseSentence()
     {
         List<CompiledSpell> activeSpells = new List<CompiledSpell>();
         
@@ -71,6 +71,11 @@ public class SentenceManager : MonoBehaviour
                 newSpell.targetingLogic = currentWord.targetingLogic;
                 newSpell.spawnsOnTarget = currentWord.spawnsOnTarget;
                 newSpell.totalDamage = currentWord.baseDamage;
+
+                if (currentWord.mechanicToAdd != SpecialMechanic.None)
+                {
+                    newSpell.specialMechanics.Add(currentWord.mechanicToAdd);
+                }
 
                 ApplyModifiersBasedOnPattern(currentWord, newSpell, i);
 

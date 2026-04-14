@@ -6,6 +6,11 @@ public class Enemy : MonoBehaviour
     [Header("Düşman Ayarları")]
     public float currentHealth = 20f;
     [SerializeField] private float moveSpeed = 2f;
+    public bool isBoss = false;
+    private float originalSpeed;
+    private bool isStunned = false;
+    private int rockStacks = 0;
+    private Coroutine rockStackResetCoroutine;
     
     private Transform playerTransform;
     private Rigidbody2D rb;
@@ -21,9 +26,6 @@ public class Enemy : MonoBehaviour
     [Header("Ganimet (Loot)")]
     public GameObject xpDropPrefab;
     public GameObject coinDropPrefab;
-    
-   
-
 
     [Tooltip("Düşecek Minimum ve Maksimum XP Adedi")]
     public Vector2Int xpDropAmount = new Vector2Int(1, 3);
@@ -41,6 +43,7 @@ public class Enemy : MonoBehaviour
 
     private void Start()
     {
+        originalSpeed = moveSpeed;
         // Not: Bu kısım ilerde değişecek
         GameObject player = GameObject.FindGameObjectWithTag("Player");
         if (player != null)
@@ -56,6 +59,8 @@ public class Enemy : MonoBehaviour
             rb.linearVelocity = Vector2.zero;
             return;
         }
+
+        if (isStunned) return;
         if (playerTransform != null)
         {
             Vector2 direction = (playerTransform.position - transform.position).normalized;
@@ -77,6 +82,62 @@ public class Enemy : MonoBehaviour
             StartCoroutine(PrepareToExplode());
         }
     }
+
+    public void ApplyBurn(float totalDamageOverTime, float duration)
+    {
+        StartCoroutine(BurnRoutine(totalDamageOverTime, duration));
+    }
+    private IEnumerator BurnRoutine(float totalDamage, float duration)
+    {
+        float ticks = duration;
+        float damagePerTick = totalDamage / ticks;
+
+        for (int i = 0; i < ticks; i++)
+        {
+            TakeDamage(damagePerTick);
+            yield return new WaitForSeconds(1f);
+        }
+    }
+    public void ApplySlow(float slowPercentage, float duration)
+    {
+        StartCoroutine(SlowRoutine(slowPercentage, duration));
+    }
+    private IEnumerator SlowRoutine(float slowPercentage, float duration)
+    {
+        moveSpeed = originalSpeed * (1f - slowPercentage);
+        yield return new WaitForSeconds(duration);
+        moveSpeed = originalSpeed;
+    }
+    public void AddRockStack()
+    {
+        rockStacks++;
+        
+        if (rockStackResetCoroutine != null) StopCoroutine(rockStackResetCoroutine);
+
+        if (rockStacks >= 3)
+        {
+            float stunDuration = isBoss ? 1f : 2f;
+            StartCoroutine(StunRoutine(stunDuration));
+            rockStacks = 0;
+        }
+        else
+        {
+            rockStackResetCoroutine = StartCoroutine(ResetRockStacks(3f)); 
+        }
+    }
+    private IEnumerator StunRoutine(float duration)
+    {
+        isStunned = true;
+        yield return new WaitForSeconds(duration);
+        isStunned = false;
+    }
+
+    private IEnumerator ResetRockStacks(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        rockStacks = 0;
+    }
+
     IEnumerator PrepareToExplode()
     {
         isDying = true;

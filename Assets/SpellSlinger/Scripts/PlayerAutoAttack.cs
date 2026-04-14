@@ -123,8 +123,7 @@ public class PlayerAutoAttack : MonoBehaviour
             bulletScript.baseDamage = spell.totalDamage * multiplier;
             bulletScript.sourcePlayerHealth = this.playerHealth;
             
-            // İleride buraya: bulletScript.activeMechanics = spell.specialMechanics; ekleyeceğiz
-            // Böylece mermi hedefe çarpınca zehirli mi delici mi olduğunu anlayacak.
+            bulletScript.activeMechanics = spell.specialMechanics;
         }
 
         if (target != null && !spell.spawnsOnTarget)

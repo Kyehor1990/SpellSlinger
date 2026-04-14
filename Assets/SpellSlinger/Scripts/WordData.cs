@@ -41,6 +41,7 @@ public enum WordType { Object, Modifier }
 public enum TargetType { None, Straight, NearestEnemy, RandomEnemy, LowestHealth }
 public enum PlacementCondition { Anywhere, MustBeFirst, MustBeLast, NextToElement }
 public enum WordRarity { Common, Uncommon, Rare, Epic, Legendary }
+
 public enum ReadingPattern
 {
     None,
@@ -55,8 +56,11 @@ public enum ReadingPattern
 public enum SpecialMechanic
 {
     None,
-    Piercing,
-    Poisonous,
-    Bouncing,
+    FireBurn,
+    WaterSlow,
+    AirSlash,
+    RockStun,
+    LightningChain,
+    IceArrow,
     Explosive
 }
