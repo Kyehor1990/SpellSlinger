@@ -46,6 +46,9 @@ TagManager:
   - name: Ground
     uniqueID: 4278984401
     locked: 0
+  - name: Gore Effects
+    uniqueID: 3167012949
+    locked: 0
   - name: Collectables
     uniqueID: 813953835
     locked: 0
