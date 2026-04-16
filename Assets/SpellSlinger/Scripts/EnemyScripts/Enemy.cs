@@ -7,18 +7,25 @@ public class Enemy : MonoBehaviour
     public float currentHealth = 20f;
     [SerializeField] private float moveSpeed = 2f;
     public bool isBoss = false;
+    
     private float originalSpeed;
     private bool isStunned = false;
     private int rockStacks = 0;
+    [HideInInspector] public float maxHealth;
+    
     private Coroutine rockStackResetCoroutine;
+    private Coroutine slowCoroutine; 
     
     private Transform playerTransform;
     private Rigidbody2D rb;
+    private SpriteRenderer spriteRenderer;
+    private Collider2D col;
 
     [Header("Mürekkep Ölüm Efektleri")]
     public GameObject deathSmokePrefab;
     public GameObject inkStainPrefab;
     private bool isDying = false;
+    public bool IsDying => isDying;
     
     [Header("Death State")]
     private int deadEnemyLayer;
@@ -26,25 +33,23 @@ public class Enemy : MonoBehaviour
     [Header("Ganimet (Loot)")]
     public GameObject xpDropPrefab;
     public GameObject coinDropPrefab;
-
-    [Tooltip("Düşecek Minimum ve Maksimum XP Adedi")]
     public Vector2Int xpDropAmount = new Vector2Int(1, 3);
-
-    [Tooltip("Düşecek Minimum ve Maksimum Altın Adedi")]
     public Vector2Int coinDropAmount = new Vector2Int(1, 2);
-
     public float scatterRadius = 0.6f;
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        col = GetComponent<Collider2D>();
         deadEnemyLayer = LayerMask.NameToLayer("DeadEnemy");
     }
 
     private void Start()
     {
+        maxHealth = currentHealth;
         originalSpeed = moveSpeed;
-        // Not: Bu kısım ilerde değişecek
+        
         GameObject player = GameObject.FindGameObjectWithTag("Player");
         if (player != null)
         {
@@ -60,7 +65,12 @@ public class Enemy : MonoBehaviour
             return;
         }
 
-        if (isStunned) return;
+        if (isStunned) 
+        {
+            rb.linearVelocity = Vector2.zero;
+            return;
+        }
+
         if (playerTransform != null)
         {
             Vector2 direction = (playerTransform.position - transform.position).normalized;
@@ -71,22 +81,27 @@ public class Enemy : MonoBehaviour
     public void TakeDamage(float damageAmount)
     {
         if (isDying) return;
+        
         currentHealth -= damageAmount;
-        DamagePopupManager.Instance.ShowDamage(
-            transform.position, 
-            damageAmount,
-            Color.white
-        );
+        
+        if (DamagePopupManager.Instance != null)
+        {
+            DamagePopupManager.Instance.ShowDamage(transform.position, damageAmount, Color.white);
+        }
+
         if (currentHealth <= 0)
         {
             StartCoroutine(PrepareToExplode());
         }
     }
 
+    #region Status Effects (Durum Efektleri)
+
     public void ApplyBurn(float totalDamageOverTime, float duration)
     {
-        StartCoroutine(BurnRoutine(totalDamageOverTime, duration));
+        if (!isDying) StartCoroutine(BurnRoutine(totalDamageOverTime, duration));
     }
+
     private IEnumerator BurnRoutine(float totalDamage, float duration)
     {
         float ticks = duration;
@@ -98,20 +113,28 @@ public class Enemy : MonoBehaviour
             yield return new WaitForSeconds(1f);
         }
     }
+
     public void ApplySlow(float slowPercentage, float duration)
     {
-        StartCoroutine(SlowRoutine(slowPercentage, duration));
+        if (isDying) return;
+
+        if (slowCoroutine != null) StopCoroutine(slowCoroutine);
+        slowCoroutine = StartCoroutine(SlowRoutine(slowPercentage, duration));
     }
+
     private IEnumerator SlowRoutine(float slowPercentage, float duration)
     {
         moveSpeed = originalSpeed * (1f - slowPercentage);
         yield return new WaitForSeconds(duration);
         moveSpeed = originalSpeed;
+        slowCoroutine = null;
     }
+
     public void AddRockStack()
     {
+        if (isDying) return;
+
         rockStacks++;
-        
         if (rockStackResetCoroutine != null) StopCoroutine(rockStackResetCoroutine);
 
         if (rockStacks >= 3)
@@ -125,6 +148,7 @@ public class Enemy : MonoBehaviour
             rockStackResetCoroutine = StartCoroutine(ResetRockStacks(3f)); 
         }
     }
+
     private IEnumerator StunRoutine(float duration)
     {
         isStunned = true;
@@ -138,12 +162,20 @@ public class Enemy : MonoBehaviour
         rockStacks = 0;
     }
 
-    IEnumerator PrepareToExplode()
+    #endregion
+
+    #region Death Mechanics
+    
+    private IEnumerator PrepareToExplode()
     {
         isDying = true;
-        gameObject.layer = LayerMask.NameToLayer("DeadEnemy");
-        Collider2D col = GetComponent<Collider2D>();
+        gameObject.layer = deadEnemyLayer;
+        
         if (col != null) col.enabled = false;
+        
+        if (slowCoroutine != null) StopCoroutine(slowCoroutine);
+        if (rockStackResetCoroutine != null) StopCoroutine(rockStackResetCoroutine);
+        
         float delay = 1.0f; 
         float timer = 0;
         Vector3 originalScale = transform.localScale;
@@ -151,19 +183,16 @@ public class Enemy : MonoBehaviour
         while (timer < delay)
         {
             timer += Time.deltaTime;
-
-           
-          
             float pulse = 1f + Mathf.PingPong(timer * 15f, 0.2f); 
             transform.localScale = originalScale * pulse;
 
-            
-            GetComponent<SpriteRenderer>().color = Color.Lerp(Color.white, Color.red, Mathf.PingPong(timer * 10f, 1f));
+            if (spriteRenderer != null)
+                spriteRenderer.color = Color.Lerp(Color.white, Color.red, Mathf.PingPong(timer * 10f, 1f));
 
             yield return null; 
         }
 
-        Die(); 
+        Die();
     }
 
     private void Die()
@@ -174,7 +203,8 @@ public class Enemy : MonoBehaviour
         int coinCount = Random.Range(coinDropAmount.x, coinDropAmount.y + 1);
         ScatterDrops(coinDropPrefab, coinCount);
 
-        EffectPoolManager.instance.PlayOrganEffect(transform.position);
+        if (EffectPoolManager.instance != null)
+            EffectPoolManager.instance.PlayOrganEffect(transform.position);
 
         if (inkStainPrefab != null)
         {
@@ -184,7 +214,6 @@ public class Enemy : MonoBehaviour
 
         Destroy(gameObject);
     }
-   
 
     private void ScatterDrops(GameObject prefab, int count)
     {
@@ -194,8 +223,9 @@ public class Enemy : MonoBehaviour
         {
             Vector2 randomOffset = Random.insideUnitCircle * scatterRadius;
             Vector3 spawnPos = transform.position + new Vector3(randomOffset.x, randomOffset.y, 0f);
-
             Instantiate(prefab, spawnPos, Quaternion.identity);
         }
     }
+    
+    #endregion
 }

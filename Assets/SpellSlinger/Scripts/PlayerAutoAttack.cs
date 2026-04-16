@@ -116,7 +116,7 @@ public class PlayerAutoAttack : MonoBehaviour
 
         GameObject bullet = Instantiate(spell.projectilePrefab, spawnPosition, Quaternion.identity);
 
-        Projectile bulletScript = bullet.GetComponent<Projectile>();
+       Projectile bulletScript = bullet.GetComponent<Projectile>();
         if (bulletScript != null)
         {
             float multiplier = playerStats != null ? playerStats.GetStat(StatType.DamageMultiplier) : 1f;
@@ -124,6 +124,8 @@ public class PlayerAutoAttack : MonoBehaviour
             bulletScript.sourcePlayerHealth = this.playerHealth;
             
             bulletScript.activeMechanics = spell.specialMechanics;
+
+            bulletScript.SetupModifiers();
         }
 
         if (target != null && !spell.spawnsOnTarget)

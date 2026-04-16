@@ -24,7 +24,6 @@ public class WordData : ScriptableObject
     public ReadingPattern readingPattern;
 
     [Header("Sadece Modifier")]
-    public float damageBonus = 0f;
     public float cooldownReduction = 0f;
     public SpecialMechanic mechanicToAdd = SpecialMechanic.None; 
 
@@ -62,5 +61,11 @@ public enum SpecialMechanic
     RockStun,
     LightningChain,
     IceArrow,
-    Explosive
+    Explosive,
+    Bounce,
+    Split,
+    Execution,
+    Pierce,
+    Acceleration,
+    DamageBoost
 }

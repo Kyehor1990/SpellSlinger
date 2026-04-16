@@ -10,22 +10,23 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7f630c358e0cac9478da3d0f35190934, type: 3}
-  m_Name: Word_DamageBonus
+  m_Name: Word_Waterball
   m_EditorClassIdentifier: Assembly-CSharp::WordData
-  rarity: 0
-  runeText: Damage Bonus
-  translatedText: Damage Bonus
+  rarity: 1
+  runeText: Waterball
+  translatedText: Waterball
   wordIcon: {fileID: 0}
-  projectilePrefab: {fileID: 0}
+  projectilePrefab: {fileID: 2507854483434154795, guid: b93a30212de3cf14f9b7d7174ca3324b, type: 3}
   spawnsOnTarget: 0
-  wordType: 1
-  targetingLogic: 0
+  wordType: 0
+  targetingLogic: 2
   condition: 0
-  baseCooldown: 1.5
-  baseDamage: 10
-  readingPattern: 0
+  baseCooldown: 1
+  baseDamage: 5
+  readingPattern: 2
+  damageBonus: 0
   cooldownReduction: 0
-  mechanicToAdd: 13
+  mechanicToAdd: 2
   isUnlocked: 0
   secretHint: 
   manaCost: 1

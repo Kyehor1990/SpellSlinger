@@ -21,7 +21,7 @@ public class ShopManager : MonoBehaviour
     public Button[] slotButtons;
     public TextMeshProUGUI[] slotNames;
     public TextMeshProUGUI[] slotPrices;
-    private WordData[] currentShopWords = new WordData[3];
+    private WordData[] currentShopWords = new WordData[5];
 
     [HideInInspector] public bool isShopActive = false;
 

@@ -152,7 +152,6 @@ public class SentenceManager : MonoBehaviour
 
     private void AddModifierToSpell(WordData modifierWord, CompiledSpell spell)
     {
-        spell.totalDamage += modifierWord.damageBonus;
         spell.totalCooldown -= modifierWord.cooldownReduction;
         if (spell.totalCooldown < 0.1f) spell.totalCooldown = 0.1f; 
 

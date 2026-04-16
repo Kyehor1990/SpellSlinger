@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 public class PlayerController : MonoBehaviour
 {
@@ -10,6 +11,8 @@ public class PlayerController : MonoBehaviour
     private Vector2 moveInput;
     [HideInInspector] public Vector2 lastFacingDirection = Vector2.right;
     private bool isFacingRight = true;
+
+    private float temporarySpeedBuff = 0f;
 
     private void Awake()
     {
@@ -44,7 +47,8 @@ public class PlayerController : MonoBehaviour
 
     private void Move()
     {
-        float currentSpeed = playerStats != null ? playerStats.GetStat(StatType.MoveSpeed) : 5f;
+        float baseSpeed = playerStats != null ? playerStats.GetStat(StatType.MoveSpeed) : 5f;
+        float currentSpeed = baseSpeed + temporarySpeedBuff;
         
         rb.linearVelocity = moveInput.normalized * currentSpeed;
     }
@@ -54,7 +58,19 @@ public class PlayerController : MonoBehaviour
         isFacingRight = !isFacingRight;
         
         Vector3 localScale = transform.localScale;
-        localScale.x *= -1f; // X eksenini -1 ile çarparak aynalıyoruz
+        localScale.x *= -1f;
         transform.localScale = localScale;
+    }
+
+    public void ApplySpeedBuff(float bonusSpeed, float duration)
+    {
+        StartCoroutine(SpeedBuffRoutine(bonusSpeed, duration));
+    }
+
+    private IEnumerator SpeedBuffRoutine(float bonusSpeed, float duration)
+    {
+        temporarySpeedBuff += bonusSpeed;
+        yield return new WaitForSeconds(duration);
+        temporarySpeedBuff -= bonusSpeed;
     }
 }

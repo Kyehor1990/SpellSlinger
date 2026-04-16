@@ -11,23 +11,47 @@ public class Projectile : MonoBehaviour
     [Header("Davranış Ayarları")]
     public bool destroyOnHit = true;
 
-    [Header("Mekanik")]
-    public LayerMask enemyLayer;
+    [Header("Mekanik Ayarları")]
+    public LayerMask enemyLayer; 
+    public GameObject iceExplosionPrefab;
+    public GameObject executionExplosionPrefab;
 
     [HideInInspector] public PlayerHealth sourcePlayerHealth;
     internal List<SpecialMechanic> activeMechanics;
+
+    private int bouncesLeft = 0;
+    private bool canSplit = false;
 
     private void Start()
     {
         Destroy(gameObject, lifeTime);
     }
 
+    public void SetupModifiers()
+    {
+        if (activeMechanics == null) return;
+
+        // Hasar Artırımı (%10)
+        if (activeMechanics.Contains(SpecialMechanic.DamageBoost)) 
+            baseDamage *= 1.10f;
+
+        // Hızlanma (%30 atış hızı)
+        if (activeMechanics.Contains(SpecialMechanic.Acceleration)) 
+            speed *= 1.30f;
+
+        // Sekme (2 Kere)
+        if (activeMechanics.Contains(SpecialMechanic.Bounce)) 
+            bouncesLeft = 2;
+
+        // Bölünme (1 Kere bölünebilir)
+        if (activeMechanics.Contains(SpecialMechanic.Split)) 
+            canSplit = true;
+    }
+
     private void Update()
     {
         if (speed > 0)
-        {
             transform.position += transform.right * speed * Time.deltaTime;
-        }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -38,23 +62,21 @@ public class Projectile : MonoBehaviour
             
             if (enemyScript != null)
             {
+                bool wasDying = enemyScript.IsDying;
+
                 enemyScript.TakeDamage(baseDamage);
-                if (sourcePlayerHealth != null)
-                {
-                    sourcePlayerHealth.ApplyLifeSteal(baseDamage);
-                }
+                if (sourcePlayerHealth != null) sourcePlayerHealth.ApplyLifeSteal(baseDamage);
 
-                ApplySpecialMechanic(enemyScript);
+                bool diedJustNow = !wasDying && enemyScript.IsDying;
+
+                ApplySpecialMechanic(enemyScript, diedJustNow);
             }
 
-            if (destroyOnHit)
-            {
-                Destroy(gameObject);
-            }
+            if (destroyOnHit) Destroy(gameObject);
         }
     }
 
-    private void ApplySpecialMechanic(Enemy targetEnemy)
+    private void ApplySpecialMechanic(Enemy targetEnemy, bool targetDied)
     {
         if (activeMechanics == null || activeMechanics.Count == 0) return;
 
@@ -62,45 +84,107 @@ public class Projectile : MonoBehaviour
         {
             switch (mechanic)
             {
-                case SpecialMechanic.FireBurn:
-                    targetEnemy.ApplyBurn(6f, 3f); 
-                    break;
-
-                case SpecialMechanic.WaterSlow:
-                    targetEnemy.ApplySlow(0.5f, 1f); 
-                    break;
-
-                case SpecialMechanic.AirSlash:
-                    destroyOnHit = false; 
-                    baseDamage /= 2f; 
-                    
-                    if (baseDamage < 1f) destroyOnHit = true; 
-                    break;
-
-                case SpecialMechanic.RockStun:
-                    targetEnemy.AddRockStack(); 
-                    break;
-
-                case SpecialMechanic.LightningChain:
-                    Collider2D[] nearbyEnemies = Physics2D.OverlapCircleAll(transform.position, 4f, enemyLayer);
-                    int hitCount = 0;
-
-                    foreach (Collider2D col in nearbyEnemies)
+                case SpecialMechanic.Bounce:
+                    if (bouncesLeft > 0)
                     {
-                        if (col.gameObject != targetEnemy.gameObject)
+                        bouncesLeft--;
+                        destroyOnHit = false;
+                        Transform nextTarget = FindNearestEnemy(targetEnemy.transform);
+                        if (nextTarget != null)
                         {
-                            Enemy chainTarget = col.GetComponent<Enemy>();
-                            if (chainTarget != null)
-                            {
-                                chainTarget.TakeDamage(baseDamage / 3f);
-                                hitCount++;
-                            }
+                            Vector2 dir = (nextTarget.position - transform.position).normalized;
+                            transform.right = dir;
                         }
-                        if (hitCount >= 3) break;
+                        else
+                        {
+                            destroyOnHit = true;
+                        }
                     }
                     break;
+
+                case SpecialMechanic.Split:
+                    if (canSplit)
+                    {
+                        canSplit = false;
+                        destroyOnHit = true;
+                        SpawnSplitProjectiles();
+                    }
+                    break;
+
+                case SpecialMechanic.Execution:
+                    if (targetDied)
+                    {
+                        float executionDamage = (targetEnemy.maxHealth / baseDamage) * 10f;
+                        
+                        if (executionExplosionPrefab != null) Instantiate(executionExplosionPrefab, targetEnemy.transform.position, Quaternion.identity);
+
+                        Collider2D[] aoeHits = Physics2D.OverlapCircleAll(targetEnemy.transform.position, 2.5f, enemyLayer);
+                        foreach (var hit in aoeHits)
+                        {
+                            if (hit.gameObject != targetEnemy.gameObject)
+                                hit.GetComponent<Enemy>()?.TakeDamage(executionDamage);
+                        }
+                    }
+                    break;
+
+                case SpecialMechanic.Pierce:
+                    destroyOnHit = false;
+                    baseDamage /= 2f;
+                    if (baseDamage < 1f) destroyOnHit = true;
+                    break;
+
+                case SpecialMechanic.Acceleration:
+                    if (targetDied && sourcePlayerHealth != null)
+                    {
+                        PlayerController pc = sourcePlayerHealth.GetComponent<PlayerController>();
+                        if (pc != null) pc.ApplySpeedBuff(5f, 3f); // 3 Saniyeliğine +5 Hız
+                    }
+                    break;
+
+                case SpecialMechanic.FireBurn: targetEnemy.ApplyBurn(6f, 3f); break;
+                case SpecialMechanic.WaterSlow: targetEnemy.ApplySlow(0.4f, 1.5f); break;
+                case SpecialMechanic.RockStun: targetEnemy.AddRockStack(); break;
+                case SpecialMechanic.IceArrow: break;
+                case SpecialMechanic.AirSlash: break;
+                case SpecialMechanic.LightningChain:break;
             }
         }
     }
 
+    private Transform FindNearestEnemy(Transform excludeTransform)
+    {
+        Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, 8f, enemyLayer);
+        Transform bestTarget = null;
+        float closestDist = Mathf.Infinity;
+
+        foreach (var hit in hits)
+        {
+            if (hit.transform == excludeTransform) continue;
+            
+            float dist = Vector2.Distance(transform.position, hit.transform.position);
+            if (dist < closestDist)
+            {
+                closestDist = dist;
+                bestTarget = hit.transform;
+            }
+        }
+        return bestTarget;
+    }
+
+    private void SpawnSplitProjectiles()
+    {
+        float splitAngle = 25f;
+        for (int i = -1; i <= 1; i += 2)
+        {
+            GameObject clone = Instantiate(gameObject, transform.position, transform.rotation);
+            clone.transform.Rotate(0, 0, i * splitAngle);
+
+            Projectile p = clone.GetComponent<Projectile>();
+            p.baseDamage = this.baseDamage / 2f;
+            p.activeMechanics = new List<SpecialMechanic>(this.activeMechanics);
+            
+            p.activeMechanics.Remove(SpecialMechanic.Split); 
+            p.activeMechanics.Remove(SpecialMechanic.Bounce);
+        }
+    }
 }

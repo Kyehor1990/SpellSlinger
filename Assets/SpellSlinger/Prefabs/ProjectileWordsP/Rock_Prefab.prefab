@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 825052831734823298}
   - component: {fileID: 4952220234227269457}
   m_Layer: 0
-  m_Name: Iceball_Prefab
+  m_Name: Rock_Prefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -80,11 +80,11 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: -424498591
-  m_SortingLayer: 3
+  m_SortingLayer: 6
   m_SortingOrder: 1
   m_MaskInteraction: 0
   m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
-  m_Color: {r: 0.022694906, g: 0.78784, b: 0.9622642, a: 1}
+  m_Color: {r: 0.3207547, g: 0.15975104, b: 0.095318615, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -145,3 +145,9 @@ MonoBehaviour:
   baseDamage: 10
   lifeTime: 5
   destroyOnHit: 1
+  enemyLayer:
+    serializedVersion: 2
+    m_Bits: 64
+  iceExplosionPrefab: {fileID: 0}
+  executionExplosionPrefab: {fileID: 0}
+  sourcePlayerHealth: {fileID: 0}
