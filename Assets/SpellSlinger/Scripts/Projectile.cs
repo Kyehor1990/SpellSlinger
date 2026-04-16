@@ -14,10 +14,12 @@ public class Projectile : MonoBehaviour
     [Header("Mekanik Ayarları")]
     public LayerMask enemyLayer; 
     public GameObject iceExplosionPrefab;
-    public GameObject executionExplosionPrefab;
+    public GameObject executionExplosionPrefab; 
 
     [HideInInspector] public PlayerHealth sourcePlayerHealth;
     internal List<SpecialMechanic> activeMechanics;
+
+    [HideInInspector] public GameObject ignoredEnemy; 
 
     private int bouncesLeft = 0;
     private bool canSplit = false;
@@ -31,19 +33,15 @@ public class Projectile : MonoBehaviour
     {
         if (activeMechanics == null) return;
 
-        // Hasar Artırımı (%10)
         if (activeMechanics.Contains(SpecialMechanic.DamageBoost)) 
             baseDamage *= 1.10f;
 
-        // Hızlanma (%30 atış hızı)
         if (activeMechanics.Contains(SpecialMechanic.Acceleration)) 
             speed *= 1.30f;
 
-        // Sekme (2 Kere)
         if (activeMechanics.Contains(SpecialMechanic.Bounce)) 
             bouncesLeft = 2;
 
-        // Bölünme (1 Kere bölünebilir)
         if (activeMechanics.Contains(SpecialMechanic.Split)) 
             canSplit = true;
     }
@@ -56,18 +54,21 @@ public class Projectile : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        if (ignoredEnemy != null && collision.gameObject == ignoredEnemy) 
+            return;
+
         if (collision.CompareTag("Enemy"))
         {
             Enemy enemyScript = collision.GetComponent<Enemy>();
             
             if (enemyScript != null)
             {
-                bool wasDying = enemyScript.IsDying;
+                bool wasDying = enemyScript.IsDying; 
 
                 enemyScript.TakeDamage(baseDamage);
                 if (sourcePlayerHealth != null) sourcePlayerHealth.ApplyLifeSteal(baseDamage);
 
-                bool diedJustNow = !wasDying && enemyScript.IsDying;
+                bool diedJustNow = !wasDying && enemyScript.IsDying; 
 
                 ApplySpecialMechanic(enemyScript, diedJustNow);
             }
@@ -76,7 +77,7 @@ public class Projectile : MonoBehaviour
         }
     }
 
-    private void ApplySpecialMechanic(Enemy targetEnemy, bool targetDied)
+   private void ApplySpecialMechanic(Enemy targetEnemy, bool targetDied)
     {
         if (activeMechanics == null || activeMechanics.Count == 0) return;
 
@@ -84,20 +85,23 @@ public class Projectile : MonoBehaviour
         {
             switch (mechanic)
             {
+
                 case SpecialMechanic.Bounce:
                     if (bouncesLeft > 0)
                     {
                         bouncesLeft--;
-                        destroyOnHit = false;
+                        destroyOnHit = false; 
+                        ignoredEnemy = targetEnemy.gameObject; 
+
                         Transform nextTarget = FindNearestEnemy(targetEnemy.transform);
                         if (nextTarget != null)
                         {
                             Vector2 dir = (nextTarget.position - transform.position).normalized;
-                            transform.right = dir;
+                            transform.right = dir; 
                         }
                         else
                         {
-                            destroyOnHit = true;
+                            destroyOnHit = true; 
                         }
                     }
                     break;
@@ -106,15 +110,15 @@ public class Projectile : MonoBehaviour
                     if (canSplit)
                     {
                         canSplit = false;
-                        destroyOnHit = true;
-                        SpawnSplitProjectiles();
+                        destroyOnHit = true; 
+                        SpawnSplitProjectiles(targetEnemy); 
                     }
                     break;
 
                 case SpecialMechanic.Execution:
                     if (targetDied)
                     {
-                        float executionDamage = (targetEnemy.maxHealth / baseDamage) * 10f;
+                        float executionDamage = (targetEnemy.maxHealth / baseDamage) * 10f; 
                         
                         if (executionExplosionPrefab != null) Instantiate(executionExplosionPrefab, targetEnemy.transform.position, Quaternion.identity);
 
@@ -127,26 +131,76 @@ public class Projectile : MonoBehaviour
                     }
                     break;
 
-                case SpecialMechanic.Pierce:
+                case SpecialMechanic.Pierce: 
                     destroyOnHit = false;
+                    ignoredEnemy = targetEnemy.gameObject; 
                     baseDamage /= 2f;
                     if (baseDamage < 1f) destroyOnHit = true;
                     break;
 
-                case SpecialMechanic.Acceleration:
+                case SpecialMechanic.Acceleration: 
                     if (targetDied && sourcePlayerHealth != null)
                     {
                         PlayerController pc = sourcePlayerHealth.GetComponent<PlayerController>();
-                        if (pc != null) pc.ApplySpeedBuff(5f, 3f); // 3 Saniyeliğine +5 Hız
+                        if (pc != null) pc.ApplySpeedBuff(5f, 3f); 
                     }
                     break;
 
-                case SpecialMechanic.FireBurn: targetEnemy.ApplyBurn(6f, 3f); break;
-                case SpecialMechanic.WaterSlow: targetEnemy.ApplySlow(0.4f, 1.5f); break;
-                case SpecialMechanic.RockStun: targetEnemy.AddRockStack(); break;
-                case SpecialMechanic.IceArrow: break;
-                case SpecialMechanic.AirSlash: break;
-                case SpecialMechanic.LightningChain:break;
+
+                case SpecialMechanic.FireBurn: 
+                    targetEnemy.ApplyBurn(6f, 3f); 
+                    break;
+
+                case SpecialMechanic.WaterSlow: 
+                    targetEnemy.ApplySlow(0.4f, 1.5f); 
+                    break;
+
+                case SpecialMechanic.RockStun: 
+                    targetEnemy.AddRockStack(); 
+                    break;
+
+                case SpecialMechanic.IceArrow:
+                    if (iceExplosionPrefab != null)
+                    {
+                        Instantiate(iceExplosionPrefab, transform.position, Quaternion.identity);
+                    }
+                    
+                    Collider2D[] slowHits = Physics2D.OverlapCircleAll(transform.position, 3f, enemyLayer);
+                    foreach (Collider2D hit in slowHits)
+                    {
+                        Enemy caughtEnemy = hit.GetComponent<Enemy>();
+                        if (caughtEnemy != null) caughtEnemy.ApplySlow(0.6f, 2f); 
+                    }
+                    break;
+
+                case SpecialMechanic.AirSlash:
+                    destroyOnHit = false; 
+                    ignoredEnemy = targetEnemy.gameObject;
+                    baseDamage /= 2f; 
+                    
+                    if (baseDamage < 1f) destroyOnHit = true; 
+                    break;
+
+                case SpecialMechanic.LightningChain:
+                    Collider2D[] nearbyEnemies = Physics2D.OverlapCircleAll(transform.position, 5f, enemyLayer);
+                    int hitCount = 0;
+
+                    foreach (Collider2D col in nearbyEnemies)
+                    {
+                        if (col.gameObject != targetEnemy.gameObject) 
+                        {
+                            Enemy chainTarget = col.GetComponent<Enemy>();
+                            if (chainTarget != null)
+                            {
+                                chainTarget.TakeDamage(baseDamage / 3f);
+                                hitCount++;
+                                
+                                Debug.DrawLine(transform.position, col.transform.position, Color.yellow, 0.5f);
+                            }
+                        }
+                        if (hitCount >= 3) break;
+                    }
+                    break;
             }
         }
     }
@@ -159,7 +213,7 @@ public class Projectile : MonoBehaviour
 
         foreach (var hit in hits)
         {
-            if (hit.transform == excludeTransform) continue;
+            if (hit.transform == excludeTransform) continue; 
             
             float dist = Vector2.Distance(transform.position, hit.transform.position);
             if (dist < closestDist)
@@ -171,17 +225,19 @@ public class Projectile : MonoBehaviour
         return bestTarget;
     }
 
-    private void SpawnSplitProjectiles()
+    private void SpawnSplitProjectiles(Enemy targetEnemy)
     {
-        float splitAngle = 25f;
-        for (int i = -1; i <= 1; i += 2)
+        float splitAngle = 25f; 
+        for (int i = -1; i <= 1; i += 2) 
         {
             GameObject clone = Instantiate(gameObject, transform.position, transform.rotation);
             clone.transform.Rotate(0, 0, i * splitAngle);
 
             Projectile p = clone.GetComponent<Projectile>();
-            p.baseDamage = this.baseDamage / 2f;
+            p.baseDamage = this.baseDamage / 2f; 
             p.activeMechanics = new List<SpecialMechanic>(this.activeMechanics);
+            
+            p.ignoredEnemy = targetEnemy.gameObject; 
             
             p.activeMechanics.Remove(SpecialMechanic.Split); 
             p.activeMechanics.Remove(SpecialMechanic.Bounce);
