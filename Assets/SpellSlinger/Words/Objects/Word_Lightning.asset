@@ -16,7 +16,7 @@ MonoBehaviour:
   runeText: Lightning Strike
   translatedText: Lightning Strike
   wordIcon: {fileID: 0}
-  projectilePrefab: {fileID: 2507854483434154795, guid: 74d279d6c41608840806f46b9ec91a87, type: 3}
+  projectilePrefab: {fileID: 2507854483434154795, guid: e07e6efc2fe9a5e4a8b39865fb7813fb, type: 3}
   spawnsOnTarget: 0
   wordType: 0
   targetingLogic: 2
@@ -24,7 +24,6 @@ MonoBehaviour:
   baseCooldown: 1.5
   baseDamage: 10
   readingPattern: 4
-  damageBonus: 0
   cooldownReduction: 0
   mechanicToAdd: 5
   isUnlocked: 0
