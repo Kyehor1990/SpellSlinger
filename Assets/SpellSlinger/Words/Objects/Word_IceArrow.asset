@@ -21,9 +21,9 @@ MonoBehaviour:
   wordType: 0
   targetingLogic: 2
   condition: 0
-  baseCooldown: 1.5
+  baseCooldown: 2
   baseDamage: 10
-  readingPattern: 4
+  readingPattern: 3
   cooldownReduction: 0
   mechanicToAdd: 6
   isUnlocked: 0

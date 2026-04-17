@@ -23,7 +23,7 @@ MonoBehaviour:
   condition: 0
   baseCooldown: 1.5
   baseDamage: 10
-  readingPattern: 4
+  readingPattern: 3
   cooldownReduction: 0
   mechanicToAdd: 3
   isUnlocked: 0

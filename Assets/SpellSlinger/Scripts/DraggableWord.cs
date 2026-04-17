@@ -3,8 +3,7 @@ using UnityEngine.EventSystems;
 using TMPro;
 using UnityEngine.UI;
 
-
-public class DraggableWord : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
+public class DraggableWord : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler
 {
     [HideInInspector] public bool isFromInventory;
     [HideInInspector] public int originalIndex;
@@ -19,7 +18,16 @@ public class DraggableWord : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     public TextMeshProUGUI levelText;
     public TextMeshProUGUI manaText;
 
-    [Header("Juice/GameFeel Efektleri (YENİ)")]
+    [Header("Görsel Geri Bildirim (YENİ)")]
+    public Image backgroundImage;
+    public GameObject rightBoundaryVisual;
+    public GameObject leftBoundaryVisual;
+    
+    public Color normalColor = Color.white;
+    public Color activeModifierColor = new Color(0.2f, 0.8f, 0.2f, 1f);
+    public Color outOfRangeColor = new Color(1f, 1f, 1f, 0.3f);
+
+    [Header("Juice/GameFeel Efektleri")]
     public float scaleFactor = 1.15f;
     public float alphaValue = 0.8f;
     public float snapSpeed = 10f;
@@ -39,6 +47,7 @@ public class DraggableWord : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     private void Start() 
     {
         Setup(myWordData);
+        ResetVisuals();
     }
 
     public void Setup(OwnedWord wordData)
@@ -49,6 +58,41 @@ public class DraggableWord : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         if (manaText != null) manaText.text = "Mana: " + wordData.wordData.manaCost;
 
         LayoutRebuilder.ForceRebuildLayoutImmediate(GetComponent<RectTransform>());
+    }
+
+    public void SetVisualState(bool isActiveModifier, bool isOutOfRange)
+    {
+        if (backgroundImage == null) return;
+
+        if (isActiveModifier) backgroundImage.color = activeModifierColor;
+        else if (isOutOfRange) backgroundImage.color = outOfRangeColor;
+        else backgroundImage.color = normalColor;
+    }
+
+    public void ShowBoundary(bool showRight, bool showLeft)
+    {
+        if (rightBoundaryVisual != null) rightBoundaryVisual.SetActive(showRight);
+        if (leftBoundaryVisual != null) leftBoundaryVisual.SetActive(showLeft);
+    }
+
+    public void ResetVisuals()
+    {
+        if (backgroundImage != null) backgroundImage.color = normalColor;
+        if (rightBoundaryVisual != null) rightBoundaryVisual.SetActive(false);
+        if (leftBoundaryVisual != null) leftBoundaryVisual.SetActive(false);
+    }
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        if (transform.parent != null && transform.parent.GetComponent<SentenceDropZone>() != null)
+        {
+            SpellBuilderUIFeedback.Instance?.PreviewPattern(this);
+        }
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        SpellBuilderUIFeedback.Instance?.ClearPreview();
     }
 
     public void OnBeginDrag(PointerEventData eventData)
@@ -73,6 +117,8 @@ public class DraggableWord : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         canvasGroup.blocksRaycasts = false;
         canvasGroup.alpha = 0.8f;
         transform.localScale = originalScale * 1.15f; 
+        
+        SpellBuilderUIFeedback.Instance?.ClearPreview();
     }
 
     public void OnDrag(PointerEventData eventData)
@@ -108,8 +154,7 @@ public class DraggableWord : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
                         ClearHighlight(); 
                         highlightedRune = hoverTarget;
                         highlightedRuneOriginalScale = highlightedRune.localScale;
-                        highlightedRune.localScale = highlightedRuneOriginalScale * 1.15f; // %15 Büyüt
-                        
+                        highlightedRune.localScale = highlightedRuneOriginalScale * 1.15f; 
                         highlightedRune.GetComponent<Image>().color = Color.yellow; 
                     }
                 }
@@ -166,7 +211,7 @@ public class DraggableWord : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         if (highlightedRune != null)
         {
             highlightedRune.localScale = highlightedRuneOriginalScale;
-            highlightedRune.GetComponent<Image>().color = Color.white;
+            highlightedRune.GetComponent<Image>().color = normalColor; // Beyaza/Normal renge döndür
             highlightedRune = null;
         }
     }
