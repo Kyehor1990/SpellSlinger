@@ -96,18 +96,52 @@ public class SpellBuilderUIFeedback : MonoBehaviour
                 break;
 
             case ReadingPattern.ForwardOddSteps:
-                for (int i = startIndex + 1; i < sentenceWords.Count; i += 2)
+                // İlk adım bile liste dışındaysa direkt kendi üzerinde sağ sınır göster
+                if (startIndex + 1 >= sentenceWords.Count) 
                 {
-                    if (IsObject(sentenceWords[i])) break;
-                    sentenceWords[i].SetVisualState(true, false);
+                    hoveredWord.ShowBoundary(true, false);
+                }
+                else
+                {
+                    for (int i = startIndex + 1; i < sentenceWords.Count; i += 2)
+                    {
+                        if (IsObject(sentenceWords[i])) 
+                        { 
+                            if (i == startIndex + 1) hoveredWord.ShowBoundary(true, false);
+                            else sentenceWords[i - 2].ShowBoundary(true, false); 
+                            break; 
+                        }
+                        
+                        sentenceWords[i].SetVisualState(true, false);
+                        
+                        // İki adım sonrası listenin dışına çıkıyorsa sınırı bu ründe göster
+                        if (i + 2 >= sentenceWords.Count) sentenceWords[i].ShowBoundary(true, false);
+                    }
                 }
                 break;
 
             case ReadingPattern.BackwardOddSteps:
-                for (int i = startIndex - 1; i >= 0; i -= 2)
+                // İlk adım bile liste dışındaysa (0'dan küçükse) direkt kendi üzerinde sol sınır göster
+                if (startIndex - 1 < 0) 
                 {
-                    if (IsObject(sentenceWords[i])) break;
-                    sentenceWords[i].SetVisualState(true, false);
+                    hoveredWord.ShowBoundary(false, true);
+                }
+                else
+                {
+                    for (int i = startIndex - 1; i >= 0; i -= 2)
+                    {
+                        if (IsObject(sentenceWords[i])) 
+                        { 
+                            if (i == startIndex - 1) hoveredWord.ShowBoundary(false, true);
+                            else sentenceWords[i + 2].ShowBoundary(false, true); 
+                            break; 
+                        }
+                        
+                        sentenceWords[i].SetVisualState(true, false);
+                        
+                        // İki adım öncesi listenin dışına (0'ın altına) iniyorsa sınırı bu ründe göster
+                        if (i - 2 < 0) sentenceWords[i].ShowBoundary(false, true);
+                    }
                 }
                 break;
         }
@@ -116,7 +150,7 @@ public class SpellBuilderUIFeedback : MonoBehaviour
         {
             if (word != hoveredWord && word.myWordData.wordData.wordType == WordType.Modifier)
             {
-                if (word.backgroundImage.color != word.activeModifierColor)
+                if (!word.isHighlighted) 
                 {
                     word.SetVisualState(false, true);
                 }
