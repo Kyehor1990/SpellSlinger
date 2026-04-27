@@ -14,6 +14,73 @@ public class CompiledSpell
     public List<SpecialMechanic> specialMechanics = new List<SpecialMechanic>();
 }
 
+public static class RunePatternResolver
+{
+    public static List<int> GetAffectedModifierIndices(IReadOnlyList<WordData> sentence, int objectIndex)
+    {
+        List<int> modifierIndices = new List<int>();
+
+        if (sentence == null || objectIndex < 0 || objectIndex >= sentence.Count) return modifierIndices;
+
+        WordData objectWord = sentence[objectIndex];
+        if (objectWord == null || objectWord.wordType != WordType.Object) return modifierIndices;
+
+        switch (objectWord.readingPattern)
+        {
+            case ReadingPattern.Rightward:
+                AddRightwardModifiers(sentence, objectIndex + 1, sentence.Count - 1, 1, modifierIndices);
+                break;
+
+            case ReadingPattern.Leftward:
+                AddLeftwardModifiers(sentence, objectIndex - 1, 0, 1, modifierIndices);
+                break;
+
+            case ReadingPattern.SpreadRadius3:
+                AddLeftwardModifiers(sentence, objectIndex - 1, Mathf.Max(0, objectIndex - 3), 1, modifierIndices);
+                AddRightwardModifiers(sentence, objectIndex + 1, Mathf.Min(sentence.Count - 1, objectIndex + 3), 1, modifierIndices);
+                break;
+
+            case ReadingPattern.ForwardOddSteps:
+                AddRightwardModifiers(sentence, objectIndex + 1, sentence.Count - 1, 2, modifierIndices);
+                break;
+
+            case ReadingPattern.BackwardOddSteps:
+                AddLeftwardModifiers(sentence, objectIndex - 1, 0, 2, modifierIndices);
+                break;
+
+            case ReadingPattern.Unlimited:
+                AddLeftwardModifiers(sentence, objectIndex - 1, 0, 1, modifierIndices);
+                AddRightwardModifiers(sentence, objectIndex + 1, sentence.Count - 1, 1, modifierIndices);
+                break;
+        }
+
+        return modifierIndices;
+    }
+
+    private static void AddRightwardModifiers(IReadOnlyList<WordData> sentence, int startIndex, int endIndex, int step, List<int> modifierIndices)
+    {
+        for (int i = startIndex; i <= endIndex; i += step)
+        {
+            if (IsObjectBoundary(sentence[i])) break;
+            modifierIndices.Add(i);
+        }
+    }
+
+    private static void AddLeftwardModifiers(IReadOnlyList<WordData> sentence, int startIndex, int endIndex, int step, List<int> modifierIndices)
+    {
+        for (int i = startIndex; i >= endIndex; i -= step)
+        {
+            if (IsObjectBoundary(sentence[i])) break;
+            modifierIndices.Add(i);
+        }
+    }
+
+    private static bool IsObjectBoundary(WordData word)
+    {
+        return word != null && word.wordType == WordType.Object;
+    }
+}
+
 public class SentenceManager : MonoBehaviour
 {
     [Header("Oyuncunun Dizdiği Cümle")]
@@ -88,65 +155,9 @@ public class SentenceManager : MonoBehaviour
 
     private void ApplyModifiersBasedOnPattern(WordData objWord, CompiledSpell spell, int startIndex)
     {
-        switch (objWord.readingPattern)
+        foreach (int modifierIndex in RunePatternResolver.GetAffectedModifierIndices(currentSentence, startIndex))
         {
-            case ReadingPattern.Rightward:
-                for (int i = startIndex + 1; i < currentSentence.Count; i++)
-                {
-                    if (currentSentence[i].wordType == WordType.Object) break;
-                    AddModifierToSpell(currentSentence[i], spell);
-                }
-                break;
-
-            case ReadingPattern.Leftward:
-                for (int i = startIndex - 1; i >= 0; i--)
-                {
-                    if (currentSentence[i].wordType == WordType.Object) break;
-                    AddModifierToSpell(currentSentence[i], spell);
-                }
-                break;
-
-            case ReadingPattern.SpreadRadius3:
-                for (int i = startIndex - 1; i >= Mathf.Max(0, startIndex - 3); i--)
-                {
-                    if (currentSentence[i].wordType == WordType.Object) break;
-                    AddModifierToSpell(currentSentence[i], spell);
-                }
-                for (int i = startIndex + 1; i <= Mathf.Min(currentSentence.Count - 1, startIndex + 3); i++)
-                {
-                    if (currentSentence[i].wordType == WordType.Object) break;
-                    AddModifierToSpell(currentSentence[i], spell);
-                }
-                break;
-
-            case ReadingPattern.ForwardOddSteps:
-                for (int i = startIndex + 1; i < currentSentence.Count; i += 2)
-                {
-                    if (currentSentence[i].wordType == WordType.Object) break;
-                    AddModifierToSpell(currentSentence[i], spell);
-                }
-                break;
-
-            case ReadingPattern.BackwardOddSteps:
-                for (int i = startIndex - 1; i >= 0; i -= 2)
-                {
-                    if (currentSentence[i].wordType == WordType.Object) break;
-                    AddModifierToSpell(currentSentence[i], spell);
-                }
-                break;
-
-            case ReadingPattern.Unlimited:
-                for (int i = startIndex - 1; i >= 0; i--)
-                {
-                    if (currentSentence[i].wordType == WordType.Object) break;
-                    AddModifierToSpell(currentSentence[i], spell);
-                }
-                for (int i = startIndex + 1; i < currentSentence.Count; i++)
-                {
-                    if (currentSentence[i].wordType == WordType.Object) break;
-                    AddModifierToSpell(currentSentence[i], spell);
-                }
-                break;
+            AddModifierToSpell(currentSentence[modifierIndex], spell);
         }
     }
 
