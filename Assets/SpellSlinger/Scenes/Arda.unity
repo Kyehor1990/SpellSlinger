@@ -1980,7 +1980,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a4b0c3324c9c8e4ca5a01ae7d227cfe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyWaveManager
-  waveDuration: 10
+  waveDuration: 3
   breakDuration: 5
   currentWave: 1
   initialSpawnDelay: 2
