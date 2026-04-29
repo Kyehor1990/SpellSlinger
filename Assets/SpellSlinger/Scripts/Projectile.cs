@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class Projectile : MonoBehaviour
 {
     [Header("Mermi Özellikleri")]
@@ -15,6 +16,10 @@ public class Projectile : MonoBehaviour
     public LayerMask enemyLayer; 
     public GameObject iceExplosionPrefab;
     public GameObject executionExplosionPrefab; 
+    
+    [Header("Lightning VFX Ayarları")]
+    public GameObject lightningHitVFXPrefab;
+    public float lightningVFXDuration = 1f;
 
     [HideInInspector] public PlayerHealth sourcePlayerHealth;
     internal List<SpecialMechanic> activeMechanics;
@@ -75,6 +80,29 @@ public class Projectile : MonoBehaviour
 
             if (destroyOnHit) Destroy(gameObject);
         }
+    }
+    private void SpawnLightningVFX(Transform enemyTransform)
+    {
+        if (lightningHitVFXPrefab == null) return;
+
+        GameObject vfxInstance = Instantiate(
+            lightningHitVFXPrefab, 
+            enemyTransform.position, 
+            Quaternion.identity
+        );
+        vfxInstance.transform.SetParent(enemyTransform);
+        vfxInstance.transform.localPosition = Vector3.zero;
+        vfxInstance.transform.localRotation = Quaternion.identity;
+        vfxInstance.transform.localScale = Vector3.one;
+        
+        ParticleSystem ps = vfxInstance.GetComponent<ParticleSystem>();
+        if (ps != null)
+        {
+            ps.Play();
+        }
+
+        
+        Destroy(vfxInstance, lightningVFXDuration);
     }
 
    private void ApplySpecialMechanic(Enemy targetEnemy, bool targetDied)
@@ -182,6 +210,7 @@ public class Projectile : MonoBehaviour
                     break;
 
                 case SpecialMechanic.LightningChain:
+                    SpawnLightningVFX(targetEnemy.transform);
                     Collider2D[] nearbyEnemies = Physics2D.OverlapCircleAll(transform.position, 5f, enemyLayer);
                     int hitCount = 0;
 
@@ -194,7 +223,7 @@ public class Projectile : MonoBehaviour
                             {
                                 chainTarget.TakeDamage(baseDamage / 3f);
                                 hitCount++;
-                                
+                                SpawnLightningVFX(col.transform);
                                 Debug.DrawLine(transform.position, col.transform.position, Color.yellow, 0.5f);
                             }
                         }

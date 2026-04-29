@@ -150,4 +150,7 @@ MonoBehaviour:
     m_Bits: 64
   iceExplosionPrefab: {fileID: 0}
   executionExplosionPrefab: {fileID: 0}
+  lightningHitVFXPrefab: {fileID: 6999295580018197281, guid: 11931af64c190ab4eb0b9439c119f3a5, type: 3}
+  lightningVFXDuration: 1
   sourcePlayerHealth: {fileID: 0}
+  ignoredEnemy: {fileID: 0}
