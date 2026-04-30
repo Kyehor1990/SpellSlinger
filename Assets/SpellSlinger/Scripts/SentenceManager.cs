@@ -14,6 +14,13 @@ public class CompiledSpell
     public List<SpecialMechanic> specialMechanics = new List<SpecialMechanic>();
 }
 
+public class RunePatternPreview
+{
+    public List<int> AffectedModifierIndices = new List<int>();
+    public int LeftBoundaryIndex = -1;
+    public int RightBoundaryIndex = -1;
+}
+
 public static class RunePatternResolver
 {
     public static List<int> GetAffectedModifierIndices(IReadOnlyList<WordData> sentence, int objectIndex)
@@ -57,6 +64,44 @@ public static class RunePatternResolver
         return modifierIndices;
     }
 
+    public static RunePatternPreview GetPreview(IReadOnlyList<WordData> sentence, int objectIndex)
+    {
+        RunePatternPreview preview = new RunePatternPreview();
+        preview.AffectedModifierIndices = GetAffectedModifierIndices(sentence, objectIndex);
+
+        if (sentence == null || objectIndex < 0 || objectIndex >= sentence.Count) return preview;
+
+        WordData objectWord = sentence[objectIndex];
+        if (objectWord == null || objectWord.wordType != WordType.Object) return preview;
+
+        switch (objectWord.readingPattern)
+        {
+            case ReadingPattern.Rightward:
+                preview.RightBoundaryIndex = GetRightBoundaryIndex(sentence, preview.AffectedModifierIndices, objectIndex, false);
+                break;
+
+            case ReadingPattern.Leftward:
+                preview.LeftBoundaryIndex = GetLeftBoundaryIndex(sentence, preview.AffectedModifierIndices, objectIndex, false);
+                break;
+
+            case ReadingPattern.SpreadRadius3:
+            case ReadingPattern.Unlimited:
+                preview.LeftBoundaryIndex = GetLeftBoundaryIndex(sentence, preview.AffectedModifierIndices, objectIndex, false);
+                preview.RightBoundaryIndex = GetRightBoundaryIndex(sentence, preview.AffectedModifierIndices, objectIndex, false);
+                break;
+
+            case ReadingPattern.ForwardOddSteps:
+                preview.RightBoundaryIndex = GetRightBoundaryIndex(sentence, preview.AffectedModifierIndices, objectIndex, true);
+                break;
+
+            case ReadingPattern.BackwardOddSteps:
+                preview.LeftBoundaryIndex = GetLeftBoundaryIndex(sentence, preview.AffectedModifierIndices, objectIndex, true);
+                break;
+        }
+
+        return preview;
+    }
+
     private static void AddRightwardModifiers(IReadOnlyList<WordData> sentence, int startIndex, int endIndex, int step, List<int> modifierIndices)
     {
         for (int i = startIndex; i <= endIndex; i += step)
@@ -78,6 +123,60 @@ public static class RunePatternResolver
     private static bool IsObjectBoundary(WordData word)
     {
         return word != null && word.wordType == WordType.Object;
+    }
+
+    private static int GetRightBoundaryIndex(IReadOnlyList<WordData> sentence, List<int> modifierIndices, int objectIndex, bool showAtSentenceEdge)
+    {
+        int boundaryIndex = objectIndex;
+        bool hasRightModifier = false;
+
+        foreach (int modifierIndex in modifierIndices)
+        {
+            if (modifierIndex > objectIndex)
+            {
+                hasRightModifier = true;
+                if (modifierIndex > boundaryIndex) boundaryIndex = modifierIndex;
+            }
+        }
+
+        if (hasRightModifier || HasObjectBoundaryToRight(sentence, objectIndex) || showAtSentenceEdge && objectIndex + 1 >= sentence.Count)
+        {
+            return boundaryIndex;
+        }
+
+        return -1;
+    }
+
+    private static int GetLeftBoundaryIndex(IReadOnlyList<WordData> sentence, List<int> modifierIndices, int objectIndex, bool showAtSentenceEdge)
+    {
+        int boundaryIndex = objectIndex;
+        bool hasLeftModifier = false;
+
+        foreach (int modifierIndex in modifierIndices)
+        {
+            if (modifierIndex < objectIndex)
+            {
+                hasLeftModifier = true;
+                if (modifierIndex < boundaryIndex) boundaryIndex = modifierIndex;
+            }
+        }
+
+        if (hasLeftModifier || HasObjectBoundaryToLeft(sentence, objectIndex) || showAtSentenceEdge && objectIndex - 1 < 0)
+        {
+            return boundaryIndex;
+        }
+
+        return -1;
+    }
+
+    private static bool HasObjectBoundaryToRight(IReadOnlyList<WordData> sentence, int objectIndex)
+    {
+        return objectIndex + 1 < sentence.Count && IsObjectBoundary(sentence[objectIndex + 1]);
+    }
+
+    private static bool HasObjectBoundaryToLeft(IReadOnlyList<WordData> sentence, int objectIndex)
+    {
+        return objectIndex - 1 >= 0 && IsObjectBoundary(sentence[objectIndex - 1]);
     }
 }
 
