@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="7" result="Passed" total="7" passed="7" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-05-01 01:44:56Z" end-time="2026-05-01 01:44:56Z" duration="0.0360578">
+  <test-suite type="TestSuite" id="1000" name="My project" fullname="My project" runstate="Runnable" testcasecount="7" result="Passed" start-time="2026-05-01 01:44:56Z" end-time="2026-05-01 01:44:56Z" duration="0.036058" total="7" passed="7" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="1009" name="Assembly-CSharp-Editor.dll" fullname="C:/Users/Arda/Documents/GitHub/SpellSlinger/Library/ScriptAssemblies/Assembly-CSharp-Editor.dll" runstate="Runnable" testcasecount="7" result="Passed" start-time="2026-05-01 01:44:56Z" end-time="2026-05-01 01:44:56Z" duration="0.029015" total="7" passed="7" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="528" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestFixture" id="1001" name="RunePatternResolverTests" fullname="RunePatternResolverTests" classname="RunePatternResolverTests" runstate="Runnable" testcasecount="7" result="Passed" start-time="2026-05-01 01:44:56Z" end-time="2026-05-01 01:44:56Z" duration="0.027570" total="7" passed="7" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="1007" name="BackwardOddStepsChecksOnlySteppedIndicesAndSkippedObjectDoesNotStopScan" fullname="RunePatternResolverTests.BackwardOddStepsChecksOnlySteppedIndicesAndSkippedObjectDoesNotStopScan" methodname="BackwardOddStepsChecksOnlySteppedIndicesAndSkippedObjectDoesNotStopScan" classname="RunePatternResolverTests" runstate="Runnable" seed="1370635234" result="Passed" start-time="2026-05-01 01:44:56Z" end-time="2026-05-01 01:44:56Z" duration="0.013071" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1006" name="ForwardOddStepsChecksOnlySteppedIndicesAndSkippedObjectDoesNotStopScan" fullname="RunePatternResolverTests.ForwardOddStepsChecksOnlySteppedIndicesAndSkippedObjectDoesNotStopScan" methodname="ForwardOddStepsChecksOnlySteppedIndicesAndSkippedObjectDoesNotStopScan" classname="RunePatternResolverTests" runstate="Runnable" seed="1561533974" result="Passed" start-time="2026-05-01 01:44:56Z" end-time="2026-05-01 01:44:56Z" duration="0.000574" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1003" name="LeftwardReadsModifiersToLeftUntilAnotherObject" fullname="RunePatternResolverTests.LeftwardReadsModifiersToLeftUntilAnotherObject" methodname="LeftwardReadsModifiersToLeftUntilAnotherObject" classname="RunePatternResolverTests" runstate="Runnable" seed="1240431247" result="Passed" start-time="2026-05-01 01:44:56Z" end-time="2026-05-01 01:44:56Z" duration="0.000393" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1008" name="NoneReturnsNoModifiers" fullname="RunePatternResolverTests.NoneReturnsNoModifiers" methodname="NoneReturnsNoModifiers" classname="RunePatternResolverTests" runstate="Runnable" seed="288983038" result="Passed" start-time="2026-05-01 01:44:56Z" end-time="2026-05-01 01:44:56Z" duration="0.000663" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1002" name="RightwardReadsModifiersToRightUntilAnotherObject" fullname="RunePatternResolverTests.RightwardReadsModifiersToRightUntilAnotherObject" methodname="RightwardReadsModifiersToRightUntilAnotherObject" classname="RunePatternResolverTests" runstate="Runnable" seed="703406472" result="Passed" start-time="2026-05-01 01:44:56Z" end-time="2026-05-01 01:44:56Z" duration="0.000355" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1004" name="SpreadRadius3ReadsWithinThreeSlotsAndStopsAtObjectBoundaries" fullname="RunePatternResolverTests.SpreadRadius3ReadsWithinThreeSlotsAndStopsAtObjectBoundaries" methodname="SpreadRadius3ReadsWithinThreeSlotsAndStopsAtObjectBoundaries" classname="RunePatternResolverTests" runstate="Runnable" seed="16086150" result="Passed" start-time="2026-05-01 01:44:56Z" end-time="2026-05-01 01:44:56Z" duration="0.000457" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1005" name="UnlimitedReadsBothDirectionsUntilObjectBoundaries" fullname="RunePatternResolverTests.UnlimitedReadsBothDirectionsUntilObjectBoundaries" methodname="UnlimitedReadsBothDirectionsUntilObjectBoundaries" classname="RunePatternResolverTests" runstate="Runnable" seed="1116442631" result="Passed" start-time="2026-05-01 01:44:56Z" end-time="2026-05-01 01:44:56Z" duration="0.000397" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[Saving results to: C:/Users/Arda/AppData/LocalLow/DefaultCompany/My project\TestResults.xml
+]]></output>
+        </test-case>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

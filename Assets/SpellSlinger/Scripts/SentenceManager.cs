@@ -17,8 +17,11 @@ public class CompiledSpell
 public class RunePatternPreview
 {
     public List<int> AffectedModifierIndices = new List<int>();
+    public List<int> StopObjectIndices = new List<int>();
     public int LeftBoundaryIndex = -1;
     public int RightBoundaryIndex = -1;
+    public bool StopsAtLeftSentenceEdge;
+    public bool StopsAtRightSentenceEdge;
 }
 
 public static class RunePatternResolver
@@ -77,24 +80,46 @@ public static class RunePatternResolver
         switch (objectWord.readingPattern)
         {
             case ReadingPattern.Rightward:
+                AddRightwardStopObject(sentence, objectIndex + 1, sentence.Count - 1, 1, preview.StopObjectIndices);
+                preview.StopsAtRightSentenceEdge = !HasRightwardStopObject(sentence, objectIndex + 1, sentence.Count - 1, 1);
                 preview.RightBoundaryIndex = GetRightBoundaryIndex(sentence, preview.AffectedModifierIndices, objectIndex, false);
                 break;
 
             case ReadingPattern.Leftward:
+                AddLeftwardStopObject(sentence, objectIndex - 1, 0, 1, preview.StopObjectIndices);
+                preview.StopsAtLeftSentenceEdge = !HasLeftwardStopObject(sentence, objectIndex - 1, 0, 1);
                 preview.LeftBoundaryIndex = GetLeftBoundaryIndex(sentence, preview.AffectedModifierIndices, objectIndex, false);
                 break;
 
             case ReadingPattern.SpreadRadius3:
+                int spreadLeftLimit = Mathf.Max(0, objectIndex - 3);
+                int spreadRightLimit = Mathf.Min(sentence.Count - 1, objectIndex + 3);
+                AddLeftwardStopObject(sentence, objectIndex - 1, spreadLeftLimit, 1, preview.StopObjectIndices);
+                AddRightwardStopObject(sentence, objectIndex + 1, spreadRightLimit, 1, preview.StopObjectIndices);
+                preview.StopsAtLeftSentenceEdge = spreadLeftLimit == 0 && !HasLeftwardStopObject(sentence, objectIndex - 1, spreadLeftLimit, 1);
+                preview.StopsAtRightSentenceEdge = spreadRightLimit == sentence.Count - 1 && !HasRightwardStopObject(sentence, objectIndex + 1, spreadRightLimit, 1);
+                preview.LeftBoundaryIndex = GetLeftBoundaryIndex(sentence, preview.AffectedModifierIndices, objectIndex, false);
+                preview.RightBoundaryIndex = GetRightBoundaryIndex(sentence, preview.AffectedModifierIndices, objectIndex, false);
+                break;
+
             case ReadingPattern.Unlimited:
+                AddLeftwardStopObject(sentence, objectIndex - 1, 0, 1, preview.StopObjectIndices);
+                AddRightwardStopObject(sentence, objectIndex + 1, sentence.Count - 1, 1, preview.StopObjectIndices);
+                preview.StopsAtLeftSentenceEdge = !HasLeftwardStopObject(sentence, objectIndex - 1, 0, 1);
+                preview.StopsAtRightSentenceEdge = !HasRightwardStopObject(sentence, objectIndex + 1, sentence.Count - 1, 1);
                 preview.LeftBoundaryIndex = GetLeftBoundaryIndex(sentence, preview.AffectedModifierIndices, objectIndex, false);
                 preview.RightBoundaryIndex = GetRightBoundaryIndex(sentence, preview.AffectedModifierIndices, objectIndex, false);
                 break;
 
             case ReadingPattern.ForwardOddSteps:
+                AddRightwardStopObject(sentence, objectIndex + 1, sentence.Count - 1, 2, preview.StopObjectIndices);
+                preview.StopsAtRightSentenceEdge = !HasRightwardStopObject(sentence, objectIndex + 1, sentence.Count - 1, 2);
                 preview.RightBoundaryIndex = GetRightBoundaryIndex(sentence, preview.AffectedModifierIndices, objectIndex, true);
                 break;
 
             case ReadingPattern.BackwardOddSteps:
+                AddLeftwardStopObject(sentence, objectIndex - 1, 0, 2, preview.StopObjectIndices);
+                preview.StopsAtLeftSentenceEdge = !HasLeftwardStopObject(sentence, objectIndex - 1, 0, 2);
                 preview.LeftBoundaryIndex = GetLeftBoundaryIndex(sentence, preview.AffectedModifierIndices, objectIndex, true);
                 break;
         }
@@ -123,6 +148,50 @@ public static class RunePatternResolver
     private static bool IsObjectBoundary(WordData word)
     {
         return word != null && word.wordType == WordType.Object;
+    }
+
+    private static void AddRightwardStopObject(IReadOnlyList<WordData> sentence, int startIndex, int endIndex, int step, List<int> stopObjectIndices)
+    {
+        for (int i = startIndex; i <= endIndex; i += step)
+        {
+            if (IsObjectBoundary(sentence[i]))
+            {
+                stopObjectIndices.Add(i);
+                return;
+            }
+        }
+    }
+
+    private static void AddLeftwardStopObject(IReadOnlyList<WordData> sentence, int startIndex, int endIndex, int step, List<int> stopObjectIndices)
+    {
+        for (int i = startIndex; i >= endIndex; i -= step)
+        {
+            if (IsObjectBoundary(sentence[i]))
+            {
+                stopObjectIndices.Add(i);
+                return;
+            }
+        }
+    }
+
+    private static bool HasRightwardStopObject(IReadOnlyList<WordData> sentence, int startIndex, int endIndex, int step)
+    {
+        for (int i = startIndex; i <= endIndex; i += step)
+        {
+            if (IsObjectBoundary(sentence[i])) return true;
+        }
+
+        return false;
+    }
+
+    private static bool HasLeftwardStopObject(IReadOnlyList<WordData> sentence, int startIndex, int endIndex, int step)
+    {
+        for (int i = startIndex; i >= endIndex; i -= step)
+        {
+            if (IsObjectBoundary(sentence[i])) return true;
+        }
+
+        return false;
     }
 
     private static int GetRightBoundaryIndex(IReadOnlyList<WordData> sentence, List<int> modifierIndices, int objectIndex, bool showAtSentenceEdge)
@@ -208,6 +277,8 @@ public class SentenceManager : MonoBehaviour
         {
             autoAttack.UpdateActiveSpells();
         }
+
+        SpellBuilderUIFeedback.Instance?.ClearPreview();
 
         Debug.Log($"<color=cyan>Cümle Güncellendi! Sıra: {GetSentenceNames()}</color>");
     }
