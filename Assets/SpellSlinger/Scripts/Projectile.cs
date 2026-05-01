@@ -66,11 +66,27 @@ public class Projectile : MonoBehaviour
         {
             Enemy enemyScript = collision.GetComponent<Enemy>();
             
-            if (enemyScript != null)
+if (enemyScript != null)
             {
                 bool wasDying = enemyScript.IsDying; 
 
-                enemyScript.TakeDamage(baseDamage);
+bool isIceArrow = activeMechanics != null && activeMechanics.Contains(SpecialMechanic.IceArrow);
+                bool isLightning = activeMechanics != null && activeMechanics.Contains(SpecialMechanic.LightningChain);
+                bool isWaterSlow = activeMechanics != null && activeMechanics.Contains(SpecialMechanic.WaterSlow);
+                bool isCrit = Random.value < 0.1f;
+                float finalDamage = baseDamage;
+                Color hitColor = DamagePopupManager.Instance.normalColor;
+                if (isIceArrow) {
+                    hitColor = DamagePopupManager.Instance.iceColor;
+                } else if (isLightning) {
+                    hitColor = DamagePopupManager.Instance.lightningColor;
+                } else if (isWaterSlow) {
+                    hitColor = DamagePopupManager.Instance.waterColor;
+                }
+                if (isCrit) {
+                    finalDamage *= 1.5f;
+                }
+                enemyScript.TakeDamage(finalDamage, isCrit, hitColor);
                 if (sourcePlayerHealth != null) sourcePlayerHealth.ApplyLifeSteal(baseDamage);
 
                 bool diedJustNow = !wasDying && enemyScript.IsDying; 
@@ -221,7 +237,10 @@ public class Projectile : MonoBehaviour
                             Enemy chainTarget = col.GetComponent<Enemy>();
                             if (chainTarget != null)
                             {
-                                chainTarget.TakeDamage(baseDamage / 3f);
+bool chainCrit = Random.value < 0.05f;
+float chainDmg = baseDamage / 3f;
+if (chainCrit) chainDmg *= 1.5f;
+chainTarget.TakeDamage(chainDmg, chainCrit, DamagePopupManager.Instance.lightningColor);
                                 hitCount++;
                                 SpawnLightningVFX(col.transform);
                                 Debug.DrawLine(transform.position, col.transform.position, Color.yellow, 0.5f);

@@ -78,16 +78,21 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    public void TakeDamage(float damageAmount)
+public void TakeDamage(float damageAmount, bool isCritical = false, Color damageColor = default)
+
+
     {
         if (isDying) return;
         
         currentHealth -= damageAmount;
         
-        if (DamagePopupManager.Instance != null)
+if (DamagePopupManager.Instance != null)
         {
-            DamagePopupManager.Instance.ShowDamage(transform.position, damageAmount, Color.white);
+Color popupColor = damageColor == default ? Color.white : damageColor;
+DamagePopupManager.Instance.ShowDamage(transform.position, damageAmount, popupColor, isCritical);
+
         }
+
 
         if (currentHealth <= 0)
         {
@@ -109,8 +114,9 @@ public class Enemy : MonoBehaviour
 
         for (int i = 0; i < ticks; i++)
         {
-            TakeDamage(damagePerTick);
+TakeDamage(damagePerTick, false, DamagePopupManager.Instance.burnColor);
             yield return new WaitForSeconds(1f);
+
         }
     }
 

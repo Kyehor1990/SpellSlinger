@@ -18,15 +18,28 @@ public class DamageText : MonoBehaviour
         textMesh = GetComponent<TextMeshPro>();
     }
 
-    public void Setup(float damageAmount, Color color)
+public void Setup(float damageAmount, Color color, bool isCritical = false)
+
     {
         if (textMesh == null) textMesh = GetComponent<TextMeshPro>();
 
        
-        textMesh.text = Mathf.RoundToInt(damageAmount).ToString();
+textMesh.text = Mathf.RoundToInt(damageAmount).ToString();
         textMesh.color = color;
         textColor = color;
         timer = lifetime;
+        
+        if (isCritical)
+        {
+            textMesh.transform.localScale = Vector3.one * 1.3f;
+            
+            textMesh.fontStyle = FontStyles.Bold;
+        }
+        else
+        {
+            textMesh.fontStyle = FontStyles.Normal;
+        }
+
 
         
         transform.position += new Vector3(Random.Range(-0.3f, 0.3f), 0, 0);
@@ -42,9 +55,16 @@ public class DamageText : MonoBehaviour
         
         if (textMesh != null)
         {
-            textColor.a -= fadeSpeed * Time.deltaTime;
+textColor.a -= fadeSpeed * Time.deltaTime;
             textMesh.color = textColor;
+            
+            
+            if (textMesh.transform.localScale.x > 1f)
+            {
+                textMesh.transform.localScale = Vector3.Lerp(textMesh.transform.localScale, Vector3.one, Time.deltaTime * 3f);
+            }
         }
+
 
         if (timer <= 0)
         {
