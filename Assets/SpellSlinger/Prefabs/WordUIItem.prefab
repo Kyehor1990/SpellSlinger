@@ -122,17 +122,36 @@ MonoBehaviour:
   levelText: {fileID: 6609904772220603779}
   manaText: {fileID: 4486706157917993241}
   sharedCountText: {fileID: 8650285137151688502}
+  sharedCountBadgeImage: {fileID: 0}
+  sharedCountCanvas: {fileID: 0}
+  sharedCountSortingOrder: 60
+  sharedCountBadgeColor: {r: 0.98, g: 0.76, b: 0.24, a: 0.98}
+  sharedCountBadgeGlowColor: {r: 0.16, g: 0.09, b: 0.03, a: 0.72}
+  sharedCountTextColor: {r: 0.08, g: 0.06, b: 0.02, a: 1}
   backgroundImage: {fileID: 1954171742164239427}
+  hoveredObjectGlowMaterial: {fileID: 2100000, guid: 1f06ad1f98ac42bbaeb87dbfb2e545ea, type: 2}
+  readModifierAuraMaterial: {fileID: 2100000, guid: 9b241a8b0d3541f2a6d27c5c0f67db14, type: 2}
+  sharedModifierOverchargeMaterial: {fileID: 2100000, guid: b98d23d6ac024b9ea411d01be9fa5ba4, type: 2}
   rightBoundaryVisual: {fileID: 5132291003755288940}
   leftBoundaryVisual: {fileID: 1875691611537958916}
   normalColor: {r: 1, g: 1, b: 1, a: 1}
-  activeModifierColor: {r: 0.2, g: 0.8, b: 0.2, a: 1}
-  activeObjectColor: {r: 0.35, g: 0.75, b: 1, a: 1}
-  boundaryObjectColor: {r: 1, g: 0.85, b: 0.25, a: 1}
-  outOfRangeColor: {r: 0.8773585, g: 0.8773585, b: 0.8773585, a: 0.3}
+  activeModifierColor: {r: 0.9, g: 0.98, b: 1, a: 1}
+  activeObjectColor: {r: 0.98, g: 0.985, b: 1, a: 1}
+  boundaryObjectColor: {r: 1, g: 0.92, b: 0.97, a: 1}
+  boundaryObjectFlashColor: {r: 1, g: 0.18, b: 0.62, a: 1}
+  outOfRangeColor: {r: 0.82, g: 0.88, b: 0.94, a: 0.55}
   glowImage: {fileID: 871935397240224583}
-  glowNormalColor: {r: 0, g: 0, b: 0, a: 0.3}
-  glowActiveColor: {r: 0.2, g: 1, b: 0.2, a: 0.6}
+  glowNormalColor: {r: 0.28, g: 0.34, b: 1, a: 0.14}
+  glowActiveColor: {r: 0.24, g: 0.96, b: 1, a: 0.2}
+  createRuntimeStateFrame: 1
+  selectedObjectFrameColor: {r: 0.48, g: 0.66, b: 1, a: 0.96}
+  selectedObjectCornerColor: {r: 0.78, g: 0.52, b: 1, a: 0.98}
+  selectedObjectSourceNodeColor: {r: 0.72, g: 0.94, b: 1, a: 0.98}
+  selectedObjectSourceGlowColor: {r: 0.36, g: 0.34, b: 1, a: 0.28}
+  readModifierFrameColor: {r: 0.26, g: 0.9, b: 1, a: 0.58}
+  boundaryFrameColor: {r: 1, g: 0.08, b: 0.42, a: 0.76}
+  unusedFrameColor: {r: 0.46, g: 0.58, b: 0.68, a: 0.18}
+  framePulseScale: 1.08
   scaleFactor: 1.15
   alphaValue: 0.8
   tiltSensitivity: 1.2
@@ -237,7 +256,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
   m_Color: {r: 0.9433962, g: 0.013349922, b: 0.013349922, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -470,7 +489,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
   m_Color: {r: 0.9433962, g: 0.013349922, b: 0.013349922, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -538,12 +557,12 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3616962856153092449}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: -28.931}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 103.5, y: -3.8}
-  m_SizeDelta: {x: 146.9, y: 24.746616}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 1, y: 1}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: -3, y: -22}
+  m_SizeDelta: {x: 28, y: 18}
+  m_Pivot: {x: 1, y: 1}
 --- !u!222 &9152160845520377337
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -566,7 +585,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -599,8 +618,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 25
-  m_fontSizeBase: 25
+  m_fontSize: 13
+  m_fontSizeBase: 13
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18

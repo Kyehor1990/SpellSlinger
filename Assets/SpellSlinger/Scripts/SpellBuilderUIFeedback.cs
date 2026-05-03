@@ -10,11 +10,31 @@ public class SpellBuilderUIFeedback : MonoBehaviour
     [Header("Referanslar")]
     public Transform sentencePanel;
     [SerializeField] private TMP_Text summaryText;
+    [SerializeField] private bool showConnectionLines = true;
+    [SerializeField] private SpellBuilderConnectionLines connectionLines;
 
     private void Awake()
     {
         if (Instance == null) Instance = this;
-        else Destroy(gameObject);
+        else
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        if (!showConnectionLines) return;
+
+        if (connectionLines == null)
+        {
+            connectionLines = GetComponent<SpellBuilderConnectionLines>();
+        }
+
+        if (connectionLines == null)
+        {
+            connectionLines = gameObject.AddComponent<SpellBuilderConnectionLines>();
+        }
+
+        connectionLines.SetSentencePanel(sentencePanel as RectTransform);
     }
 
     public void ClearPreview()
@@ -29,16 +49,29 @@ public class SpellBuilderUIFeedback : MonoBehaviour
 
     private void ClearVisiblePreview()
     {
+        ClearVisiblePreview(false, true);
+    }
+
+    private void ClearVisiblePreview(bool immediate, bool refreshSharedCounts)
+    {
+        if (connectionLines != null) connectionLines.ClearConnections();
         if (summaryText != null) summaryText.text = string.Empty;
 
         if (sentencePanel == null) return;
         foreach (Transform child in sentencePanel)
         {
             DraggableWord wordUI = child.GetComponent<DraggableWord>();
-            if (wordUI != null) wordUI.ResetVisuals();
+            if (wordUI != null)
+            {
+                if (immediate) wordUI.ResetVisualsImmediate();
+                else wordUI.ResetVisuals();
+            }
         }
 
-        RefreshSharedModifierCounts();
+        if (refreshSharedCounts)
+        {
+            RefreshSharedModifierCounts();
+        }
     }
 
     public void RefreshSharedModifierCounts()
@@ -53,7 +86,10 @@ public class SpellBuilderUIFeedback : MonoBehaviour
 
     public void PreviewPattern(DraggableWord hoveredWord)
     {
-        if (hoveredWord == null || hoveredWord.myWordData.wordData.wordType != WordType.Object)
+        if (hoveredWord == null ||
+            hoveredWord.myWordData == null ||
+            hoveredWord.myWordData.wordData == null ||
+            hoveredWord.myWordData.wordData.wordType != WordType.Object)
         {
             ClearHoverPreview();
             return;
@@ -64,9 +100,15 @@ public class SpellBuilderUIFeedback : MonoBehaviour
 
     private void ShowPattern(DraggableWord objectWord)
     {
-        ClearVisiblePreview();
+        ClearVisiblePreview(true, false);
 
-        if (objectWord == null || objectWord.myWordData.wordData.wordType != WordType.Object) return;
+        if (objectWord == null ||
+            objectWord.myWordData == null ||
+            objectWord.myWordData.wordData == null ||
+            objectWord.myWordData.wordData.wordType != WordType.Object)
+        {
+            return;
+        }
 
         List<DraggableWord> sentenceWords = new List<DraggableWord>();
         List<WordData> sentenceData = new List<WordData>();
@@ -81,6 +123,7 @@ public class SpellBuilderUIFeedback : MonoBehaviour
         RunePatternPreview preview = RunePatternResolver.GetPreview(sentenceData, startIndex);
         foreach (int modifierIndex in preview.AffectedModifierIndices)
         {
+            if (modifierIndex < 0 || modifierIndex >= sentenceWords.Count) continue;
             sentenceWords[modifierIndex].SetFeedbackState(RuneFeedbackState.ReadModifier);
         }
 
@@ -96,7 +139,13 @@ public class SpellBuilderUIFeedback : MonoBehaviour
 
         foreach (int stopObjectIndex in preview.StopObjectIndices)
         {
+            if (stopObjectIndex < 0 || stopObjectIndex >= sentenceWords.Count) continue;
             sentenceWords[stopObjectIndex].SetFeedbackState(RuneFeedbackState.BlockingObject);
+        }
+
+        if (showConnectionLines && connectionLines != null && connectionLines.isActiveAndEnabled)
+        {
+            connectionLines.ShowConnections(objectWord, sentenceWords, preview, null);
         }
 
         UpdateSummary(objectWord, sentenceWords, preview);
@@ -126,7 +175,7 @@ public class SpellBuilderUIFeedback : MonoBehaviour
         }
     }
 
-    private void UpdateSharedModifierCounts(List<DraggableWord> sentenceWords, List<WordData> sentenceData)
+    private int[] UpdateSharedModifierCounts(List<DraggableWord> sentenceWords, List<WordData> sentenceData)
     {
         int[] readCounts = new int[sentenceWords.Count];
 
@@ -144,11 +193,9 @@ public class SpellBuilderUIFeedback : MonoBehaviour
         for (int i = 0; i < sentenceWords.Count; i++)
         {
             sentenceWords[i].SetSharedCount(readCounts[i]);
-            if (readCounts[i] >= 2 && sentenceData[i].wordType == WordType.Modifier)
-            {
-                sentenceWords[i].SetFeedbackState(RuneFeedbackState.SharedModifier);
-            }
         }
+
+        return readCounts;
     }
 
     private void UpdateSummary(DraggableWord objectWord, List<DraggableWord> sentenceWords, RunePatternPreview preview)
@@ -166,6 +213,7 @@ public class SpellBuilderUIFeedback : MonoBehaviour
         {
             foreach (int modifierIndex in preview.AffectedModifierIndices)
             {
+                if (modifierIndex < 0 || modifierIndex >= sentenceWords.Count) continue;
                 builder.AppendLine($"- {GetDisplayName(sentenceWords[modifierIndex])}");
             }
         }
@@ -207,6 +255,7 @@ public class SpellBuilderUIFeedback : MonoBehaviour
 
         foreach (int stopObjectIndex in preview.StopObjectIndices)
         {
+            if (stopObjectIndex < 0 || stopObjectIndex >= sentenceWords.Count) continue;
             boundaryNames.Add(GetDisplayName(sentenceWords[stopObjectIndex]));
         }
 
