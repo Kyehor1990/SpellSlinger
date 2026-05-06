@@ -15,11 +15,17 @@ public class Enemy : MonoBehaviour
     
     private Coroutine rockStackResetCoroutine;
     private Coroutine slowCoroutine; 
+    private Coroutine animationCoroutine;
     
     private Transform playerTransform;
     private Rigidbody2D rb;
     private SpriteRenderer spriteRenderer;
     private Collider2D col;
+
+    [Header("Sprite Animasyonu")]
+    [SerializeField] private Sprite[] walkSprites;
+    [SerializeField] private float frameRate = 0.15f;
+    [SerializeField] private bool isAnimating = false;
 
     [Header("Mürekkep Ölüm Efektleri")]
     public GameObject deathSmokePrefab;
@@ -45,7 +51,7 @@ public class Enemy : MonoBehaviour
         deadEnemyLayer = LayerMask.NameToLayer("DeadEnemy");
     }
 
-    private void Start()
+private void Start()
     {
         maxHealth = currentHealth;
         originalSpeed = moveSpeed;
@@ -55,6 +61,54 @@ public class Enemy : MonoBehaviour
         {
             playerTransform = player.transform;
         }
+
+        // Sprite animasyonunu başlat
+        if (walkSprites != null && walkSprites.Length > 0)
+        {
+            StartAnimation();
+        }
+    }
+
+    private void Update()
+    {
+        // Hareket ederken animasyonu oynat
+        if (isAnimating && walkSprites != null && walkSprites.Length > 0 && rb != null && rb.linearVelocity.magnitude > 0.1f)
+        {
+            if (animationCoroutine == null)
+            {
+                animationCoroutine = StartCoroutine(PlayWalkAnimation());
+            }
+        }
+    }
+
+    private void StartAnimation()
+    {
+        isAnimating = true;
+        if (spriteRenderer != null && walkSprites.Length > 0)
+        {
+            spriteRenderer.sprite = walkSprites[0];
+        }
+    }
+
+    private IEnumerator PlayWalkAnimation()
+    {
+        int currentFrame = 0;
+        while (isAnimating && walkSprites.Length > 0)
+        {
+            if (spriteRenderer != null && currentFrame < walkSprites.Length)
+            {
+                spriteRenderer.sprite = walkSprites[currentFrame];
+            }
+            
+            yield return new WaitForSeconds(frameRate);
+            
+            currentFrame++;
+            if (currentFrame >= walkSprites.Length)
+            {
+                currentFrame = 0;
+            }
+        }
+        animationCoroutine = null;
     }
 
     private void FixedUpdate()

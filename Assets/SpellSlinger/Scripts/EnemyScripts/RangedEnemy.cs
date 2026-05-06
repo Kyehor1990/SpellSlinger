@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 public class RangedEnemy : MonoBehaviour
 // Bu kod Ranged Enemynin davranışları için yazılmıştır -96
@@ -14,6 +15,13 @@ public class RangedEnemy : MonoBehaviour
     [Header("İstatistikler")]
     // Enemy Canı
     [SerializeField] private float currentHealth = 15f;
+
+    [Header("Sprite Animasyonu")]
+    [SerializeField] private Sprite[] walkSprites;
+    [SerializeField] private float frameRate = 0.15f;
+    [SerializeField] private bool isAnimating = false;
+    private Coroutine animationCoroutine;
+    private SpriteRenderer spriteRenderer;
     
     private Transform _playerTransform;
     private Rigidbody2D _rb;
@@ -22,14 +30,63 @@ public class RangedEnemy : MonoBehaviour
     {
         // Rigidbody eriştik
         _rb = GetComponent<Rigidbody2D>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
     }
     
-    private void Start()
+private void Start()
     {
         _initialScale = transform.localScale;
         // Oyuncuyu Tag ile bulduk ve transformunu bulduk
         GameObject player = GameObject.FindGameObjectWithTag("Player");
         if (player != null) _playerTransform = player.transform;
+
+        // Sprite animasyonunu başlat
+        if (walkSprites != null && walkSprites.Length > 0)
+        {
+            StartAnimation();
+        }
+    }
+
+    private void Update()
+    {
+        // Hareket ederken animasyonu oynat
+        if (isAnimating && walkSprites != null && walkSprites.Length > 0 && _rb != null && _rb.linearVelocity.magnitude > 0.1f)
+        {
+            if (animationCoroutine == null)
+            {
+                animationCoroutine = StartCoroutine(PlayWalkAnimation());
+            }
+        }
+    }
+
+    private void StartAnimation()
+    {
+        isAnimating = true;
+        if (spriteRenderer != null && walkSprites.Length > 0)
+        {
+            spriteRenderer.sprite = walkSprites[0];
+        }
+    }
+
+    private IEnumerator PlayWalkAnimation()
+    {
+        int currentFrame = 0;
+        while (isAnimating && walkSprites.Length > 0)
+        {
+            if (spriteRenderer != null && currentFrame < walkSprites.Length)
+            {
+                spriteRenderer.sprite = walkSprites[currentFrame];
+            }
+            
+            yield return new WaitForSeconds(frameRate);
+            
+            currentFrame++;
+            if (currentFrame >= walkSprites.Length)
+            {
+                currentFrame = 0;
+            }
+        }
+        animationCoroutine = null;
     }
     
     private void FixedUpdate()
