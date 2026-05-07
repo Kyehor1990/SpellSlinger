@@ -752,7 +752,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 2.3172612, y: -0.7971065}
+  m_Offset: {x: 2.3172607, y: -7.192339}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -762,7 +762,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 21.355274, y: 0.2380414}
+  m_Size: {x: 21.355274, y: 13.028507}
   m_EdgeRadius: 0
 --- !u!1 &206792464
 GameObject:
@@ -1302,7 +1302,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0.3326478, y: 2.622179}
+  m_Offset: {x: 11.13302, y: 0.95729256}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -1312,7 +1312,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 0.3347044, y: 30.566021}
+  m_Size: {x: 21.935452, y: 53.11336}
   m_EdgeRadius: 0
 --- !u!1001 &341924403
 PrefabInstance:
@@ -2662,7 +2662,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 2.3172612, y: -0.7971065}
+  m_Offset: {x: 2.3172607, y: 6.5798507}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -2672,7 +2672,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 21.355274, y: 0.2380414}
+  m_Size: {x: 21.355274, y: 14.991956}
   m_EdgeRadius: 0
 --- !u!1 &930941507
 GameObject:
@@ -11151,7 +11151,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0.3326478, y: 2.622179}
+  m_Offset: {x: -5.2069435, y: 1.5756779}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -11161,7 +11161,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 0.3347044, y: 30.566021}
+  m_Size: {x: 11.413887, y: 51.115498}
   m_EdgeRadius: 0
 --- !u!1 &1371551423
 GameObject:
@@ -11670,7 +11670,7 @@ Camera:
   far clip plane: 1000
   field of view: 79
   orthographic: 1
-  orthographic size: 5
+  orthographic size: 6.05
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -12304,7 +12304,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 02a14f0f197d80b4cba97f7ca08c2812, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerWallet
-  currentMoney: 200
+  currentMoney: 0
   moneyTextUI: {fileID: 531972864}
 --- !u!114 &1660669780
 MonoBehaviour:
@@ -12352,7 +12352,7 @@ MonoBehaviour:
     currentUpgrades: 0
     currentValue: 0
   - statType: 1
-    baseValue: 10
+    baseValue: 5
     maxUpgradeLimit: 100
     currentUpgrades: 0
     currentValue: 0
