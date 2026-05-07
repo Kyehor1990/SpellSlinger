@@ -83,10 +83,10 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: -809129765
-  m_SortingLayer: 2
+  m_SortingLayer: 5
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: -7282886668606283007, guid: 6d2024985a29fc5469fb9551483bf206, type: 3}
+  m_Sprite: {fileID: -4752958108683838711, guid: 7d911ce461e6fa6459c59c9d17591ea8, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -134,7 +134,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 2.31, y: 1.19}
+    oldSize: {x: 2.6875, y: 1.8125}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -183,6 +183,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
   currentHealth: 20
   moveSpeed: 2
+  isBoss: 0
+  maxHealth: 0
+  walkSprites:
+  - {fileID: -4752958108683838711, guid: 7d911ce461e6fa6459c59c9d17591ea8, type: 3}
+  - {fileID: 4895125004098287443, guid: 94ea1ef436c681f49aa0d6542d718567, type: 3}
+  - {fileID: -7208901302466336326, guid: dfffc5547df239840b6b0e54050dbf96, type: 3}
+  - {fileID: -980757615256901484, guid: 1dea4a2dc6f484040b7b6b2fbe46d5a1, type: 3}
+  - {fileID: 1411116454657263754, guid: fa321ff7bd2e7444e9939cb393381609, type: 3}
+  frameRate: 0.15
+  isAnimating: 0
   deathSmokePrefab: {fileID: 0}
   inkStainPrefab: {fileID: 0}
   xpDropPrefab: {fileID: 4404637123539996590, guid: 525fc5d2299ad9240893a3480787b002, type: 3}

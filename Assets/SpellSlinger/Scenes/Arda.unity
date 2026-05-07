@@ -732,6 +732,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SpellBuilderUIFeedback
   sentencePanel: {fileID: 98397533}
   summaryText: {fileID: 1710938519}
+  showConnectionLines: 1
+  connectionLines: {fileID: 0}
 --- !u!1 &219510698
 GameObject:
   m_ObjectHideFlags: 0
@@ -2039,7 +2041,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a4b0c3324c9c8e4ca5a01ae7d227cfe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyWaveManager
-  waveDuration: 6
+  waveDuration: 40
   breakDuration: 5
   currentWave: 1
   initialSpawnDelay: 2
@@ -9379,16 +9381,21 @@ MonoBehaviour:
   timeBetweenSpawns: 2
   spawnWarningTime: 1.5
   enemiesToSpawn:
-  - tier: 0
-    enemyPrefab: {fileID: 4395884553050428915, guid: d99434f5f408bf24fa34d9e3c17a34b7, type: 3}
-    inkDropSprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
-    dropColor: {r: 0, g: 0, b: 0, a: 1}
-    dropScale: 2
   - tier: 4
     enemyPrefab: {fileID: 4395884553050428915, guid: 57b316701d2a5a8468c7d6fc50f9131d, type: 3}
     inkDropSprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
     dropColor: {r: 0.6666667, g: 0, b: 0, a: 1}
     dropScale: 5
+  - tier: 0
+    enemyPrefab: {fileID: 4395884553050428915, guid: d99434f5f408bf24fa34d9e3c17a34b7, type: 3}
+    inkDropSprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+    dropColor: {r: 0, g: 0, b: 0, a: 1}
+    dropScale: 2
+  - tier: 0
+    enemyPrefab: {fileID: 4395884553050428915, guid: 3c87073e2aab9f4479dcf1ec6ff3272e, type: 3}
+    inkDropSprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+    dropColor: {r: 0, g: 0, b: 1, a: 1}
+    dropScale: 2
 --- !u!4 &1638670089
 Transform:
   m_ObjectHideFlags: 0
@@ -11072,6 +11079,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DamagePopupManager
   damageTextPrefab: {fileID: 6707626464957488773, guid: 8e2a39a6fce1d9145b44ec132938f86d, type: 3}
+  normalColor: {r: 1, g: 1, b: 1, a: 1}
+  critColor: {r: 1, g: 0, b: 0, a: 1}
+  lightningColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  burnColor: {r: 1, g: 0.6470588, b: 0, a: 1}
+  iceColor: {r: 0.537, g: 0.831, b: 0.961, a: 1}
+  waterColor: {r: 0.12, g: 0.23, b: 0.53, a: 1}
 --- !u!1 &2082391368
 GameObject:
   m_ObjectHideFlags: 0
