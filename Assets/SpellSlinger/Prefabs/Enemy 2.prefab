@@ -321,7 +321,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
   currentHealth: 150
-  moveSpeed: 7
+  moveSpeed: 6
   isBoss: 0
   maxHealth: 0
   separationRadius: 1
