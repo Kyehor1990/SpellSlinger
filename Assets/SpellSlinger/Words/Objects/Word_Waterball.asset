@@ -30,3 +30,4 @@ MonoBehaviour:
   isUnlocked: 0
   secretHint: 
   manaCost: 1
+  shopPrice: 25

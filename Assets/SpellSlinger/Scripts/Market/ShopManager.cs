@@ -7,7 +7,6 @@ public class ShopManager : MonoBehaviour
 {
     [Header("Market Verileri")]
     public List<WordData> allAvailableWords;
-    public int wordCost = 10;
     public int rerollCost = 5;
 
     [Header("Arka Plan Referansları")]
@@ -78,7 +77,7 @@ public class ShopManager : MonoBehaviour
             currentShopWords[i] = selectedWord;
 
             slotNames[i].text = selectedWord.runeText;
-            slotPrices[i].text = wordCost.ToString() + " Altın";
+            slotPrices[i].text = GetWordPrice(selectedWord).ToString() + " Altın";
             slotButtons[i].interactable = true; 
         }
     }
@@ -108,11 +107,15 @@ public class ShopManager : MonoBehaviour
 
     public void TryBuyWord(int slotIndex)
     {
+        if (slotIndex < 0 || slotIndex >= currentShopWords.Length) return;
         if (currentShopWords[slotIndex] == null) return;
 
-        if (playerWallet.SpendMoney(wordCost))
+        WordData selectedWord = currentShopWords[slotIndex];
+        int price = GetWordPrice(selectedWord);
+
+        if (playerWallet.SpendMoney(price))
         {
-            playerInventory.AddWord(currentShopWords[slotIndex]);
+            playerInventory.AddWord(selectedWord);
             
             currentShopWords[slotIndex] = null;
             slotButtons[slotIndex].interactable = false;
@@ -128,4 +131,8 @@ public class ShopManager : MonoBehaviour
         Time.timeScale = 1f;
     }
 
+    private int GetWordPrice(WordData word)
+    {
+        return word != null ? Mathf.Max(0, word.shopPrice) : 0;
+    }
 }

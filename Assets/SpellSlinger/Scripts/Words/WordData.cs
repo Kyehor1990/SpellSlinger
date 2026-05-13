@@ -34,6 +34,13 @@ public class WordData : ScriptableObject
 
     [Header("Ekonomi ve Denge")]
     public int manaCost = 1;
+    [Min(0)]
+    public int shopPrice = 10;
+
+    private void OnValidate()
+    {
+        shopPrice = Mathf.Max(0, shopPrice);
+    }
 }
 
 public enum WordType { Object, Modifier }

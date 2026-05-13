@@ -257,6 +257,17 @@ public class SentenceManager : MonoBehaviour
     [Header("UI Bağlantıları (YENİ)")]
     public Transform sentencePanel;
 
+    [Header("Baslangic Cumlesi")]
+    [SerializeField] private bool buildStartingSentenceFromCurrentSentence = true;
+    [SerializeField] private GameObject wordUIPrefab;
+    [SerializeField] private PlayerInventory playerInventory;
+    [SerializeField] private PlayerManaCapacity manaCapacity;
+
+    private void Awake()
+    {
+        BuildStartingSentenceUI();
+    }
+
     public void RebuildSentenceFromUI()
     {
         currentSentence.Clear(); 
@@ -281,6 +292,106 @@ public class SentenceManager : MonoBehaviour
         SpellBuilderUIFeedback.Instance?.ClearPreview();
 
         Debug.Log($"<color=cyan>Cümle Güncellendi! Sıra: {GetSentenceNames()}</color>");
+    }
+
+    private void BuildStartingSentenceUI()
+    {
+        if (!buildStartingSentenceFromCurrentSentence || sentencePanel == null || currentSentence.Count == 0) return;
+
+        if (playerInventory == null) playerInventory = FindFirstObjectByType<PlayerInventory>();
+        if (manaCapacity == null) manaCapacity = FindFirstObjectByType<PlayerManaCapacity>();
+        if (wordUIPrefab == null && playerInventory != null) wordUIPrefab = playerInventory.wordUIPrefab;
+
+        if (wordUIPrefab == null)
+        {
+            Debug.LogWarning("Baslangic cumlesi UI'a aktarilamadi: Word UI Prefab referansi eksik.");
+            return;
+        }
+
+        List<WordData> startingSentence = new List<WordData>(currentSentence);
+        Dictionary<WordData, int> requiredCounts = new Dictionary<WordData, int>();
+
+        foreach (WordData wordData in startingSentence)
+        {
+            if (wordData == null) continue;
+
+            if (!requiredCounts.ContainsKey(wordData))
+            {
+                requiredCounts[wordData] = 0;
+            }
+
+            requiredCounts[wordData]++;
+            if (CountWordInSentencePanel(wordData) >= requiredCounts[wordData]) continue;
+
+            OwnedWord ownedWord = playerInventory != null
+                ? playerInventory.GetOrCreateOwnedWord(wordData)
+                : new OwnedWord(wordData);
+
+            DraggableWord existingInventoryWord = FindWordUI(playerInventory != null ? playerInventory.inventoryPanel : null, wordData);
+            DraggableWord sentenceWord = existingInventoryWord != null
+                ? existingInventoryWord
+                : Instantiate(wordUIPrefab, sentencePanel).GetComponent<DraggableWord>();
+
+            if (sentenceWord == null) continue;
+
+            sentenceWord.transform.SetParent(sentencePanel, false);
+            sentenceWord.transform.SetAsLastSibling();
+            sentenceWord.parentAfterDrag = sentencePanel;
+            sentenceWord.isFromInventory = false;
+            sentenceWord.Setup(ownedWord);
+        }
+
+        SyncManaCapacityFromSentenceUI();
+        RebuildSentenceFromUI();
+    }
+
+    private int CountWordInSentencePanel(WordData wordData)
+    {
+        int count = 0;
+
+        foreach (Transform child in sentencePanel)
+        {
+            DraggableWord wordUI = child.GetComponent<DraggableWord>();
+            if (wordUI != null && wordUI.myWordData != null && wordUI.myWordData.wordData == wordData)
+            {
+                count++;
+            }
+        }
+
+        return count;
+    }
+
+    private DraggableWord FindWordUI(Transform panel, WordData wordData)
+    {
+        if (panel == null) return null;
+
+        foreach (Transform child in panel)
+        {
+            DraggableWord wordUI = child.GetComponent<DraggableWord>();
+            if (wordUI != null && wordUI.myWordData != null && wordUI.myWordData.wordData == wordData)
+            {
+                return wordUI;
+            }
+        }
+
+        return null;
+    }
+
+    private void SyncManaCapacityFromSentenceUI()
+    {
+        if (manaCapacity == null || sentencePanel == null) return;
+
+        int usedMana = 0;
+        foreach (Transform child in sentencePanel)
+        {
+            DraggableWord wordUI = child.GetComponent<DraggableWord>();
+            if (wordUI != null && wordUI.myWordData != null && wordUI.myWordData.wordData != null)
+            {
+                usedMana += wordUI.myWordData.wordData.manaCost;
+            }
+        }
+
+        manaCapacity.SetUsedMana(usedMana);
     }
 
     private string GetSentenceNames()

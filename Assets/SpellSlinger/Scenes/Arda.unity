@@ -11869,7 +11869,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemySpawner
   mapBounds: {x: 9.8, y: 14.8}
   spawnIndicatorPrefab: {fileID: 4276238172337070665, guid: 3fef47aae4fadd4459784929bcbeb005, type: 3}
-  timeBetweenSpawns: 0.2
+  timeBetweenSpawns: 1.2
   spawnWarningTime: 1.5
   enemiesToSpawn:
   - tier: 4
@@ -12189,6 +12189,10 @@ MonoBehaviour:
   currentSentence:
   - {fileID: 11400000, guid: 54ca2723538fbdb4eadfdf6782cc66b0, type: 2}
   sentencePanel: {fileID: 98397533}
+  buildStartingSentenceFromCurrentSentence: 1
+  wordUIPrefab: {fileID: 0}
+  playerInventory: {fileID: 0}
+  manaCapacity: {fileID: 0}
 --- !u!114 &1660669776
 MonoBehaviour:
   m_ObjectHideFlags: 0

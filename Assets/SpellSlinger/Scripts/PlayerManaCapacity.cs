@@ -45,6 +45,12 @@ public class PlayerManaCapacity : MonoBehaviour
         UpdateCapacityUI();
     }
 
+    public void SetUsedMana(int usedMana)
+    {
+        currentUsedMana = Mathf.Max(0, usedMana);
+        UpdateCapacityUI();
+    }
+
     public void IncreaseMaxMana(int amount)
     {
         UpdateCapacityUI();

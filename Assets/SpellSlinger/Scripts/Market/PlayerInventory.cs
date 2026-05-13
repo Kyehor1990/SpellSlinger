@@ -23,6 +23,19 @@ public class PlayerInventory : MonoBehaviour
     [Header("Sahip Olunan Kelimeler")]
     public List<OwnedWord> myWords = new List<OwnedWord>();
 
+    public OwnedWord GetOrCreateOwnedWord(WordData wordData)
+    {
+        if (wordData == null) return null;
+
+        OwnedWord existingWord = myWords.Find(word => word != null && word.wordData == wordData);
+        if (existingWord != null) return existingWord;
+
+        OwnedWord addedWord = new OwnedWord(wordData);
+        myWords.Add(addedWord);
+        Debug.Log($"<color=green>Baslangic envanterine eklendi: {wordData.runeText}</color>");
+        return addedWord;
+    }
+
     public void AddWord(WordData newWord)
     {
         OwnedWord addedWord = new OwnedWord(newWord);
