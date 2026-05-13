@@ -17,12 +17,23 @@ public class EnemyWaveManager : MonoBehaviour
     public PlayerExperience playerExp;
     public UpgradeManager upgradeManager;
     public ShopManager shopManager;
+    public PlayerController playerController;
 
     private float timer;
     private bool isWaveActive;
 
     private void Start()
     {
+        if (playerController == null && playerExp != null)
+        {
+            playerController = playerExp.GetComponent<PlayerController>();
+        }
+
+        if (playerController == null)
+        {
+            playerController = Object.FindFirstObjectByType<PlayerController>();
+        }
+
         StartCoroutine(WaveRoutine());
     }
 
@@ -50,6 +61,7 @@ public class EnemyWaveManager : MonoBehaviour
          
             isWaveActive = false;
             spawner.enabled = false; 
+            playerController?.RemoveAccelerationBuff();
             ClearAllEnemies();
             
             CollectAllCoinsInScene();

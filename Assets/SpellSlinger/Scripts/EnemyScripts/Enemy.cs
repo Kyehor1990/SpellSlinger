@@ -20,7 +20,15 @@ public class Enemy : MonoBehaviour
     private Transform playerTransform;
     private Rigidbody2D rb;
     private SpriteRenderer spriteRenderer;
-    private Collider2D col;
+    private Collider2D[] colliders;
+    private readonly Collider2D[] separationHits = new Collider2D[16];
+    private ContactFilter2D separationFilter;
+
+    [Header("Separation")]
+    [SerializeField] private float separationRadius = 0.8f;
+    [SerializeField] private float separationStrength = 1.1f;
+    [SerializeField] private float maxSeparationForce = 1f;
+    [SerializeField] private LayerMask enemyLayerMask;
 
     [Header("Sprite Animasyonu")]
     [SerializeField] private Sprite[] walkSprites;
@@ -47,8 +55,20 @@ public class Enemy : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
-        col = GetComponent<Collider2D>();
+        colliders = GetComponents<Collider2D>();
         deadEnemyLayer = LayerMask.NameToLayer("DeadEnemy");
+
+        if (enemyLayerMask.value == 0)
+        {
+            enemyLayerMask = LayerMask.GetMask("EnemyBody");
+            if (enemyLayerMask.value == 0)
+            {
+                enemyLayerMask = LayerMask.GetMask("Enemy");
+            }
+        }
+
+        separationFilter.useTriggers = false;
+        separationFilter.SetLayerMask(enemyLayerMask);
     }
 
 private void Start()
@@ -128,8 +148,104 @@ private void Start()
         if (playerTransform != null)
         {
             Vector2 direction = (playerTransform.position - transform.position).normalized;
-            rb.linearVelocity = direction * moveSpeed;
+            rb.linearVelocity = GetSeparatedVelocity(direction);
         }
+    }
+
+    private Vector2 GetSeparatedVelocity(Vector2 primaryDirection)
+    {
+        Vector2 desiredDirection = primaryDirection + CalculateSeparationForce();
+        if (desiredDirection.sqrMagnitude < 0.0001f)
+        {
+            return Vector2.zero;
+        }
+
+        if (desiredDirection.sqrMagnitude > 1f)
+        {
+            desiredDirection.Normalize();
+        }
+
+        return desiredDirection * moveSpeed;
+    }
+
+    private Vector2 CalculateSeparationForce()
+    {
+        if (rb == null || separationRadius <= 0f || separationStrength <= 0f || maxSeparationForce <= 0f)
+        {
+            return Vector2.zero;
+        }
+
+        int hitCount = Physics2D.OverlapCircle(rb.position, separationRadius, separationFilter, separationHits);
+        Vector2 separation = Vector2.zero;
+        int neighborCount = 0;
+
+        for (int i = 0; i < hitCount; i++)
+        {
+            Collider2D hit = separationHits[i];
+            if (hit == null)
+            {
+                continue;
+            }
+
+            Rigidbody2D neighborBody = hit.attachedRigidbody;
+            if (neighborBody == rb || HasProcessedRigidbody(neighborBody, i))
+            {
+                continue;
+            }
+
+            Vector2 neighborPosition = neighborBody != null ? neighborBody.position : (Vector2)hit.transform.position;
+            Vector2 awayFromNeighbor = rb.position - neighborPosition;
+            float distanceSqr = awayFromNeighbor.sqrMagnitude;
+
+            if (distanceSqr < 0.0001f)
+            {
+                awayFromNeighbor = GetFallbackSeparationDirection();
+                distanceSqr = 0.0001f;
+            }
+
+            float distance = Mathf.Sqrt(distanceSqr);
+            if (distance > separationRadius)
+            {
+                continue;
+            }
+
+            float weight = 1f - (distance / separationRadius);
+            separation += awayFromNeighbor / distance * weight;
+            neighborCount++;
+        }
+
+        if (neighborCount == 0)
+        {
+            return Vector2.zero;
+        }
+
+        separation = separation / neighborCount * separationStrength;
+        return Vector2.ClampMagnitude(separation, maxSeparationForce);
+    }
+
+    private bool HasProcessedRigidbody(Rigidbody2D candidate, int currentIndex)
+    {
+        if (candidate == null)
+        {
+            return false;
+        }
+
+        for (int i = 0; i < currentIndex; i++)
+        {
+            Collider2D previousHit = separationHits[i];
+            if (previousHit != null && previousHit.attachedRigidbody == candidate)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private Vector2 GetFallbackSeparationDirection()
+    {
+        float angle = (Mathf.Abs(gameObject.GetInstanceID()) % 360) * Mathf.Deg2Rad;
+        return new Vector2(Mathf.Cos(angle), Mathf.Sin(angle));
     }
 
 public void TakeDamage(float damageAmount, bool isCritical = false, Color damageColor = default)
@@ -231,7 +347,10 @@ TakeDamage(damagePerTick, false, DamagePopupManager.Instance.burnColor);
         isDying = true;
         gameObject.layer = deadEnemyLayer;
         
-        if (col != null) col.enabled = false;
+        foreach (Collider2D enemyCollider in colliders)
+        {
+            if (enemyCollider != null) enemyCollider.enabled = false;
+        }
         
         if (slowCoroutine != null) StopCoroutine(slowCoroutine);
         if (rockStackResetCoroutine != null) StopCoroutine(rockStackResetCoroutine);

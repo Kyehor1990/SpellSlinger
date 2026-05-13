@@ -11925,7 +11925,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemySpawner
   mapBounds: {x: 9.8, y: 14.8}
   spawnIndicatorPrefab: {fileID: 4276238172337070665, guid: 3fef47aae4fadd4459784929bcbeb005, type: 3}
-  timeBetweenSpawns: 2
+  timeBetweenSpawns: 1.2
   spawnWarningTime: 1.5
   enemiesToSpawn:
   - tier: 4
@@ -12055,7 +12055,7 @@ GameObject:
   - component: {fileID: 1660669778}
   - component: {fileID: 1660669781}
   - component: {fileID: 1660669782}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -12105,7 +12105,7 @@ BoxCollider2D:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 64
   m_LayerOverridePriority: 0
   m_ForceSendLayers:
     serializedVersion: 2
@@ -12388,7 +12388,7 @@ MonoBehaviour:
     currentValue: 0
   - statType: 9
     baseValue: 0
-    maxUpgradeLimit: 0
+    maxUpgradeLimit: 100
     currentUpgrades: 0
     currentValue: 0
   - statType: 4

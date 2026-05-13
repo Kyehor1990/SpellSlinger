@@ -5,6 +5,10 @@ public class PlayerController : MonoBehaviour
 {
     [Header("Stat Referansı")]
     public PlayerStatsManager playerStats;
+
+    [Header("Acceleration Buff")]
+    [SerializeField] private float accelerationBuffPercent = 0.30f;
+    [SerializeField] private float accelerationDuration = 3f;
     
     private Rigidbody2D rb;
     private GameInput inputActions;
@@ -13,6 +17,7 @@ public class PlayerController : MonoBehaviour
     private bool isFacingRight = true;
 
     private float temporarySpeedBuff = 0f;
+    private Coroutine accelerationRoutine;
 
     private void Awake()
     {
@@ -20,7 +25,11 @@ public class PlayerController : MonoBehaviour
         inputActions = new GameInput();
     }
     private void OnEnable() => inputActions.Enable();
-    private void OnDisable() => inputActions.Disable();
+    private void OnDisable()
+    {
+        inputActions.Disable();
+        RemoveAccelerationBuff();
+    }
 
     private void Update()
     {
@@ -48,7 +57,8 @@ public class PlayerController : MonoBehaviour
     private void Move()
     {
         float baseSpeed = playerStats != null ? playerStats.GetStat(StatType.MoveSpeed) : 5f;
-        float currentSpeed = baseSpeed + temporarySpeedBuff;
+        float normalSpeed = baseSpeed + temporarySpeedBuff;
+        float currentSpeed = normalSpeed * GetAccelerationMultiplier();
         
         rb.linearVelocity = moveInput.normalized * currentSpeed;
     }
@@ -65,6 +75,43 @@ public class PlayerController : MonoBehaviour
     public void ApplySpeedBuff(float bonusSpeed, float duration)
     {
         StartCoroutine(SpeedBuffRoutine(bonusSpeed, duration));
+    }
+
+    public void ApplyAccelerationBuff()
+    {
+        ApplyAccelerationBuff(accelerationDuration);
+    }
+
+    public void ApplyAccelerationBuff(float duration)
+    {
+        if (duration <= 0f) return;
+
+        if (accelerationRoutine != null)
+        {
+            StopCoroutine(accelerationRoutine);
+        }
+
+        accelerationRoutine = StartCoroutine(AccelerationBuffRoutine(duration));
+    }
+
+    public void RemoveAccelerationBuff()
+    {
+        if (accelerationRoutine != null)
+        {
+            StopCoroutine(accelerationRoutine);
+            accelerationRoutine = null;
+        }
+    }
+
+    private float GetAccelerationMultiplier()
+    {
+        return accelerationRoutine != null ? 1f + accelerationBuffPercent : 1f;
+    }
+
+    private IEnumerator AccelerationBuffRoutine(float duration)
+    {
+        yield return new WaitForSeconds(duration);
+        accelerationRoutine = null;
     }
 
     private IEnumerator SpeedBuffRoutine(float bonusSpeed, float duration)
