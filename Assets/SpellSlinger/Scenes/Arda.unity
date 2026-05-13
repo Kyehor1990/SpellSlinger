@@ -2206,6 +2206,7 @@ MonoBehaviour:
   playerExp: {fileID: 1660669776}
   upgradeManager: {fileID: 1013682871}
   shopManager: {fileID: 535933527}
+  playerController: {fileID: 0}
 --- !u!4 &571090157
 Transform:
   m_ObjectHideFlags: 0
@@ -11925,7 +11926,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemySpawner
   mapBounds: {x: 9.8, y: 14.8}
   spawnIndicatorPrefab: {fileID: 4276238172337070665, guid: 3fef47aae4fadd4459784929bcbeb005, type: 3}
-  timeBetweenSpawns: 1.2
+  timeBetweenSpawns: 0.2
   spawnWarningTime: 1.5
   enemiesToSpawn:
   - tier: 4
@@ -12409,6 +12410,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
   playerStats: {fileID: 1660669782}
+  accelerationBuffPercent: 0.3
+  accelerationDuration: 3
   lastFacingDirection: {x: 1, y: 0}
 --- !u!1 &1676891816
 GameObject:

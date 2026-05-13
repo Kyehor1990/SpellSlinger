@@ -189,9 +189,9 @@ MonoBehaviour:
   stopDistance: 5
   retreatDistance: 3
   currentHealth: 15
-  separationRadius: 0.8
-  separationStrength: 1.1
-  maxSeparationForce: 1
+  separationRadius: 1
+  separationStrength: 1.4
+  maxSeparationForce: 1.2
   enemyLayerMask:
     serializedVersion: 2
     m_Bits: 64

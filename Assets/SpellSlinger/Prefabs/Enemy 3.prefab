@@ -311,9 +311,9 @@ MonoBehaviour:
   moveSpeed: 2
   isBoss: 0
   maxHealth: 0
-  separationRadius: 0.8
-  separationStrength: 1.1
-  maxSeparationForce: 1
+  separationRadius: 1
+  separationStrength: 1.4
+  maxSeparationForce: 1.2
   enemyLayerMask:
     serializedVersion: 2
     m_Bits: 64
