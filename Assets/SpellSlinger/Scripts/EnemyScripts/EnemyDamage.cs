@@ -9,7 +9,7 @@ public class EnemyDamage : MonoBehaviour
        
         if (collision.CompareTag("Player"))
         {
-            PlayerHealth playerHealth = collision.GetComponent<PlayerHealth>();
+            PlayerHealth playerHealth = collision.GetComponentInParent<PlayerHealth>();
             
             if (playerHealth != null)
             {

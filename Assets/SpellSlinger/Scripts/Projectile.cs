@@ -41,9 +41,6 @@ public class Projectile : MonoBehaviour
         if (activeMechanics.Contains(SpecialMechanic.DamageBoost)) 
             baseDamage *= 1.10f;
 
-        if (activeMechanics.Contains(SpecialMechanic.Acceleration)) 
-            speed *= 1.30f;
-
         if (activeMechanics.Contains(SpecialMechanic.Bounce)) 
             bouncesLeft = 2;
 
@@ -186,7 +183,7 @@ bool isIceArrow = activeMechanics != null && activeMechanics.Contains(SpecialMec
                     if (targetDied && sourcePlayerHealth != null)
                     {
                         PlayerController pc = sourcePlayerHealth.GetComponent<PlayerController>();
-                        if (pc != null) pc.ApplySpeedBuff(5f, 3f); 
+                        if (pc != null) pc.ApplyAccelerationBuff();   
                     }
                     break;
 

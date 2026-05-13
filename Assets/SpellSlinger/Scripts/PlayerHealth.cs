@@ -90,5 +90,8 @@ public class PlayerHealth : MonoBehaviour
         }
     }
 
-    void Die() {  }
+    void Die()
+    {
+        GetComponent<PlayerController>()?.RemoveAccelerationBuff();
+    }
 }
