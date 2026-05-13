@@ -21,7 +21,7 @@ MonoBehaviour:
   wordType: 0
   targetingLogic: 2
   condition: 0
-  baseCooldown: 1.5
+  baseCooldown: 1
   baseDamage: 10
   readingPattern: 3
   cooldownReduction: 0

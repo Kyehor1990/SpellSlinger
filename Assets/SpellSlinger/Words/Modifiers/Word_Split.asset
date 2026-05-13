@@ -24,10 +24,9 @@ MonoBehaviour:
   baseCooldown: 1.5
   baseDamage: 10
   readingPattern: 0
-  damageBonus: 0
   cooldownReduction: 0
   mechanicToAdd: 9
   isUnlocked: 0
   secretHint: 
   manaCost: 1
-  shopPrice: 25
+  shopPrice: 125

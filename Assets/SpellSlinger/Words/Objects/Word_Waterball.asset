@@ -22,9 +22,8 @@ MonoBehaviour:
   targetingLogic: 2
   condition: 0
   baseCooldown: 1
-  baseDamage: 5
+  baseDamage: 10
   readingPattern: 2
-  damageBonus: 0
   cooldownReduction: 0
   mechanicToAdd: 2
   isUnlocked: 0
