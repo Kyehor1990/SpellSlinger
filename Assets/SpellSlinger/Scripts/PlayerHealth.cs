@@ -12,6 +12,7 @@ public class PlayerHealth : MonoBehaviour
     [Header("Stat Referansı")]
     public PlayerStatsManager playerStats;
     private float regenTimer = 0f;
+    private bool isDead = false;
 
     void Start()
     {
@@ -24,6 +25,8 @@ public class PlayerHealth : MonoBehaviour
 
     void Update()
     {
+        if (isDead) return;
+
         float regenAmount = playerStats.GetStat(StatType.HealthRegen);
         if (regenAmount > 0 && currentHealth < playerStats.GetStat(StatType.MaxHealth))
         {
@@ -38,6 +41,8 @@ public class PlayerHealth : MonoBehaviour
 
     public void TakeDamage(int damage)
     {
+        if (isDead) return;
+
         float evasionChance = playerStats.GetStat(StatType.Evasion);
         if (Random.Range(0f, 100f) < evasionChance)
         {
@@ -65,6 +70,8 @@ public class PlayerHealth : MonoBehaviour
 
     public void Heal(float amount)
     {
+        if (isDead) return;
+
         int maxHealth = (int)playerStats.GetStat(StatType.MaxHealth);
         
         healthSlider.maxValue = maxHealth; 
@@ -92,6 +99,24 @@ public class PlayerHealth : MonoBehaviour
 
     void Die()
     {
+        if (isDead) return;
+
+        isDead = true;
         GetComponent<PlayerController>()?.RemoveAccelerationBuff();
+
+        GameManager gameManager = GameManager.Instance;
+        if (gameManager == null)
+        {
+            gameManager = FindFirstObjectByType<GameManager>();
+        }
+
+        if (gameManager != null)
+        {
+            gameManager.ShowGameOver();
+        }
+        else
+        {
+            Debug.LogWarning("Player died, but no GameManager was found to show the Game Over UI.");
+        }
     }
 }
