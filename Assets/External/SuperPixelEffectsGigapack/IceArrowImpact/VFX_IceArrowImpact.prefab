@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &2507854483434154795
+--- !u!1 &700690441908913847
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,40 +8,40 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 7824493956851122779}
-  - component: {fileID: 8236330515788365926}
-  - component: {fileID: 825052831734823298}
-  - component: {fileID: 4952220234227269457}
-  m_Layer: 0
-  m_Name: IceArrow_Prefab
+  - component: {fileID: 5017027934835896152}
+  - component: {fileID: 2595088793520176412}
+  - component: {fileID: 7726014585457398429}
+  - component: {fileID: -8791122554619753926}
+  m_Layer: 8
+  m_Name: VFX_IceArrowImpact
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &7824493956851122779
+--- !u!4 &5017027934835896152
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2507854483434154795}
+  m_GameObject: {fileID: 700690441908913847}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.24606, y: -0.23318, z: 0}
-  m_LocalScale: {x: 0.3, y: 0.3, z: 0.3}
+  m_LocalPosition: {x: -2.78394, y: -0.51999, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!212 &8236330515788365926
+--- !u!212 &2595088793520176412
 SpriteRenderer:
   serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2507854483434154795}
+  m_GameObject: {fileID: 700690441908913847}
   m_Enabled: 1
   m_CastShadows: 0
   m_ReceiveShadows: 0
@@ -79,12 +79,12 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: -424498591
+  m_SortingLayerID: -1954813867
   m_SortingLayer: 6
-  m_SortingOrder: 5
+  m_SortingOrder: 50
   m_MaskInteraction: 0
-  m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
-  m_Color: {r: 0, g: 0.9003706, b: 1, a: 1}
+  m_Sprite: {fileID: 8020143640844766479, guid: 9daf6b0f4b9f02243b39e10b1a937f82, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -93,68 +93,39 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
---- !u!58 &825052831734823298
-CircleCollider2D:
+--- !u!95 &7726014585457398429
+Animator:
+  serializedVersion: 7
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2507854483434154795}
+  m_GameObject: {fileID: 700690441908913847}
   m_Enabled: 1
-  serializedVersion: 3
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ForceSendLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ForceReceiveLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ContactCaptureLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_CallbackLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_IsTrigger: 1
-  m_UsedByEffector: 0
-  m_CompositeOperation: 0
-  m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
-  m_Radius: 0.49999997
---- !u!114 &4952220234227269457
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: e640088fa400dd840b9cfffc45abe348, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &-8791122554619753926
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2507854483434154795}
+  m_GameObject: {fileID: 700690441908913847}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3709943dbbfdf684b963bfbc43edd4c9, type: 3}
+  m_Script: {fileID: 11500000, guid: e1b21e9147054e509cd432d9259884ea, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Projectile
-  speed: 15
-  baseDamage: 10
-  lifeTime: 5
-  destroyOnHit: 1
-  enemyLayer:
-    serializedVersion: 2
-    m_Bits: 64
-  iceExplosionPrefab: {fileID: 700690441908913847, guid: 3f1d419434b142243b437e802b212ff4, type: 3}
-  executionExplosionPrefab: {fileID: 0}
-  iceImpactVFXPrefab: {fileID: 0}
-  iceImpactVFXScale: 1.15
-  iceImpactVFXSortingOrder: 20
-  iceImpactVFXRandomRotation: 1
-  lightningHitVFXPrefab: {fileID: 0}
-  lightningVFXDuration: 1
-  sourcePlayerHealth: {fileID: 0}
-  ignoredEnemy: {fileID: 0}
+  m_EditorClassIdentifier: Assembly-CSharp::VFXAutoDestroy
+  animator: {fileID: 7726014585457398429}
+  fallbackLifetime: 0.8

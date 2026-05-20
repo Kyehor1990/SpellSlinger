@@ -16,6 +16,12 @@ public class Projectile : MonoBehaviour
     public LayerMask enemyLayer; 
     public GameObject iceExplosionPrefab;
     public GameObject executionExplosionPrefab; 
+
+    [Header("Ice Arrow VFX Ayarları")]
+    [SerializeField] private GameObject iceImpactVFXPrefab;
+    [SerializeField] private float iceImpactVFXScale = 1.15f;
+    [SerializeField] private int iceImpactVFXSortingOrder = 20;
+    [SerializeField] private bool iceImpactVFXRandomRotation = true;
     
     [Header("Lightning VFX Ayarları")]
     public GameObject lightningHitVFXPrefab;
@@ -118,6 +124,30 @@ bool isIceArrow = activeMechanics != null && activeMechanics.Contains(SpecialMec
         Destroy(vfxInstance, lightningVFXDuration);
     }
 
+    private void SpawnIceImpactVFX(Vector3 position)
+    {
+        if (iceImpactVFXPrefab == null) return;
+
+        Quaternion rotation = iceImpactVFXRandomRotation
+            ? Quaternion.Euler(0f, 0f, Random.Range(0f, 360f))
+            : Quaternion.identity;
+
+        GameObject vfxInstance = Instantiate(iceImpactVFXPrefab, position, rotation);
+        vfxInstance.transform.localScale = Vector3.one * iceImpactVFXScale;
+
+        Collider2D[] colliders = vfxInstance.GetComponentsInChildren<Collider2D>();
+        for (int i = 0; i < colliders.Length; i++)
+        {
+            colliders[i].enabled = false;
+        }
+
+        SpriteRenderer[] renderers = vfxInstance.GetComponentsInChildren<SpriteRenderer>();
+        for (int i = 0; i < renderers.Length; i++)
+        {
+            renderers[i].sortingOrder = iceImpactVFXSortingOrder;
+        }
+    }
+
    private void ApplySpecialMechanic(Enemy targetEnemy, bool targetDied)
     {
         if (activeMechanics == null || activeMechanics.Count == 0) return;
@@ -205,6 +235,8 @@ bool isIceArrow = activeMechanics != null && activeMechanics.Contains(SpecialMec
                     {
                         Instantiate(iceExplosionPrefab, transform.position, Quaternion.identity);
                     }
+
+                    SpawnIceImpactVFX(transform.position);
                     
                     Collider2D[] slowHits = Physics2D.OverlapCircleAll(transform.position, 3f, enemyLayer);
                     foreach (Collider2D hit in slowHits)
