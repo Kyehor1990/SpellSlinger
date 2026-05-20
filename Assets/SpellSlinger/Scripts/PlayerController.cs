@@ -33,6 +33,11 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
+        if (Time.timeScale == 0f)
+        {
+            return;
+        }
+
         moveInput = inputActions.Player.Move.ReadValue<Vector2>();
         if (moveInput != Vector2.zero)
         {
@@ -51,6 +56,12 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (Time.timeScale == 0f)
+        {
+            rb.linearVelocity = Vector2.zero;
+            return;
+        }
+
         Move();
     }
 

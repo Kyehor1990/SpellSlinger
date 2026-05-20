@@ -1,5 +1,7 @@
 using System.Collections;
+using System;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public enum EnemyTier { Small, Ranged, Medium, Elite, Boss }
 
@@ -49,20 +51,52 @@ public class EnemySpawner : MonoBehaviour
                 
                 if (!enabled) break; 
 
-                float randomX = Random.Range(-mapBounds.x, mapBounds.x);
-                float randomY = Random.Range(-mapBounds.y, mapBounds.y);
-                Vector3 spawnPosition = new Vector3(randomX, randomY, 0f);
-
                 EnemySpawnData selectedEnemy = enemiesToSpawn[Random.Range(0, enemiesToSpawn.Length)];
+                SpawnEnemy(selectedEnemy);
+            }
+    }
 
-                GameObject indicator = Instantiate(spawnIndicatorPrefab, spawnPosition, Quaternion.identity);
-        
-                EnemySpawnIndicator indicatorScript = indicator.GetComponent<EnemySpawnIndicator>();
-                if(indicatorScript != null)
+    public bool TryGetSpawnData(EnemyTier tier, out EnemySpawnData spawnData)
+    {
+        if (enemiesToSpawn != null)
+        {
+            foreach (EnemySpawnData enemy in enemiesToSpawn)
+            {
+                if (enemy != null && enemy.tier == tier && enemy.enemyPrefab != null)
                 {
-                    indicatorScript.SetupIndicator(selectedEnemy, spawnWarningTime);
+                    spawnData = enemy;
+                    return true;
                 }
             }
+        }
+
+        spawnData = null;
+        return false;
+    }
+
+    public bool SpawnEnemy(EnemySpawnData selectedEnemy, Action<GameObject> onSpawned = null)
+    {
+        if (selectedEnemy == null || spawnIndicatorPrefab == null)
+        {
+            return false;
+        }
+
+        GameObject indicator = Instantiate(spawnIndicatorPrefab, GetRandomSpawnPosition(), Quaternion.identity);
+        EnemySpawnIndicator indicatorScript = indicator.GetComponent<EnemySpawnIndicator>();
+        if(indicatorScript != null)
+        {
+            indicatorScript.SetupIndicator(selectedEnemy, spawnWarningTime, onSpawned);
+            return true;
+        }
+
+        return false;
+    }
+
+    private Vector3 GetRandomSpawnPosition()
+    {
+        float randomX = Random.Range(-mapBounds.x, mapBounds.x);
+        float randomY = Random.Range(-mapBounds.y, mapBounds.y);
+        return new Vector3(randomX, randomY, 0f);
     }
 
     private void OnDrawGizmos()

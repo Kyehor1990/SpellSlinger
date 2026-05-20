@@ -1,4 +1,5 @@
 using System.Collections;
+using System;
 using UnityEngine;
 
 public class EnemySpawnIndicator : MonoBehaviour
@@ -7,10 +8,12 @@ public class EnemySpawnIndicator : MonoBehaviour
     public GameObject smokeParticlePrefab;
     
     private GameObject enemyToSpawn;
+    private Action<GameObject> onEnemySpawned;
 
-    public void SetupIndicator(EnemySpawnData data, float warningTime)
+    public void SetupIndicator(EnemySpawnData data, float warningTime, Action<GameObject> onSpawned = null)
     {
         enemyToSpawn = data.enemyPrefab;
+        onEnemySpawned = onSpawned;
         sr.sprite = data.inkDropSprite;
         sr.color = data.dropColor;
         transform.localScale = Vector3.one * data.dropScale;
@@ -29,7 +32,8 @@ public class EnemySpawnIndicator : MonoBehaviour
 
         if (enemyToSpawn != null)
         {
-            Instantiate(enemyToSpawn, transform.position, Quaternion.identity);
+            GameObject spawnedEnemy = Instantiate(enemyToSpawn, transform.position, Quaternion.identity);
+            onEnemySpawned?.Invoke(spawnedEnemy);
         }
 
         Destroy(gameObject);

@@ -13,6 +13,7 @@ public class ShopManager : MonoBehaviour
     public PlayerWallet playerWallet;
     public PlayerInventory playerInventory;
     public PlayerStatsManager playerStats;
+    [SerializeField] private EnemyWaveManager enemyWaveManager;
 
     [Header("UI Referansları")]
     public GameObject shopPanel;
@@ -33,6 +34,11 @@ public class ShopManager : MonoBehaviour
 
     private void Start()
     {
+        if (enemyWaveManager == null)
+        {
+            enemyWaveManager = Object.FindFirstObjectByType<EnemyWaveManager>();
+        }
+
         shopPanel.SetActive(false);
     }
 
@@ -126,9 +132,16 @@ public class ShopManager : MonoBehaviour
 
     public void CloseShop()
     {
+        if (!isShopActive)
+        {
+            return;
+        }
+
         isShopActive = false;
         shopPanel.SetActive(false);
         Time.timeScale = 1f;
+
+        enemyWaveManager?.StartNextWaveNow();
     }
 
     private int GetWordPrice(WordData word)
