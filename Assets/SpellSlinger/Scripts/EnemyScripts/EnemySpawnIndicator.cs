@@ -9,8 +9,10 @@ public class EnemySpawnIndicator : MonoBehaviour
     
     private GameObject enemyToSpawn;
     private Action<GameObject> onEnemySpawned;
+    private EnemySpawner ownerSpawner;
+    private int spawnSessionId;
 
-    public void SetupIndicator(EnemySpawnData data, float warningTime, Action<GameObject> onSpawned = null)
+    public void SetupIndicator(EnemySpawnData data, float warningTime, Action<GameObject> onSpawned = null, EnemySpawner spawner = null, int sessionId = 0)
     {
         if (data == null || data.enemyPrefab == null)
         {
@@ -20,6 +22,9 @@ public class EnemySpawnIndicator : MonoBehaviour
 
         enemyToSpawn = data.enemyPrefab;
         onEnemySpawned = onSpawned;
+        ownerSpawner = spawner;
+        spawnSessionId = sessionId;
+        ownerSpawner?.RegisterSpawnIndicator(this);
 
         if (sr != null)
         {
@@ -36,6 +41,12 @@ public class EnemySpawnIndicator : MonoBehaviour
     {
         yield return new WaitForSeconds(delay);
 
+        if (!CanSpawnForCurrentSession())
+        {
+            Destroy(gameObject);
+            yield break;
+        }
+
         if (smokeParticlePrefab != null)
         {
             Instantiate(smokeParticlePrefab, transform.position, Quaternion.identity);
@@ -48,5 +59,15 @@ public class EnemySpawnIndicator : MonoBehaviour
         }
 
         Destroy(gameObject);
+    }
+
+    private bool CanSpawnForCurrentSession()
+    {
+        return ownerSpawner == null || ownerSpawner.IsSpawnSessionActive(spawnSessionId);
+    }
+
+    private void OnDestroy()
+    {
+        ownerSpawner?.UnregisterSpawnIndicator(this);
     }
 }

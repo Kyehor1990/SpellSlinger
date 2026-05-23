@@ -48,6 +48,7 @@ public class EnemyWaveManager : MonoBehaviour
     private bool isWaitingForBossSpawn;
     private bool isWaitingForNextWaveStart;
     private WaveConfig currentWaveConfig;
+    private int spawnSessionId;
     private Coroutine waveRoutine;
 
     private void Start()
@@ -109,13 +110,8 @@ public class EnemyWaveManager : MonoBehaviour
             }
 
             timer = 0f;
-            isWaveActive = false;
+            EndCurrentWaveSpawns();
             UpdateWaveTimerUI(true);
-
-            if (spawner != null)
-            {
-                spawner.enabled = false;
-            }
 
             playerController?.RemoveAccelerationBuff();
             ClearAllEnemies();
@@ -146,6 +142,7 @@ public class EnemyWaveManager : MonoBehaviour
 
     private void BeginWave()
     {
+        spawnSessionId++;
         isWaveActive = true;
         currentWaveConfig = GetWaveConfig(currentWave);
         isCurrentWaveBossWave = currentWaveConfig != null && currentWaveConfig.isBossWave;
@@ -153,7 +150,25 @@ public class EnemyWaveManager : MonoBehaviour
         currentBoss = null;
         isWaitingForBossSpawn = false;
         isWaitingForNextWaveStart = false;
+        spawner?.BeginSpawnSession(spawnSessionId, IsSpawnSessionActive);
         UpdateWaveTimerUI(true);
+    }
+
+    private void EndCurrentWaveSpawns()
+    {
+        isWaveActive = false;
+        spawner?.EndSpawnSession(spawnSessionId);
+        spawnSessionId++;
+
+        if (spawner != null)
+        {
+            spawner.enabled = false;
+        }
+    }
+
+    private bool IsSpawnSessionActive(int sessionId)
+    {
+        return isWaveActive && sessionId == spawnSessionId;
     }
 
     public bool StartNextWaveNow()

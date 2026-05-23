@@ -32,8 +32,11 @@ public class EnemySpawner : MonoBehaviour
     public EnemySpawnData[] enemiesToSpawn;
 
     private IReadOnlyList<EnemySpawnOption> activeSpawnOptions;
+    private readonly List<EnemySpawnIndicator> activeSpawnIndicators = new List<EnemySpawnIndicator>();
+    private Func<int, bool> isSpawnSessionActive;
     private bool useWaveSpawnOptions;
     private bool warnedAboutMissingSpawnOptions;
+    private int activeSpawnSessionId;
 
     private void OnEnable()
     {
@@ -82,6 +85,52 @@ public class EnemySpawner : MonoBehaviour
         activeSpawnOptions = null;
         useWaveSpawnOptions = false;
         warnedAboutMissingSpawnOptions = false;
+    }
+
+    public void BeginSpawnSession(int spawnSessionId, Func<int, bool> sessionValidator)
+    {
+        CancelPendingSpawnIndicators();
+        activeSpawnSessionId = spawnSessionId;
+        isSpawnSessionActive = sessionValidator;
+    }
+
+    public void EndSpawnSession(int spawnSessionId)
+    {
+        if (spawnSessionId != activeSpawnSessionId)
+        {
+            return;
+        }
+
+        StopAllCoroutines();
+        CancelPendingSpawnIndicators();
+        isSpawnSessionActive = null;
+    }
+
+    public bool IsSpawnSessionActive(int spawnSessionId)
+    {
+        return spawnSessionId == activeSpawnSessionId
+            && isSpawnSessionActive != null
+            && isSpawnSessionActive(spawnSessionId);
+    }
+
+    public void RegisterSpawnIndicator(EnemySpawnIndicator spawnIndicator)
+    {
+        if (spawnIndicator == null || activeSpawnIndicators.Contains(spawnIndicator))
+        {
+            return;
+        }
+
+        activeSpawnIndicators.Add(spawnIndicator);
+    }
+
+    public void UnregisterSpawnIndicator(EnemySpawnIndicator spawnIndicator)
+    {
+        if (spawnIndicator == null)
+        {
+            return;
+        }
+
+        activeSpawnIndicators.Remove(spawnIndicator);
     }
 
     public bool HasValidDefaultSpawnPool()
@@ -150,7 +199,7 @@ public class EnemySpawner : MonoBehaviour
         EnemySpawnIndicator indicatorScript = indicator.GetComponent<EnemySpawnIndicator>();
         if (indicatorScript != null)
         {
-            indicatorScript.SetupIndicator(selectedEnemy, spawnWarningTime, onSpawned);
+            indicatorScript.SetupIndicator(selectedEnemy, spawnWarningTime, onSpawned, this, activeSpawnSessionId);
             return true;
         }
 
@@ -280,6 +329,20 @@ public class EnemySpawner : MonoBehaviour
         string source = useWaveSpawnOptions ? "current wave config" : "default enemy catalog";
         Debug.LogWarning($"EnemySpawner has no valid enemies in the {source}. Null prefabs and zero or negative weights are ignored.");
         warnedAboutMissingSpawnOptions = true;
+    }
+
+    private void CancelPendingSpawnIndicators()
+    {
+        for (int i = activeSpawnIndicators.Count - 1; i >= 0; i--)
+        {
+            EnemySpawnIndicator indicator = activeSpawnIndicators[i];
+            if (indicator != null)
+            {
+                Destroy(indicator.gameObject);
+            }
+        }
+
+        activeSpawnIndicators.Clear();
     }
 
     private Vector3 GetRandomSpawnPosition()
