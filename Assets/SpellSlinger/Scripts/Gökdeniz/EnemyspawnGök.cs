@@ -4,20 +4,6 @@ using UnityEngine;
 
 
 
-public enum EnemyTierG { Small, Ranged, Medium, Elite, Boss }
-
-[System.Serializable]
-public class EnemySpawnDataG
-{
-    public EnemyTier tier;
-    public GameObject enemyPrefab;
-    
-    [Header("Mürekkep Damlası Görseli")]
-    public Sprite inkDropSprite;
-    public Color dropColor = Color.black;
-    public float dropScale = 1f;
-}
-
 public class EnemyspawnGök : MonoBehaviour
 {
 

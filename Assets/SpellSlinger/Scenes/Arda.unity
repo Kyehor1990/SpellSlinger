@@ -2403,7 +2403,7 @@ MonoBehaviour:
   currentWave: 1
   waveConfigs:
   - waveName: 1
-    duration: 59
+    duration: 40
     isBossWave: 0
     bossPrefab: {fileID: 0}
     enemySpawnOptions:

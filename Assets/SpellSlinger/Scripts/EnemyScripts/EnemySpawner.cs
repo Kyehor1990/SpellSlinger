@@ -102,24 +102,6 @@ public class EnemySpawner : MonoBehaviour
         return false;
     }
 
-    public bool TryGetSpawnData(EnemyTier tier, out EnemySpawnData spawnData)
-    {
-        if (enemiesToSpawn != null)
-        {
-            foreach (EnemySpawnData enemy in enemiesToSpawn)
-            {
-                if (enemy != null && enemy.tier == tier && enemy.enemyPrefab != null)
-                {
-                    spawnData = enemy;
-                    return true;
-                }
-            }
-        }
-
-        spawnData = null;
-        return false;
-    }
-
     public bool TryGetSpawnData(GameObject enemyPrefab, out EnemySpawnData spawnData)
     {
         if (enemyPrefab == null)

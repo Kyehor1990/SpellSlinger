@@ -490,7 +490,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyWaveManager
   waveDuration: 10
-  breakDuration: 20
   currentWave: 1
   initialSpawnDelay: 2
   difficultyMultiplier: 0.8
