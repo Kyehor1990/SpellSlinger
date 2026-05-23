@@ -23,9 +23,14 @@ public class Projectile : MonoBehaviour
     [SerializeField] private int iceImpactVFXSortingOrder = 20;
     [SerializeField] private bool iceImpactVFXRandomRotation = true;
     
-    [Header("Lightning VFX Ayarları")]
+[Header("Lightning VFX Ayarları")]
     public GameObject lightningHitVFXPrefab;
     public float lightningVFXDuration = 1f;
+
+    [Header("Fire VFX Ayarları")]
+    [SerializeField] private GameObject fireHitVFXPrefab;
+    [SerializeField] private float fireVFXDuration = 1f;
+    [SerializeField] private float fireVFXScale = 1f;
 
     [HideInInspector] public PlayerHealth sourcePlayerHealth;
     internal List<SpecialMechanic> activeMechanics;
@@ -124,7 +129,7 @@ bool isIceArrow = activeMechanics != null && activeMechanics.Contains(SpecialMec
         Destroy(vfxInstance, lightningVFXDuration);
     }
 
-    private void SpawnIceImpactVFX(Vector3 position)
+private void SpawnIceImpactVFX(Vector3 position)
     {
         if (iceImpactVFXPrefab == null) return;
 
@@ -146,6 +151,22 @@ bool isIceArrow = activeMechanics != null && activeMechanics.Contains(SpecialMec
         {
             renderers[i].sortingOrder = iceImpactVFXSortingOrder;
         }
+    }
+
+    private void SpawnFireHitVFX(Vector3 position)
+    {
+        if (fireHitVFXPrefab == null) return;
+
+        GameObject vfxInstance = Instantiate(fireHitVFXPrefab, position, Quaternion.identity);
+        vfxInstance.transform.localScale = Vector3.one * fireVFXScale;
+
+        ParticleSystem ps = vfxInstance.GetComponent<ParticleSystem>();
+        if (ps != null)
+        {
+            ps.Play();
+        }
+
+        Destroy(vfxInstance, fireVFXDuration);
     }
 
    private void ApplySpecialMechanic(Enemy targetEnemy, bool targetDied)
@@ -218,8 +239,9 @@ bool isIceArrow = activeMechanics != null && activeMechanics.Contains(SpecialMec
                     break;
 
 
-                case SpecialMechanic.FireBurn: 
-                    targetEnemy.ApplyBurn(6f, 3f); 
+case SpecialMechanic.FireBurn: 
+                    targetEnemy.ApplyBurn(6f, 3f);
+                    SpawnFireHitVFX(targetEnemy.transform.position);
                     break;
 
                 case SpecialMechanic.WaterSlow: 

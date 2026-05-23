@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 7d911ce461e6fa6459c59c9d17591ea8
+guid: 6114337e16fb23149a017a2d9c869b59
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -4752958108683838711
-    second: Gary1_0
+      213: 4032622256702336217
+    second: BurnVFX1_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Gary1_0
+      name: BurnVFX1_0
       rect:
         serializedVersion: 2
-        x: 8
-        y: 10
-        width: 38
-        height: 34
+        x: 3
+        y: 1
+        width: 9
+        height: 13
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 90b569b48c91a0eb0800000000000000
-      internalID: -4752958108683838711
+      spriteID: 9dca314a390c6f730800000000000000
+      internalID: 4032622256702336217
       vertices: []
       indices: 
       edges: []
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Gary1_0: -4752958108683838711
+      BurnVFX1_0: 4032622256702336217
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

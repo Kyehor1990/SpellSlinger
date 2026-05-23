@@ -184,7 +184,7 @@ SpriteRenderer:
   m_FlipX: 1
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 2.25, y: 2.0625}
+  m_Size: {x: 0.36, y: 0.32}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -227,8 +227,8 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 2.875, y: 1.9375}
-    newSize: {x: 2.25, y: 2.0625}
+    oldSize: {x: 2.25, y: 2}
+    newSize: {x: 0.36, y: 0.32}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
@@ -273,8 +273,8 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 2.875, y: 1.9375}
-    newSize: {x: 2.25, y: 2.0625}
+    oldSize: {x: 2.25, y: 2}
+    newSize: {x: 0.36, y: 0.32}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
@@ -333,6 +333,14 @@ MonoBehaviour:
   walkSprites:
   - {fileID: -4812235735041114661, guid: 0e3f44b068043ae4088d310a04103011, type: 3}
   - {fileID: -4446107662849108189, guid: 808967aed36cd274c9bf7a6909c0011a, type: 3}
+  - {fileID: -5512512197039443960, guid: 7c62303c4d0263e41b72925f4548eae3, type: 3}
+  - {fileID: -4081848793914850805, guid: dda75eb12d2d7d441a3a9f8b1c6d7e83, type: 3}
+  - {fileID: -4457239906616724505, guid: 15f51eb22d741df40a11c1c3aea42bc2, type: 3}
+  - {fileID: 5223416857915466860, guid: 7578321b2e5b4a440ab477bfcc525034, type: 3}
+  - {fileID: 5445946833769332905, guid: 27a4f3acff5f2ee4390a25b345783456, type: 3}
+  - {fileID: 2390294459457409525, guid: 24dac962bd2e08742a9f7a1bf8f75be2, type: 3}
+  - {fileID: 3790529837652079269, guid: f3ee60e502e81594395e5ad193793428, type: 3}
+  - {fileID: -4744541957709973324, guid: 4b42881a13089fb49b2972a4409dc6d2, type: 3}
   frameRate: 0.15
   isAnimating: 0
   deathSmokePrefab: {fileID: 0}
