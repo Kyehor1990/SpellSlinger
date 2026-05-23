@@ -1,28 +1,39 @@
 using System.Collections;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+
+[System.Serializable]
+public class WaveConfig
+{
+    public string waveName;
+    [Min(0f)] public float duration = 60f;
+    public bool isBossWave;
+    public GameObject bossPrefab;
+    public List<EnemySpawnOption> enemySpawnOptions = new List<EnemySpawnOption>();
+}
+
+[System.Serializable]
+public class EnemySpawnOption
+{
+    public GameObject enemyPrefab;
+    [Min(0f)] public float spawnWeight = 1f;
+}
 
 public class EnemyWaveManager : MonoBehaviour
 {
     private const string BossTimerLabel = "BOSS";
 
-    [System.Serializable]
-    public class WaveConfig
-    {
-        public int waveNumber = 1;
-        public bool isBossWave;
-    }
-
-    [Header("Dalga Ayarları")]
-    public float waveDuration = 60f;       
+    [Header("Wave Settings")]
+    public float waveDuration = 60f;
     public int currentWave = 1;
-    [SerializeField] private WaveConfig[] waveConfigs;
+    [SerializeField] private List<WaveConfig> waveConfigs = new List<WaveConfig>();
 
-    [Header("Zorluk Ayarları")]
-    public float initialSpawnDelay = 2f;   
-    public float difficultyMultiplier = 0.8f; 
+    [Header("Difficulty Settings")]
+    public float initialSpawnDelay = 2f;
+    public float difficultyMultiplier = 0.8f;
 
-    [Header("Referanslar")]
+    [Header("References")]
     public EnemySpawner spawner;
     public PlayerExperience playerExp;
     public UpgradeManager upgradeManager;
@@ -36,6 +47,7 @@ public class EnemyWaveManager : MonoBehaviour
     private GameObject currentBoss;
     private bool isWaitingForBossSpawn;
     private bool isWaitingForNextWaveStart;
+    private WaveConfig currentWaveConfig;
     private Coroutine waveRoutine;
 
     private void Start()
@@ -57,23 +69,30 @@ public class EnemyWaveManager : MonoBehaviour
     {
         while (true)
         {
-            
             BeginWave();
-            
+
             float currentDelay = initialSpawnDelay * Mathf.Pow(difficultyMultiplier, currentWave - 1);
-            spawner.timeBetweenSpawns = currentDelay;
+            if (spawner != null)
+            {
+                spawner.timeBetweenSpawns = currentDelay;
+            }
+
+            bool hasNormalSpawns = ConfigureSpawnerForCurrentWave();
 
             if (isCurrentWaveBossWave)
             {
-                StartBossWave();
+                StartBossWave(hasNormalSpawns);
             }
-            else
+            else if (hasNormalSpawns && spawner != null)
             {
                 spawner.enabled = true;
             }
-            Debug.Log($"<color=green><b>[DALGA {currentWave} BAŞLADI]</b></color> Süre: {waveDuration}s | Spawn Hızı: {currentDelay:F2}s");
+            else
+            {
+                Debug.LogWarning($"Wave {currentWave} has no valid enemy spawn options. No normal enemies will spawn.");
+            }
 
-            Debug.Log($"Dalga {currentWave} Başladı! Spawn Hızı: {currentDelay}s");
+            Debug.Log($"<color=green><b>[WAVE {currentWave} STARTED]</b></color> {GetWaveDisplayName(currentWaveConfig)} | Duration: {timer}s | Spawn Delay: {currentDelay:F2}s");
 
             if (isCurrentWaveBossWave)
             {
@@ -89,30 +108,31 @@ public class EnemyWaveManager : MonoBehaviour
                 }
             }
 
-         
             timer = 0f;
             isWaveActive = false;
             UpdateWaveTimerUI(true);
-            spawner.enabled = false; 
+
+            if (spawner != null)
+            {
+                spawner.enabled = false;
+            }
+
             playerController?.RemoveAccelerationBuff();
             ClearAllEnemies();
-            
+
             CollectAllCoinsInScene();
             CollectAllXpInScene();
-            
-            
+
             yield return new WaitForSeconds(1f);
             UpdateWaveTimerUI(true);
-            
-            
-            
-            Debug.Log($"Dalga {currentWave} Bitti. Hazırlan!");
+
+            Debug.Log($"Wave {currentWave} finished. Get ready!");
 
             if (playerExp != null && playerExp.pendingLevelUps > 0)
             {
                 upgradeManager.StartUpgradePhase(playerExp.pendingLevelUps);
                 yield return new WaitUntil(() => upgradeManager.isUpgradePhaseActive == false);
-                playerExp.pendingLevelUps = 0; 
+                playerExp.pendingLevelUps = 0;
             }
 
             shopManager.OpenShop();
@@ -122,14 +142,14 @@ public class EnemyWaveManager : MonoBehaviour
             isWaitingForNextWaveStart = false;
             currentWave++;
         }
-
     }
 
     private void BeginWave()
     {
         isWaveActive = true;
-        isCurrentWaveBossWave = IsBossWave(currentWave);
-        timer = waveDuration;
+        currentWaveConfig = GetWaveConfig(currentWave);
+        isCurrentWaveBossWave = currentWaveConfig != null && currentWaveConfig.isBossWave;
+        timer = GetWaveDuration(currentWaveConfig);
         currentBoss = null;
         isWaitingForBossSpawn = false;
         isWaitingForNextWaveStart = false;
@@ -156,59 +176,109 @@ public class EnemyWaveManager : MonoBehaviour
 
     public void PreviewWaveTimer(int waveNumber)
     {
-        SetWaveTimerText(IsBossWave(waveNumber), waveDuration, true);
+        WaveConfig waveConfig = GetWaveConfig(waveNumber);
+        SetWaveTimerText(waveConfig != null && waveConfig.isBossWave, GetWaveDuration(waveConfig), true);
     }
 
-    private bool IsBossWave(int waveNumber)
+    private WaveConfig GetWaveConfig(int waveNumber)
     {
-        if (waveConfigs == null)
+        if (waveConfigs == null || waveNumber <= 0)
         {
+            return null;
+        }
+
+        int waveIndex = waveNumber - 1;
+        if (waveIndex < 0 || waveIndex >= waveConfigs.Count)
+        {
+            return null;
+        }
+
+        return waveConfigs[waveIndex];
+    }
+
+    private float GetWaveDuration(WaveConfig waveConfig)
+    {
+        if (waveConfig == null)
+        {
+            return waveDuration;
+        }
+
+        return Mathf.Max(0f, waveConfig.duration);
+    }
+
+    private string GetWaveDisplayName(WaveConfig waveConfig)
+    {
+        if (waveConfig == null || string.IsNullOrWhiteSpace(waveConfig.waveName))
+        {
+            return $"Wave {currentWave}";
+        }
+
+        return waveConfig.waveName;
+    }
+
+    private bool ConfigureSpawnerForCurrentWave()
+    {
+        if (spawner == null)
+        {
+            Debug.LogWarning("EnemyWaveManager has no EnemySpawner reference.");
             return false;
         }
 
-        foreach (WaveConfig waveConfig in waveConfigs)
+        if (currentWaveConfig == null)
         {
-            if (waveConfig != null && waveConfig.waveNumber == waveNumber)
-            {
-                return waveConfig.isBossWave;
-            }
+            spawner.UseDefaultSpawnPool();
+            return spawner.HasValidDefaultSpawnPool();
         }
 
-        return false;
+        return spawner.UseWaveSpawnOptions(currentWaveConfig.enemySpawnOptions);
     }
 
-    private void StartBossWave()
+    private void StartBossWave(bool spawnNormalEnemiesDuringBoss)
     {
         UpdateWaveTimerUI(true);
 
-        spawner.enabled = false;
-
-        if (spawner.TryGetSpawnData(EnemyTier.Boss, out EnemySpawnData bossSpawnData))
+        if (spawner != null)
         {
-            isWaitingForBossSpawn = true;
-            bool spawnStarted = spawner.SpawnEnemy(bossSpawnData, spawnedBoss =>
-            {
-                currentBoss = spawnedBoss;
-                isWaitingForBossSpawn = false;
-
-                Enemy bossEnemy = currentBoss != null ? currentBoss.GetComponent<Enemy>() : null;
-                if (bossEnemy != null)
-                {
-                    bossEnemy.isBoss = true;
-                }
-            });
-
-            if (spawnStarted)
-            {
-                return;
-            }
+            spawner.enabled = spawnNormalEnemiesDuringBoss;
         }
 
-        Debug.LogWarning($"Wave {currentWave} is marked as a boss wave, but EnemySpawner could not spawn a Boss. Falling back to timed wave.");
+        if (spawner == null)
+        {
+            isWaitingForBossSpawn = false;
+            currentBoss = null;
+            return;
+        }
+
+        GameObject bossPrefab = currentWaveConfig != null ? currentWaveConfig.bossPrefab : null;
+        if (bossPrefab == null)
+        {
+            Debug.LogWarning($"Wave {currentWave} is marked as a boss wave, but no boss prefab is assigned. The boss wave will end immediately.");
+            isWaitingForBossSpawn = false;
+            currentBoss = null;
+            return;
+        }
+
+        isWaitingForBossSpawn = true;
+        bool spawnStarted = spawner.SpawnEnemy(bossPrefab, spawnedBoss =>
+        {
+            currentBoss = spawnedBoss;
+            isWaitingForBossSpawn = false;
+
+            Enemy bossEnemy = currentBoss != null ? currentBoss.GetComponent<Enemy>() : null;
+            if (bossEnemy != null)
+            {
+                bossEnemy.isBoss = true;
+            }
+        });
+
+        if (spawnStarted)
+        {
+            return;
+        }
+
+        Debug.LogWarning($"Wave {currentWave} is marked as a boss wave, but EnemySpawner could not spawn the assigned boss prefab. The boss wave will end immediately.");
         isWaitingForBossSpawn = false;
-        isCurrentWaveBossWave = false;
-        spawner.enabled = true;
-        UpdateWaveTimerUI(true);
+        currentBoss = null;
     }
 
     private void UpdateWaveTimerUI(bool forceRefresh = false)
@@ -268,6 +338,11 @@ public class EnemyWaveManager : MonoBehaviour
     {
         CoinDrop[] coins = Object.FindObjectsByType<CoinDrop>(FindObjectsSortMode.None);
 
+        if (playerExp == null)
+        {
+            return;
+        }
+
         Transform playerTransform = playerExp.transform;
 
         foreach (var coin in coins)
@@ -278,11 +353,17 @@ public class EnemyWaveManager : MonoBehaviour
 
     private void CollectAllXpInScene()
     {
-        InspirationDrop [] xp = Object.FindObjectsByType<InspirationDrop>(FindObjectsSortMode.None);
-        Transform playerTransform = playerExp.transform;
-        foreach (var Xp in xp)
+        InspirationDrop[] xp = Object.FindObjectsByType<InspirationDrop>(FindObjectsSortMode.None);
+
+        if (playerExp == null)
         {
-            Xp.ForceFollow(playerTransform);
+            return;
+        }
+
+        Transform playerTransform = playerExp.transform;
+        foreach (var inspirationDrop in xp)
+        {
+            inspirationDrop.ForceFollow(playerTransform);
         }
     }
 

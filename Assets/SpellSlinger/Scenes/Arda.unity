@@ -2401,7 +2401,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyWaveManager
   waveDuration: 40
   currentWave: 1
-  waveConfigs: []
+  waveConfigs:
+  - waveName: 1
+    duration: 59
+    isBossWave: 0
+    bossPrefab: {fileID: 0}
+    enemySpawnOptions:
+    - enemyPrefab: {fileID: 4395884553050428915, guid: 57b316701d2a5a8468c7d6fc50f9131d, type: 3}
+      spawnWeight: 100
   initialSpawnDelay: 2
   difficultyMultiplier: 0.8
   spawner: {fileID: 1638670088}

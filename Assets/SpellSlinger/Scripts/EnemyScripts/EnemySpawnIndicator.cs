@@ -12,10 +12,21 @@ public class EnemySpawnIndicator : MonoBehaviour
 
     public void SetupIndicator(EnemySpawnData data, float warningTime, Action<GameObject> onSpawned = null)
     {
+        if (data == null || data.enemyPrefab == null)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
         enemyToSpawn = data.enemyPrefab;
         onEnemySpawned = onSpawned;
-        sr.sprite = data.inkDropSprite;
-        sr.color = data.dropColor;
+
+        if (sr != null)
+        {
+            sr.sprite = data.inkDropSprite;
+            sr.color = data.dropColor;
+        }
+
         transform.localScale = Vector3.one * data.dropScale;
 
         StartCoroutine(SpawnSequence(warningTime));
