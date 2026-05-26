@@ -2409,6 +2409,103 @@ MonoBehaviour:
     enemySpawnOptions:
     - enemyPrefab: {fileID: 4395884553050428915, guid: 57b316701d2a5a8468c7d6fc50f9131d, type: 3}
       spawnWeight: 100
+  - waveName: 2
+    duration: 40
+    isBossWave: 0
+    bossPrefab: {fileID: 0}
+    enemySpawnOptions:
+    - enemyPrefab: {fileID: 4395884553050428915, guid: 57b316701d2a5a8468c7d6fc50f9131d, type: 3}
+      spawnWeight: 50
+    - enemyPrefab: {fileID: 4395884553050428915, guid: d99434f5f408bf24fa34d9e3c17a34b7, type: 3}
+      spawnWeight: 50
+  - waveName: 3
+    duration: 60
+    isBossWave: 0
+    bossPrefab: {fileID: 0}
+    enemySpawnOptions:
+    - enemyPrefab: {fileID: 4395884553050428915, guid: 57b316701d2a5a8468c7d6fc50f9131d, type: 3}
+      spawnWeight: 50
+    - enemyPrefab: {fileID: 4395884553050428915, guid: d99434f5f408bf24fa34d9e3c17a34b7, type: 3}
+      spawnWeight: 50
+    - enemyPrefab: {fileID: 4395884553050428915, guid: 3c87073e2aab9f4479dcf1ec6ff3272e, type: 3}
+      spawnWeight: 50
+  - waveName: 4
+    duration: 60
+    isBossWave: 0
+    bossPrefab: {fileID: 0}
+    enemySpawnOptions:
+    - enemyPrefab: {fileID: 4395884553050428915, guid: 57b316701d2a5a8468c7d6fc50f9131d, type: 3}
+      spawnWeight: 50
+    - enemyPrefab: {fileID: 4395884553050428915, guid: d99434f5f408bf24fa34d9e3c17a34b7, type: 3}
+      spawnWeight: 50
+    - enemyPrefab: {fileID: 4395884553050428915, guid: 3c87073e2aab9f4479dcf1ec6ff3272e, type: 3}
+      spawnWeight: 50
+  - waveName: 5
+    duration: 45
+    isBossWave: 0
+    bossPrefab: {fileID: 0}
+    enemySpawnOptions:
+    - enemyPrefab: {fileID: 4395884553050428915, guid: 57b316701d2a5a8468c7d6fc50f9131d, type: 3}
+      spawnWeight: 50
+    - enemyPrefab: {fileID: 4395884553050428915, guid: d99434f5f408bf24fa34d9e3c17a34b7, type: 3}
+      spawnWeight: 50
+    - enemyPrefab: {fileID: 4395884553050428915, guid: 3c87073e2aab9f4479dcf1ec6ff3272e, type: 3}
+      spawnWeight: 50
+  - waveName: 6
+    duration: 60
+    isBossWave: 0
+    bossPrefab: {fileID: 0}
+    enemySpawnOptions:
+    - enemyPrefab: {fileID: 4395884553050428915, guid: 57b316701d2a5a8468c7d6fc50f9131d, type: 3}
+      spawnWeight: 50
+    - enemyPrefab: {fileID: 4395884553050428915, guid: d99434f5f408bf24fa34d9e3c17a34b7, type: 3}
+      spawnWeight: 50
+    - enemyPrefab: {fileID: 4395884553050428915, guid: 3c87073e2aab9f4479dcf1ec6ff3272e, type: 3}
+      spawnWeight: 50
+  - waveName: 7
+    duration: 60
+    isBossWave: 0
+    bossPrefab: {fileID: 0}
+    enemySpawnOptions:
+    - enemyPrefab: {fileID: 4395884553050428915, guid: 57b316701d2a5a8468c7d6fc50f9131d, type: 3}
+      spawnWeight: 50
+    - enemyPrefab: {fileID: 4395884553050428915, guid: d99434f5f408bf24fa34d9e3c17a34b7, type: 3}
+      spawnWeight: 50
+    - enemyPrefab: {fileID: 4395884553050428915, guid: 3c87073e2aab9f4479dcf1ec6ff3272e, type: 3}
+      spawnWeight: 50
+  - waveName: 8
+    duration: 60
+    isBossWave: 0
+    bossPrefab: {fileID: 0}
+    enemySpawnOptions:
+    - enemyPrefab: {fileID: 4395884553050428915, guid: 57b316701d2a5a8468c7d6fc50f9131d, type: 3}
+      spawnWeight: 50
+    - enemyPrefab: {fileID: 4395884553050428915, guid: d99434f5f408bf24fa34d9e3c17a34b7, type: 3}
+      spawnWeight: 50
+    - enemyPrefab: {fileID: 4395884553050428915, guid: 3c87073e2aab9f4479dcf1ec6ff3272e, type: 3}
+      spawnWeight: 50
+  - waveName: 9
+    duration: 60
+    isBossWave: 0
+    bossPrefab: {fileID: 0}
+    enemySpawnOptions:
+    - enemyPrefab: {fileID: 4395884553050428915, guid: 57b316701d2a5a8468c7d6fc50f9131d, type: 3}
+      spawnWeight: 50
+    - enemyPrefab: {fileID: 4395884553050428915, guid: d99434f5f408bf24fa34d9e3c17a34b7, type: 3}
+      spawnWeight: 50
+    - enemyPrefab: {fileID: 4395884553050428915, guid: 3c87073e2aab9f4479dcf1ec6ff3272e, type: 3}
+      spawnWeight: 50
+  - waveName: 10
+    duration: 60
+    isBossWave: 0
+    bossPrefab: {fileID: 0}
+    enemySpawnOptions:
+    - enemyPrefab: {fileID: 4395884553050428915, guid: 57b316701d2a5a8468c7d6fc50f9131d, type: 3}
+      spawnWeight: 50
+    - enemyPrefab: {fileID: 4395884553050428915, guid: d99434f5f408bf24fa34d9e3c17a34b7, type: 3}
+      spawnWeight: 50
+    - enemyPrefab: {fileID: 4395884553050428915, guid: 3c87073e2aab9f4479dcf1ec6ff3272e, type: 3}
+      spawnWeight: 50
   initialSpawnDelay: 2
   difficultyMultiplier: 0.8
   spawner: {fileID: 1638670088}
