@@ -153,11 +153,18 @@ private void SpawnIceImpactVFX(Vector3 position)
         }
     }
 
-    private void SpawnFireHitVFX(Vector3 position)
+private void SpawnFireHitVFX(Transform enemyTransform)
     {
         if (fireHitVFXPrefab == null) return;
 
-        GameObject vfxInstance = Instantiate(fireHitVFXPrefab, position, Quaternion.identity);
+        GameObject vfxInstance = Instantiate(
+            fireHitVFXPrefab, 
+            enemyTransform.position, 
+            Quaternion.identity
+        );
+        vfxInstance.transform.SetParent(enemyTransform);
+        vfxInstance.transform.localPosition = Vector3.zero;
+        vfxInstance.transform.localRotation = Quaternion.identity;
         vfxInstance.transform.localScale = Vector3.one * fireVFXScale;
 
         ParticleSystem ps = vfxInstance.GetComponent<ParticleSystem>();
@@ -241,7 +248,7 @@ private void SpawnIceImpactVFX(Vector3 position)
 
 case SpecialMechanic.FireBurn: 
                     targetEnemy.ApplyBurn(6f, 3f);
-                    SpawnFireHitVFX(targetEnemy.transform.position);
+                    SpawnFireHitVFX(targetEnemy.transform);
                     break;
 
                 case SpecialMechanic.WaterSlow: 
