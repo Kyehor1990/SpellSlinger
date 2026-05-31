@@ -7,33 +7,38 @@ public class EnemyAttack : MonoBehaviour
     [SerializeField] private float fireRate = 1.5f;
     [SerializeField] private float attackRange = 5.5f; 
 
-    private float _nextFireTime;
-    private Transform _playerTransform;
+    private float nextFireTime;
 
-    private void Start()
+    public float AttackRange => attackRange;
+
+    public bool TryAttack(Transform target)
     {
-        GameObject player = GameObject.FindGameObjectWithTag("Player");
-        if (player != null) _playerTransform = player.transform;
-    }
-
-    private void Update()
-    {
-        if (_playerTransform == null) return;
-
-        float distance = Vector2.Distance(transform.position, _playerTransform.position);
-
-        if (distance <= attackRange && Time.time >= _nextFireTime)
+        if (target == null || Time.time < nextFireTime)
         {
-            Shoot();
-            _nextFireTime = Time.time + fireRate;
+            return false;
         }
+
+        float distance = Vector2.Distance(transform.position, target.position);
+        if (distance > attackRange)
+        {
+            return false;
+        }
+
+        Shoot();
+        nextFireTime = Time.time + fireRate;
+        return true;
     }
 
     private void Shoot()
     {
-        if (bulletPrefab && firePoint)
-            Instantiate(bulletPrefab, firePoint.position, Quaternion.identity);
+        if (bulletPrefab == null || firePoint == null)
+        {
+            return;
+        }
+
+        Instantiate(bulletPrefab, firePoint.position, Quaternion.identity);
     }
+
     private void OnDrawGizmosSelected()
     {
        

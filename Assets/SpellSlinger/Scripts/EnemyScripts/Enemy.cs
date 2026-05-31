@@ -53,7 +53,11 @@ public class Enemy : MonoBehaviour
     public Vector2Int coinDropAmount = new Vector2Int(1, 2);
     public float scatterRadius = 0.6f;
 
-    private void Awake()
+    protected Transform PlayerTransform => playerTransform;
+    protected Rigidbody2D Rigidbody => rb;
+    protected bool CanMove => !isDying && !isStunned;
+
+    protected virtual void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
@@ -74,7 +78,7 @@ public class Enemy : MonoBehaviour
         separationFilter.SetLayerMask(enemyLayerMask);
     }
 
-private void Start()
+    protected virtual void Start()
     {
         maxHealth = currentHealth;
         originalSpeed = moveSpeed;
@@ -92,7 +96,7 @@ private void Start()
         }
     }
 
-    private void Update()
+    protected virtual void Update()
     {
         // Hareket ederken animasyonu oynat
         if (isAnimating && walkSprites != null && walkSprites.Length > 0 && rb != null && rb.linearVelocity.magnitude > 0.1f)
@@ -134,28 +138,40 @@ private void Start()
         animationCoroutine = null;
     }
 
-    private void FixedUpdate()
+    protected virtual void FixedUpdate()
     {
-        if (isDying) 
+        if (!CanMove)
         {
-            rb.linearVelocity = Vector2.zero;
-            return;
-        }
-
-        if (isStunned) 
-        {
-            rb.linearVelocity = Vector2.zero;
+            StopMovement();
             return;
         }
 
         if (playerTransform != null)
         {
             Vector2 direction = (playerTransform.position - transform.position).normalized;
-            rb.linearVelocity = GetSeparatedVelocity(direction);
+            MoveWithSeparation(direction);
         }
     }
 
-    private Vector2 GetSeparatedVelocity(Vector2 primaryDirection)
+    protected void MoveWithSeparation(Vector2 primaryDirection)
+    {
+        if (rb == null)
+        {
+            return;
+        }
+
+        rb.linearVelocity = GetSeparatedVelocity(primaryDirection);
+    }
+
+    protected void StopMovement()
+    {
+        if (rb != null)
+        {
+            rb.linearVelocity = Vector2.zero;
+        }
+    }
+
+    protected Vector2 GetSeparatedVelocity(Vector2 primaryDirection)
     {
         Vector2 targetSeparationForce = CalculateSeparationForce();
         float smoothing = 1f - Mathf.Exp(-12f * Time.fixedDeltaTime);

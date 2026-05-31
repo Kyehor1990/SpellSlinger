@@ -12437,6 +12437,11 @@ MonoBehaviour:
     inkDropSprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
     dropColor: {r: 0, g: 0, b: 1, a: 1}
     dropScale: 2
+  - tier: 0
+    enemyPrefab: {fileID: 6136126643793134618, guid: c29f7107d6ce08b4db2fb0ff94d8dcd2, type: 3}
+    inkDropSprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+    dropColor: {r: 0.6, g: 0.6, b: 0.6, a: 1}
+    dropScale: 2
 --- !u!4 &1638670089
 Transform:
   m_ObjectHideFlags: 0

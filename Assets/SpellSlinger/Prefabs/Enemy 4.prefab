@@ -305,10 +305,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a5c84ad7b61579340822a1892a7e439d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RangedEnemy
-  moveSpeed: 2
-  stopDistance: 5
-  retreatDistance: 3
   currentHealth: 15
+  moveSpeed: 2
+  isBoss: 0
+  maxHealth: 0
+  separationRadius: 1
+  separationStrength: 1.4
+  maxSeparationForce: 1.2
+  enemyLayerMask:
+    serializedVersion: 2
+    m_Bits: 64
   walkSprites:
   - {fileID: 21300000, guid: b3d19b9e4968ee842a6eaeb1b8db8432, type: 3}
   - {fileID: 21300000, guid: 80162ee2a6c0f514593aeb2f2e6a5abc, type: 3}
@@ -317,12 +323,15 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 9db693d1f4328ef4d8879f120650a6fd, type: 3}
   frameRate: 0.15
   isAnimating: 0
-  separationRadius: 1
-  separationStrength: 1.4
-  maxSeparationForce: 1.2
-  enemyLayerMask:
-    serializedVersion: 2
-    m_Bits: 64
+  deathSmokePrefab: {fileID: 0}
+  inkStainPrefab: {fileID: 0}
+  xpDropPrefab: {fileID: 4404637123539996590, guid: 525fc5d2299ad9240893a3480787b002, type: 3}
+  coinDropPrefab: {fileID: 366768702120322022, guid: b04d1a36b37cc99438518988ad1e7f34, type: 3}
+  xpDropAmount: {x: 1, y: 3}
+  coinDropAmount: {x: 1, y: 2}
+  scatterRadius: 0.6
+  stopDistance: 5
+  retreatDistance: 3
 --- !u!114 &9104997131639116966
 MonoBehaviour:
   m_ObjectHideFlags: 0
