@@ -44,12 +44,12 @@ public class RangedEnemy : Enemy
 
         if (distanceToPlayer < retreatDistance)
         {
-            Vector2 direction = (transform.position - PlayerTransform.position).normalized;
+            Vector2 direction = TryGetDirectionAwayFromPlayer(out Vector2 retreatDirection) ? retreatDirection : Vector2.zero;
             MoveWithSeparation(direction);
         }
         else if (distanceToPlayer > stopDistance)
         {
-            Vector2 direction = (PlayerTransform.position - transform.position).normalized;
+            Vector2 direction = TryGetDirectionToPlayer(out Vector2 approachDirection) ? approachDirection : Vector2.zero;
             MoveWithSeparation(direction);
         }
         else
@@ -63,7 +63,12 @@ public class RangedEnemy : Enemy
 
     private void FlipTowardsPlayer()
     {
-        if (PlayerTransform.position.x > transform.position.x)
+        if (Rigidbody == null || Mathf.Abs(Rigidbody.linearVelocity.x) <= FacingUpdateThreshold)
+        {
+            return;
+        }
+
+        if (Rigidbody.linearVelocity.x > 0f)
         {
             transform.localScale = initialScale;
         }

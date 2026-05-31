@@ -32,6 +32,10 @@ public class Enemy : MonoBehaviour
     [SerializeField] private float maxSeparationForce = 1.2f;
     [SerializeField] private LayerMask enemyLayerMask;
 
+    [Header("Close Range Stabilization")]
+    [SerializeField, Min(0f)] private float closeRangeDeadzone = 0.2f;
+    [SerializeField, Min(0f)] private float facingUpdateThreshold = 0.05f;
+
     [Header("Sprite Animasyonu")]
     [SerializeField] private Sprite[] walkSprites;
     [SerializeField] private float frameRate = 0.15f;
@@ -56,6 +60,7 @@ public class Enemy : MonoBehaviour
     protected Transform PlayerTransform => playerTransform;
     protected Rigidbody2D Rigidbody => rb;
     protected bool CanMove => !isDying && !isStunned;
+    public float FacingUpdateThreshold => facingUpdateThreshold;
 
     protected virtual void Awake()
     {
@@ -148,9 +153,45 @@ public class Enemy : MonoBehaviour
 
         if (playerTransform != null)
         {
-            Vector2 direction = (playerTransform.position - transform.position).normalized;
+            Vector2 direction = TryGetDirectionToPlayer(out Vector2 chaseDirection) ? chaseDirection : Vector2.zero;
             MoveWithSeparation(direction);
         }
+    }
+
+    protected bool TryGetDirectionToPlayer(out Vector2 direction)
+    {
+        direction = Vector2.zero;
+        if (playerTransform == null)
+        {
+            return false;
+        }
+
+        Vector2 toPlayer = playerTransform.position - transform.position;
+        if (toPlayer.sqrMagnitude <= closeRangeDeadzone * closeRangeDeadzone)
+        {
+            return false;
+        }
+
+        direction = toPlayer.normalized;
+        return true;
+    }
+
+    protected bool TryGetDirectionAwayFromPlayer(out Vector2 direction)
+    {
+        direction = Vector2.zero;
+        if (playerTransform == null)
+        {
+            return false;
+        }
+
+        Vector2 awayFromPlayer = transform.position - playerTransform.position;
+        if (awayFromPlayer.sqrMagnitude <= closeRangeDeadzone * closeRangeDeadzone)
+        {
+            return false;
+        }
+
+        direction = awayFromPlayer.normalized;
+        return true;
     }
 
     protected void MoveWithSeparation(Vector2 primaryDirection)
