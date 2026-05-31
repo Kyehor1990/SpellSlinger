@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 6d2024985a29fc5469fb9551483bf206
+guid: ca526ca6267bc094799fb9b23298fbca
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -7282886668606283007
-    second: Slime_0
+      213: -1853720730590557790
+    second: Protagonist Rightside4_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -37,7 +37,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 0
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -46,12 +46,12 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 2
+  spriteMode: 1
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 100
+  spritePixelsToUnits: 20
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Slime_0
+      name: Protagonist Rightside4_0
       rect:
         serializedVersion: 2
-        x: 0
+        x: 10
         y: 0
-        width: 231
-        height: 119
+        width: 30
+        height: 47
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 1036b4a492dfdea90800000000000000
-      internalID: -7282886668606283007
+      spriteID: 2a94f5421d24646e0800000000000000
+      internalID: -1853720730590557790
       vertices: []
       indices: 
       edges: []
@@ -125,7 +125,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 5e97eb03825dee720800000000000000
     internalID: 0
     vertices: []
     indices: 
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Slime_0: -7282886668606283007
+      Protagonist Rightside4_0: -1853720730590557790
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
