@@ -67,5 +67,8 @@ TagManager:
   - name: Popups
     uniqueID: 2596197409
     locked: 0
+  - name: Projectiles
+    uniqueID: 1829872997
+    locked: 0
   m_RenderingLayers:
   - Default

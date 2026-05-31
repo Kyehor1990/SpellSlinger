@@ -79,8 +79,8 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: -424498591
-  m_SortingLayer: 6
+  m_SortingLayerID: 1829872997
+  m_SortingLayer: 9
   m_SortingOrder: 5
   m_MaskInteraction: 0
   m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
@@ -156,5 +156,8 @@ MonoBehaviour:
   iceImpactVFXRandomRotation: 1
   lightningHitVFXPrefab: {fileID: 0}
   lightningVFXDuration: 1
+  fireHitVFXPrefab: {fileID: 0}
+  fireVFXDuration: 1
+  fireVFXScale: 1
   sourcePlayerHealth: {fileID: 0}
   ignoredEnemy: {fileID: 0}
