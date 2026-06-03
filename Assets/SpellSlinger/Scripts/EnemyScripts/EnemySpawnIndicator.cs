@@ -133,19 +133,15 @@ public class EnemySpawnIndicator : MonoBehaviour
         float durationFrameTime = duration / activeInkDropFrames.Length;
         float frameDuration = Mathf.Min(configuredFrameDuration, durationFrameTime);
         float elapsed = 0f;
-        int frameIndex = 0;
 
         while (elapsed < duration)
         {
-            int nextFrameIndex = Mathf.Min(Mathf.FloorToInt(elapsed / frameDuration), activeInkDropFrames.Length - 1);
-            if (nextFrameIndex != frameIndex)
-            {
-                frameIndex = nextFrameIndex;
-                sr.sprite = activeInkDropFrames[frameIndex];
-            }
+            int frameIndex = Mathf.Min(Mathf.FloorToInt(elapsed / frameDuration), activeInkDropFrames.Length - 1);
+            sr.sprite = activeInkDropFrames[frameIndex];
 
-            elapsed += Time.deltaTime;
-            yield return null;
+            float waitTime = Mathf.Min(frameDuration, duration - elapsed);
+            elapsed += waitTime;
+            yield return new WaitForSeconds(waitTime);
         }
 
         sr.sprite = activeInkDropFrames[activeInkDropFrames.Length - 1];

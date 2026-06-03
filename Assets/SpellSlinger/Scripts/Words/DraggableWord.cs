@@ -106,6 +106,7 @@ public class DraggableWord : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     private Transform highlightedRune = null;
     private Vector3 highlightedRuneOriginalScale;
+    private SentenceDropZone cachedSentenceDropZone;
 
     private void Awake()
     {
@@ -655,7 +656,12 @@ public class DraggableWord : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         float tiltAmount = Mathf.Clamp(eventData.delta.x * -tiltSensitivity, -maxTiltAngle, maxTiltAngle);
         transform.DORotate(new Vector3(0, 0, tiltAmount), 0.15f).SetUpdate(true);
 
-        SentenceDropZone sentenceZone = FindFirstObjectByType<SentenceDropZone>();
+        if (cachedSentenceDropZone == null)
+        {
+            cachedSentenceDropZone = FindFirstObjectByType<SentenceDropZone>();
+        }
+
+        SentenceDropZone sentenceZone = cachedSentenceDropZone;
         if (sentenceZone == null) return;
 
         RectTransform zoneRect = sentenceZone.GetComponent<RectTransform>();

@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,6 +7,7 @@ public class Projectile : MonoBehaviour
 {
     private const int AreaHitBufferSize = 128;
     private static readonly Collider2D[] areaHitsBuffer = new Collider2D[AreaHitBufferSize];
+    private static readonly Dictionary<GameObject, Queue<GameObject>> timedVFXPools = new Dictionary<GameObject, Queue<GameObject>>();
 
     [Header("Mermi Özellikleri")]
     public float speed = 15f;
@@ -43,6 +45,39 @@ public class Projectile : MonoBehaviour
     private int bouncesLeft = 0;
     private bool canSplit = false;
     private PlayerController sourcePlayerController;
+
+    private sealed class TimedVFXPoolReturner : MonoBehaviour
+    {
+        private GameObject prefab;
+        private Coroutine returnRoutine;
+
+        public void ReturnAfter(GameObject sourcePrefab, float delay)
+        {
+            prefab = sourcePrefab;
+
+            if (returnRoutine != null)
+            {
+                StopCoroutine(returnRoutine);
+            }
+
+            returnRoutine = StartCoroutine(ReturnRoutine(Mathf.Max(0f, delay)));
+        }
+
+        private IEnumerator ReturnRoutine(float delay)
+        {
+            yield return new WaitForSeconds(delay);
+            returnRoutine = null;
+            ReturnTimedVFX(prefab, gameObject);
+        }
+
+        private void OnDisable()
+        {
+            if (returnRoutine == null) return;
+
+            StopCoroutine(returnRoutine);
+            returnRoutine = null;
+        }
+    }
 
     private void Start()
     {
@@ -113,24 +148,7 @@ bool isIceArrow = activeMechanics != null && activeMechanics.Contains(SpecialMec
     {
         if (lightningHitVFXPrefab == null) return;
 
-        GameObject vfxInstance = Instantiate(
-            lightningHitVFXPrefab, 
-            enemyTransform.position, 
-            Quaternion.identity
-        );
-        vfxInstance.transform.SetParent(enemyTransform);
-        vfxInstance.transform.localPosition = Vector3.zero;
-        vfxInstance.transform.localRotation = Quaternion.identity;
-        vfxInstance.transform.localScale = Vector3.one;
-        
-        ParticleSystem ps = vfxInstance.GetComponent<ParticleSystem>();
-        if (ps != null)
-        {
-            ps.Play();
-        }
-
-        
-        Destroy(vfxInstance, lightningVFXDuration);
+        PlayTimedAttachedVFX(lightningHitVFXPrefab, enemyTransform, Vector3.one, lightningVFXDuration);
     }
 
 private void SpawnIceImpactVFX(Vector3 position)
@@ -161,23 +179,72 @@ private void SpawnFireHitVFX(Transform enemyTransform)
     {
         if (fireHitVFXPrefab == null) return;
 
-        GameObject vfxInstance = Instantiate(
-            fireHitVFXPrefab, 
-            enemyTransform.position, 
-            Quaternion.identity
-        );
-        vfxInstance.transform.SetParent(enemyTransform);
+        PlayTimedAttachedVFX(fireHitVFXPrefab, enemyTransform, Vector3.one * fireVFXScale, fireVFXDuration);
+    }
+
+    private void PlayTimedAttachedVFX(GameObject prefab, Transform parent, Vector3 localScale, float duration)
+    {
+        if (prefab == null || parent == null) return;
+
+        GameObject vfxInstance = GetTimedVFX(prefab);
+        if (vfxInstance == null) return;
+
+        vfxInstance.transform.SetParent(parent);
         vfxInstance.transform.localPosition = Vector3.zero;
         vfxInstance.transform.localRotation = Quaternion.identity;
-        vfxInstance.transform.localScale = Vector3.one * fireVFXScale;
+        vfxInstance.transform.localScale = localScale;
+        vfxInstance.SetActive(true);
 
         ParticleSystem ps = vfxInstance.GetComponent<ParticleSystem>();
         if (ps != null)
         {
-            ps.Play();
+            ps.Clear(true);
+            ps.Play(true);
         }
 
-        Destroy(vfxInstance, fireVFXDuration);
+        TimedVFXPoolReturner returner = vfxInstance.GetComponent<TimedVFXPoolReturner>();
+        if (returner == null)
+        {
+            returner = vfxInstance.AddComponent<TimedVFXPoolReturner>();
+        }
+
+        returner.ReturnAfter(prefab, duration);
+    }
+
+    private static GameObject GetTimedVFX(GameObject prefab)
+    {
+        if (!timedVFXPools.TryGetValue(prefab, out Queue<GameObject> pool))
+        {
+            pool = new Queue<GameObject>();
+            timedVFXPools[prefab] = pool;
+        }
+
+        while (pool.Count > 0)
+        {
+            GameObject pooledVFX = pool.Dequeue();
+            if (pooledVFX != null)
+            {
+                return pooledVFX;
+            }
+        }
+
+        return Instantiate(prefab);
+    }
+
+    private static void ReturnTimedVFX(GameObject prefab, GameObject vfxInstance)
+    {
+        if (prefab == null || vfxInstance == null) return;
+
+        vfxInstance.transform.SetParent(null);
+        vfxInstance.SetActive(false);
+
+        if (!timedVFXPools.TryGetValue(prefab, out Queue<GameObject> pool))
+        {
+            pool = new Queue<GameObject>();
+            timedVFXPools[prefab] = pool;
+        }
+
+        pool.Enqueue(vfxInstance);
     }
 
    private void ApplySpecialMechanic(Enemy targetEnemy, bool targetDied)

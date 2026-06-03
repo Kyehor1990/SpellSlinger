@@ -22,7 +22,7 @@ public class EffectPoolManager : MonoBehaviour
 
     public GameObject GetPooledObject()
     {
-        for (int i = 0; i < poolSize; i++)
+        for (int i = 0; i < _pooledEffects.Count; i++)
         {
             if (!_pooledEffects[i].activeInHierarchy)
             {

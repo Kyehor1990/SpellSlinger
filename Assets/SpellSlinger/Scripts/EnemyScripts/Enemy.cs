@@ -23,6 +23,9 @@ public class Enemy : MonoBehaviour
     private Collider2D[] colliders;
     private Collider2D bodyCollider;
     private Vector2 smoothedSeparationForce;
+    private Vector2 cachedSeparationForce;
+    private int separationFixedStep;
+    private int separationUpdateOffset;
     private readonly Collider2D[] separationHits = new Collider2D[16];
     private ContactFilter2D separationFilter;
 
@@ -30,6 +33,7 @@ public class Enemy : MonoBehaviour
     [SerializeField] private float separationRadius = 1f;
     [SerializeField] private float separationStrength = 1.4f;
     [SerializeField] private float maxSeparationForce = 1.2f;
+    [SerializeField, Min(1)] private int separationUpdateInterval = 2;
     [SerializeField] private LayerMask enemyLayerMask;
 
     [Header("Close Range Stabilization")]
@@ -81,6 +85,7 @@ public class Enemy : MonoBehaviour
 
         separationFilter.useTriggers = false;
         separationFilter.SetLayerMask(enemyLayerMask);
+        separationUpdateOffset = Mathf.Abs(GetInstanceID()) % Mathf.Max(1, separationUpdateInterval);
     }
 
     protected virtual void Start()
@@ -214,7 +219,12 @@ public class Enemy : MonoBehaviour
 
     protected Vector2 GetSeparatedVelocity(Vector2 primaryDirection)
     {
-        Vector2 targetSeparationForce = CalculateSeparationForce();
+        if (ShouldRefreshSeparationForce())
+        {
+            cachedSeparationForce = CalculateSeparationForce();
+        }
+
+        Vector2 targetSeparationForce = cachedSeparationForce;
         float smoothing = 1f - Mathf.Exp(-12f * Time.fixedDeltaTime);
         smoothedSeparationForce = Vector2.Lerp(smoothedSeparationForce, targetSeparationForce, smoothing);
 
@@ -230,6 +240,15 @@ public class Enemy : MonoBehaviour
         }
 
         return desiredDirection * moveSpeed;
+    }
+
+    private bool ShouldRefreshSeparationForce()
+    {
+        int interval = Mathf.Max(1, separationUpdateInterval);
+        int updateOffset = separationUpdateOffset % interval;
+        bool shouldRefresh = separationFixedStep == 0 || separationFixedStep % interval == updateOffset;
+        separationFixedStep++;
+        return shouldRefresh;
     }
 
     private Vector2 CalculateSeparationForce()

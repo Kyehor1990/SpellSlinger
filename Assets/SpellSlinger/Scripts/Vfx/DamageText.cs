@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using TMPro;
 
@@ -11,6 +12,7 @@ public class DamageText : MonoBehaviour
     private TextMeshPro textMesh;
     private Color textColor;
     private float timer;
+    private Action<DamageText> onFinished;
 
     void Awake()
     {
@@ -18,11 +20,12 @@ public class DamageText : MonoBehaviour
         textMesh = GetComponent<TextMeshPro>();
     }
 
-public void Setup(float damageAmount, Color color, bool isCritical = false)
+public void Setup(float damageAmount, Color color, bool isCritical = false, Action<DamageText> finishedCallback = null)
 
     {
         if (textMesh == null) textMesh = GetComponent<TextMeshPro>();
 
+        onFinished = finishedCallback;
        
 textMesh.text = Mathf.RoundToInt(damageAmount).ToString();
         textMesh.color = color;
@@ -38,11 +41,12 @@ textMesh.text = Mathf.RoundToInt(damageAmount).ToString();
         else
         {
             textMesh.fontStyle = FontStyles.Normal;
+            textMesh.transform.localScale = Vector3.one;
         }
 
 
         
-        transform.position += new Vector3(Random.Range(-0.3f, 0.3f), 0, 0);
+        transform.position += new Vector3(UnityEngine.Random.Range(-0.3f, 0.3f), 0, 0);
     }
 
     void Update()
@@ -68,8 +72,14 @@ textColor.a -= fadeSpeed * Time.deltaTime;
 
         if (timer <= 0)
         {
-         
-            Destroy(gameObject);
+            if (onFinished != null)
+            {
+                onFinished(this);
+            }
+            else
+            {
+                Destroy(gameObject);
+            }
         }
     }
 }
