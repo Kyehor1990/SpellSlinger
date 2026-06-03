@@ -175,7 +175,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: -809129765
-  m_SortingLayer: 5
+  m_SortingLayer: 6
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: -4446107662849108189, guid: 808967aed36cd274c9bf7a6909c0011a, type: 3}
@@ -273,8 +273,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23f0ad9c1b8e5e84b9e44c0119e273cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
-  currentHealth: 130
-  moveSpeed: 7
+  currentHealth: 1500
+  moveSpeed: 6
   isBoss: 0
   maxHealth: 0
   separationRadius: 1
@@ -283,6 +283,8 @@ MonoBehaviour:
   enemyLayerMask:
     serializedVersion: 2
     m_Bits: 64
+  closeRangeDeadzone: 0.2
+  facingUpdateThreshold: 0.05
   walkSprites:
   - {fileID: -4812235735041114661, guid: 0e3f44b068043ae4088d310a04103011, type: 3}
   - {fileID: -4446107662849108189, guid: 808967aed36cd274c9bf7a6909c0011a, type: 3}

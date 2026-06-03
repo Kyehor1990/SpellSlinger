@@ -213,8 +213,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a5c84ad7b61579340822a1892a7e439d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RangedEnemy
-  currentHealth: 15
-  moveSpeed: 2
+  currentHealth: 400
+  moveSpeed: 3
   isBoss: 0
   maxHealth: 0
   separationRadius: 1

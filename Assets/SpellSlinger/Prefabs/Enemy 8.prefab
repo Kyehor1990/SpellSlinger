@@ -273,8 +273,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23f0ad9c1b8e5e84b9e44c0119e273cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
-  currentHealth: 100
-  moveSpeed: 4
+  currentHealth: 300
+  moveSpeed: 3
   isBoss: 0
   maxHealth: 0
   separationRadius: 1
