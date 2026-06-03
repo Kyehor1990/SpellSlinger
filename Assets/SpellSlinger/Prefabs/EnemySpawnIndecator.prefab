@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2808889237883636073}
   - component: {fileID: 5703219311562218424}
+  - component: {fileID: 887665112394560438}
   - component: {fileID: 5349129320700532585}
   m_Layer: 0
   m_Name: EnemySpawnIndecator
@@ -78,11 +79,11 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: -1550818945
-  m_SortingLayer: 3
-  m_SortingOrder: 0
+  m_SortingLayerID: -1954813867
+  m_SortingLayer: 7
+  m_SortingOrder: 20
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 3087573429835637677, guid: f0337921eca07a54ea7eac7dd4371dfb, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -92,6 +93,28 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 0
   m_SpriteSortPoint: 0
+--- !u!95 &887665112394560438
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4276238172337070665}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 0}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!114 &5349129320700532585
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -105,4 +128,53 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemySpawnIndicator
   sr: {fileID: 5703219311562218424}
+  animator: {fileID: 887665112394560438}
+  defaultInkDropFrames:
+  - {fileID: 21300000, guid: f0337921eca07a54ea7eac7dd4371dfb, type: 3}
+  - {fileID: 21300000, guid: 041061852d3ec0449914cf4f95d83aea, type: 3}
+  - {fileID: 21300000, guid: 1e5ab83f724480f438c1e763242721c3, type: 3}
+  - {fileID: 21300000, guid: 082acfc14da2ef841afb71ffc712b23e, type: 3}
+  - {fileID: 21300000, guid: 6c7adda859cd2784f98bfaedcdde2ade, type: 3}
+  - {fileID: 21300000, guid: 8417235037c1f3648a07e5f04c740607, type: 3}
+  - {fileID: 21300000, guid: 152f94a66109ae64db1f3a407d2cfcf9, type: 3}
+  - {fileID: 21300000, guid: 7020941278e75c24d94815c697b4d1d1, type: 3}
+  - {fileID: 21300000, guid: ae9a0ef09bcbffc4389ffe6835b10fae, type: 3}
+  - {fileID: 21300000, guid: 1b5f81a4f58f1924fafda47b5ca04da1, type: 3}
+  - {fileID: 21300000, guid: b6c86e12ae0176842a440f1217d6046c, type: 3}
+  - {fileID: 21300000, guid: 492030660207aca41a208218c2a1e7b9, type: 3}
+  - {fileID: 21300000, guid: 17ce18765f7b6834abfea93edaa864f0, type: 3}
+  - {fileID: 21300000, guid: 8c5e0905b1f0b6a45a5c8dd93b12f022, type: 3}
+  eliteInkDropFrames:
+  - {fileID: 21300000, guid: cd112a88c4c91684d9160f04db5dcd92, type: 3}
+  - {fileID: 21300000, guid: a892ccf0539de2b4bae861a7ef537c88, type: 3}
+  - {fileID: 21300000, guid: 28b48fe67f308c149a7b72cfdb99189b, type: 3}
+  - {fileID: 21300000, guid: a875f20e65c49f54291d8869022c0ebe, type: 3}
+  - {fileID: 21300000, guid: b935026049b1cc74e9b497cbca48c040, type: 3}
+  - {fileID: 21300000, guid: bb3d2a95541cbea4aa8e32080350d8d2, type: 3}
+  - {fileID: 21300000, guid: 3bf1c9954af48624cb96173a5a15b51c, type: 3}
+  - {fileID: 21300000, guid: 77ef95d7adfb86142991a2ff5d5f226b, type: 3}
+  - {fileID: 21300000, guid: 82736d01b55d5074ca2f676b783f3ab8, type: 3}
+  - {fileID: 21300000, guid: 5b7ab56d5997a3f429e560fe36fa4c14, type: 3}
+  - {fileID: 21300000, guid: 40f83de976eb6d144acd4c96ac4e5d04, type: 3}
+  - {fileID: 21300000, guid: cead2b9e4ec0d454aa824d4eaee5b3be, type: 3}
+  - {fileID: 21300000, guid: 54ca424f2bc22b54181a9dbfd8c73ce1, type: 3}
+  - {fileID: 21300000, guid: 085c295b063ed724193396548c1fbef7, type: 3}
+  bossInkDropFrames:
+  - {fileID: 21300000, guid: 4244e70a181253543be89d413a17f5b3, type: 3}
+  - {fileID: 21300000, guid: 9edfc8f99bb1cc94dbac6b3fe2348fd4, type: 3}
+  - {fileID: 21300000, guid: 1b74fde287400a547ab4cada217cfdd3, type: 3}
+  - {fileID: 21300000, guid: 5ef6dfac04765e945bf41e542f4ca5f8, type: 3}
+  - {fileID: 21300000, guid: 0f39ba49609c3e74898b8a0c3763eb69, type: 3}
+  - {fileID: 21300000, guid: b2d87cd50cd5a3f4c94590ac372c05dd, type: 3}
+  - {fileID: 21300000, guid: e259d4703425c9e4ba455d9750e3991b, type: 3}
+  - {fileID: 21300000, guid: 949fabe26d82855408c78b055785aaeb, type: 3}
+  - {fileID: 21300000, guid: d517c7f1bf5c5c4459f96be9fa444e47, type: 3}
+  - {fileID: 21300000, guid: 1544e2346b0f3a043a8c1fcecd8c5e8e, type: 3}
+  - {fileID: 21300000, guid: 47c92a1406ac8874880b81973048d375, type: 3}
+  - {fileID: 21300000, guid: 77a5c95b1f0ef5b48bd2f9922f38d3d1, type: 3}
+  - {fileID: 21300000, guid: c9f4c0e86b1e3d34989abaa76e96f49c, type: 3}
+  - {fileID: 21300000, guid: a456fb5a30d9c1d43ad9c969cd01c1d2, type: 3}
+  framesPerSecond: 15
+  animatedIndicatorScale: 1
+  useEnemyDataColorForAnimation: 0
   smokeParticlePrefab: {fileID: 0}

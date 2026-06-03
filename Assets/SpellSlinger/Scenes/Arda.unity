@@ -109420,9 +109420,9 @@ MonoBehaviour:
   mapBounds: {x: 9.8, y: 14.8}
   spawnIndicatorPrefab: {fileID: 4276238172337070665, guid: 3fef47aae4fadd4459784929bcbeb005, type: 3}
   timeBetweenSpawns: 1.2
-  spawnWarningTime: 1.5
+  spawnWarningTime: 0.98
   enemiesToSpawn:
-  - tier: 4
+  - tier: 0
     enemyPrefab: {fileID: 4395884553050428915, guid: 57b316701d2a5a8468c7d6fc50f9131d, type: 3}
     inkDropSprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
     dropColor: {r: 0.6666667, g: 0, b: 0, a: 1}
