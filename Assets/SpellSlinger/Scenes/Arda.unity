@@ -2429,7 +2429,7 @@ MonoBehaviour:
   currentWave: 1
   waveConfigs:
   - waveName: 1
-    duration: 40
+    duration: 10
     isBossWave: 0
     bossPrefab: {fileID: 0}
     enemySpawnOptions:
@@ -107873,9 +107873,14 @@ MonoBehaviour:
   allPossibleUpgrades:
   - {fileID: 11400000, guid: 7523d5846a4566a418cd8b66ae2adae9, type: 2}
   - {fileID: 11400000, guid: 3d82a934826018e45b3287d9690fb428, type: 2}
+  - {fileID: 11400000, guid: 9be43e1685aa6044f8a37af55de9d4be, type: 2}
   - {fileID: 11400000, guid: a7fddc7ccaa568e4ca27b5eef3899710, type: 2}
-  - {fileID: 11400000, guid: 3718abfca59def143a7556fa04209e58, type: 2}
+  - {fileID: 11400000, guid: 8719465075ad8fb43a19a53cfe4eaa13, type: 2}
+  - {fileID: 11400000, guid: 63e90dd2929710941994f7f647424923, type: 2}
+  - {fileID: 11400000, guid: 2b96ff99899b7a1489739ccc07e4275f, type: 2}
   - {fileID: 11400000, guid: 238e8c44234ef6e499661fb4158776f8, type: 2}
+  - {fileID: 11400000, guid: 2b50b5379a7e3df4e8e1f3bd10a2c066, type: 2}
+  - {fileID: 11400000, guid: 3718abfca59def143a7556fa04209e58, type: 2}
   upgradePanel: {fileID: 70023491}
   cardContainer: {fileID: 1036327032}
   upgradeCardPrefab: {fileID: 7243263923823769905, guid: 1bcc4c67f6b92c7499c02d87adadfff2, type: 3}
@@ -109854,7 +109859,7 @@ MonoBehaviour:
     currentValue: 0
   - statType: 2
     baseValue: 0
-    maxUpgradeLimit: 0
+    maxUpgradeLimit: 100
     currentUpgrades: 0
     currentValue: 0
   - statType: 3
