@@ -273,7 +273,11 @@ public class SentenceManager : MonoBehaviour
     {
         currentSentence.Clear(); 
 
-        if (sentencePanel == null) return;
+        if (sentencePanel == null)
+        {
+            manaCapacity?.RefreshManaUI();
+            return;
+        }
 
         foreach (Transform child in sentencePanel)
         {
@@ -283,6 +287,8 @@ public class SentenceManager : MonoBehaviour
                 currentSentence.Add(wordUI.myWordData.wordData);
             }
         }
+
+        SyncManaCapacityFromSentenceUI();
 
         PlayerAutoAttack autoAttack = FindFirstObjectByType<PlayerAutoAttack>();
         if (autoAttack != null)
