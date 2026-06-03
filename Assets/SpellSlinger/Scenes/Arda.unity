@@ -109855,37 +109855,37 @@ MonoBehaviour:
     currentValue: 0
   - statType: 1
     baseValue: 10
-    maxUpgradeLimit: 100
+    maxUpgradeLimit: 15
     currentUpgrades: 0
     currentValue: 0
   - statType: 2
-    baseValue: 0
-    maxUpgradeLimit: 100
+    baseValue: 5
+    maxUpgradeLimit: 30
     currentUpgrades: 0
     currentValue: 0
   - statType: 3
     baseValue: 1
-    maxUpgradeLimit: 1000
+    maxUpgradeLimit: 10
     currentUpgrades: 0
     currentValue: 0
   - statType: 5
     baseValue: 5
-    maxUpgradeLimit: 100
+    maxUpgradeLimit: 70
     currentUpgrades: 0
     currentValue: 0
   - statType: 6
     baseValue: 5
-    maxUpgradeLimit: 90
+    maxUpgradeLimit: 7
     currentUpgrades: 0
     currentValue: 0
   - statType: 7
     baseValue: 0.5
-    maxUpgradeLimit: 100
+    maxUpgradeLimit: 5
     currentUpgrades: 0
     currentValue: 0
   - statType: 8
     baseValue: 1
-    maxUpgradeLimit: 100
+    maxUpgradeLimit: 10
     currentUpgrades: 0
     currentValue: 0
   - statType: 9
@@ -109894,8 +109894,8 @@ MonoBehaviour:
     currentUpgrades: 0
     currentValue: 0
   - statType: 4
-    baseValue: 6
-    maxUpgradeLimit: 1000
+    baseValue: 8
+    maxUpgradeLimit: 50
     currentUpgrades: 0
     currentValue: 0
 --- !u!114 &1660669783
