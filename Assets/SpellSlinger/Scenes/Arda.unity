@@ -2437,10 +2437,7 @@ MonoBehaviour:
       spawnWeight: 80
     - enemyPrefab: {fileID: 4395884553050428915, guid: d99434f5f408bf24fa34d9e3c17a34b7, type: 3}
       spawnWeight: 20
-    eliteEnemies:
-    - enemyPrefab: {fileID: 2302436802984296898, guid: aa0bfce1b52dcae418ce5f2d39142094, type: 3}
-      spawnDelay: 5
-      spawnCount: 1
+    eliteEnemies: []
   - waveName: 2
     duration: 40
     isBossWave: 0
@@ -2556,7 +2553,7 @@ MonoBehaviour:
   - waveName: 10
     duration: 60
     isBossWave: 1
-    bossPrefab: {fileID: 6492680598914221471, guid: 4ae61a3aa3381e1458043218999f1bb3, type: 3}
+    bossPrefab: {fileID: 5561035228422058874, guid: 2bbdabaec5c22e243be5448340c98d38, type: 3}
     enemySpawnOptions:
     - enemyPrefab: {fileID: 2302436802984296898, guid: aa0bfce1b52dcae418ce5f2d39142094, type: 3}
       spawnWeight: 30
@@ -111534,63 +111531,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2130088262}
   m_CullTransparentMesh: 1
---- !u!1001 &148036396721276020
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 5561035228422058874, guid: 2bbdabaec5c22e243be5448340c98d38, type: 3}
-      propertyPath: m_Name
-      value: BossEnemy
-      objectReference: {fileID: 0}
-    - target: {fileID: 8076566006474790575, guid: 2bbdabaec5c22e243be5448340c98d38, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0.57888055
-      objectReference: {fileID: 0}
-    - target: {fileID: 8076566006474790575, guid: 2bbdabaec5c22e243be5448340c98d38, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -7.7433424
-      objectReference: {fileID: 0}
-    - target: {fileID: 8076566006474790575, guid: 2bbdabaec5c22e243be5448340c98d38, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8076566006474790575, guid: 2bbdabaec5c22e243be5448340c98d38, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8076566006474790575, guid: 2bbdabaec5c22e243be5448340c98d38, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8076566006474790575, guid: 2bbdabaec5c22e243be5448340c98d38, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8076566006474790575, guid: 2bbdabaec5c22e243be5448340c98d38, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8076566006474790575, guid: 2bbdabaec5c22e243be5448340c98d38, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8076566006474790575, guid: 2bbdabaec5c22e243be5448340c98d38, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8076566006474790575, guid: 2bbdabaec5c22e243be5448340c98d38, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 2bbdabaec5c22e243be5448340c98d38, type: 3}
 --- !u!1001 &2412399296632646440
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -111675,4 +111615,3 @@ SceneRoots:
   - {fileID: 930941508}
   - {fileID: 2412399296632646440}
   - {fileID: 1188937974}
-  - {fileID: 148036396721276020}

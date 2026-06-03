@@ -373,7 +373,13 @@ public class EnemyWaveManager : MonoBehaviour
         }
 
         isWaitingForBossSpawn = true;
-        bool spawnStarted = spawner.SpawnEnemy(bossPrefab, spawnedBoss =>
+        EnemySpawnData bossSpawnData = new EnemySpawnData
+        {
+            tier = EnemyTier.Boss,
+            enemyPrefab = bossPrefab
+        };
+
+        bool spawnStarted = spawner.SpawnEnemy(bossSpawnData, spawnedBoss =>
         {
             currentBoss = spawnedBoss;
             isWaitingForBossSpawn = false;

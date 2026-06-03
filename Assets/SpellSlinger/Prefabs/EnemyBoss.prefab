@@ -270,12 +270,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 5561035228422058874}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 23f0ad9c1b8e5e84b9e44c0119e273cc, type: 3}
+  m_Script: {fileID: 11500000, guid: 7fd31ca706f74304dbf363de6d182b77, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Enemy
+  m_EditorClassIdentifier: Assembly-CSharp::BossEnemy
   currentHealth: 550
   moveSpeed: 3
-  isBoss: 0
+  isBoss: 1
   maxHealth: 0
   separationRadius: 1
   separationStrength: 0.9
@@ -303,6 +303,12 @@ MonoBehaviour:
   xpDropAmount: {x: 1, y: 3}
   coinDropAmount: {x: 1, y: 2}
   scatterRadius: 0.6
+  dashRange: 5
+  dashCooldown: 4
+  dashWindupTime: 0.6
+  dashSpeed: 10
+  dashDuration: 0.35
+  dashRecoveryTime: 0.4
 --- !u!114 &1122061322352006431
 MonoBehaviour:
   m_ObjectHideFlags: 0
