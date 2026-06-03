@@ -9,6 +9,8 @@ public class ActiveSpellTimer
 
 public class PlayerAutoAttack : MonoBehaviour
 {
+    private const int EnemyScanBufferSize = 128;
+
     [Header("Referanslar")]
     public SentenceManager sentenceManager;
     public Transform firePoint;
@@ -22,6 +24,16 @@ public class PlayerAutoAttack : MonoBehaviour
     public PlayerHealth playerHealth;
 
     private List<ActiveSpellTimer> spellTimers = new List<ActiveSpellTimer>();
+    private readonly Collider2D[] enemiesInRangeBuffer = new Collider2D[EnemyScanBufferSize];
+    private ContactFilter2D enemyScanFilter;
+    private PlayerController playerController;
+
+    private void Awake()
+    {
+        playerController = GetComponent<PlayerController>();
+        enemyScanFilter.useTriggers = Physics2D.queriesHitTriggers;
+        enemyScanFilter.SetLayerMask(enemyLayer);
+    }
 
     private void Start()
     {
@@ -60,12 +72,12 @@ public class PlayerAutoAttack : MonoBehaviour
 
     private void TryAttackWithSpell(CompiledSpell spell)
     {
-        Collider2D[] enemiesInRange = Physics2D.OverlapCircleAll(transform.position, attackRange, enemyLayer);
+        int enemyCount = Physics2D.OverlapCircle(transform.position, attackRange, enemyScanFilter, enemiesInRangeBuffer);
 
-        if (enemiesInRange.Length == 0 && spell.targetingLogic != TargetType.Straight) 
+        if (enemyCount == 0 && spell.targetingLogic != TargetType.Straight) 
             return;
 
-        Transform target = FindTarget(enemiesInRange, spell.targetingLogic);
+        Transform target = FindTarget(enemiesInRangeBuffer, enemyCount, spell.targetingLogic);
 
         if (target != null || spell.targetingLogic == TargetType.Straight)
         {
@@ -73,24 +85,29 @@ public class PlayerAutoAttack : MonoBehaviour
         }
     }
 
-    private Transform FindTarget(Collider2D[] enemies, TargetType logic)
+    private Transform FindTarget(Collider2D[] enemies, int enemyCount, TargetType logic)
     {
         Transform bestTarget = null;
         switch (logic)
         {
             case TargetType.NearestEnemy:
-                float closestDistance = Mathf.Infinity;
-                foreach (Collider2D enemy in enemies)
+                float closestDistanceSqr = Mathf.Infinity;
+                for (int i = 0; i < enemyCount; i++)
                 {
-                    float distance = Vector2.Distance(transform.position, enemy.transform.position);
-                    if (distance < closestDistance) { closestDistance = distance; bestTarget = enemy.transform; }
+                    Collider2D enemy = enemies[i];
+                    if (enemy == null) continue;
+
+                    float distanceSqr = ((Vector2)transform.position - (Vector2)enemy.transform.position).sqrMagnitude;
+                    if (distanceSqr < closestDistanceSqr) { closestDistanceSqr = distanceSqr; bestTarget = enemy.transform; }
                 }
                 break;
             case TargetType.LowestHealth:
                 float lowestHP = Mathf.Infinity;
-                foreach (Collider2D enemyCollider in enemies)
+                for (int i = 0; i < enemyCount; i++)
                 {
-                    Enemy enemyScript = enemyCollider.GetComponent<Enemy>();
+                    Collider2D enemyCollider = enemies[i];
+                    if (enemyCollider == null || !enemyCollider.TryGetComponent(out Enemy enemyScript)) continue;
+
                     if (enemyScript != null && enemyScript.currentHealth < lowestHP)
                     {
                         lowestHP = enemyScript.currentHealth; bestTarget = enemyCollider.transform;
@@ -98,7 +115,16 @@ public class PlayerAutoAttack : MonoBehaviour
                 }
                 break;
             case TargetType.RandomEnemy:
-                bestTarget = enemies[Random.Range(0, enemies.Length)].transform;
+                int startIndex = Random.Range(0, enemyCount);
+                for (int i = 0; i < enemyCount; i++)
+                {
+                    Collider2D enemy = enemies[(startIndex + i) % enemyCount];
+                    if (enemy != null)
+                    {
+                        bestTarget = enemy.transform;
+                        break;
+                    }
+                }
                 break;
             case TargetType.Straight:
                 bestTarget = null;
@@ -136,7 +162,7 @@ public class PlayerAutoAttack : MonoBehaviour
         }
         else if (spell.targetingLogic == TargetType.Straight)
         {
-            Vector2 dir = GetComponent<PlayerController>().lastFacingDirection;
+            Vector2 dir = playerController != null ? playerController.lastFacingDirection : Vector2.right;
             float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
             bullet.transform.rotation = Quaternion.Euler(0, 0, angle);
         }

@@ -11,6 +11,7 @@ public class PlayerHealth : MonoBehaviour
 
     [Header("Stat Referansı")]
     public PlayerStatsManager playerStats;
+    [SerializeField] private bool logCombatEvents = false;
     private float regenTimer = 0f;
     private bool isDead = false;
 
@@ -46,6 +47,7 @@ public class PlayerHealth : MonoBehaviour
         float evasionChance = playerStats.GetStat(StatType.Evasion);
         if (Random.Range(0f, 100f) < evasionChance)
         {
+            if (!logCombatEvents) return;
             Debug.Log("<color=green>Saldırıdan Kaçındın!</color>");
             return;
         }
@@ -93,6 +95,7 @@ public class PlayerHealth : MonoBehaviour
             if (healAmount < 1f) healAmount = 1f;
             
             Heal(healAmount);
+            if (!logCombatEvents) return;
             Debug.Log($"<color=red>Can Çalma Tetiklendi! +{healAmount} Can</color>");
         }
     }

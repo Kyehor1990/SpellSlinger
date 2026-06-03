@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class Projectile : MonoBehaviour
 {
+    private const int AreaHitBufferSize = 128;
+    private static readonly Collider2D[] areaHitsBuffer = new Collider2D[AreaHitBufferSize];
+
     [Header("Mermi Özellikleri")]
     public float speed = 15f;
     public float baseDamage = 10f; 
@@ -39,6 +42,7 @@ public class Projectile : MonoBehaviour
 
     private int bouncesLeft = 0;
     private bool canSplit = false;
+    private PlayerController sourcePlayerController;
 
     private void Start()
     {
@@ -72,7 +76,7 @@ public class Projectile : MonoBehaviour
 
         if (collision.CompareTag("Enemy"))
         {
-            Enemy enemyScript = collision.GetComponent<Enemy>();
+            collision.TryGetComponent(out Enemy enemyScript);
             
 if (enemyScript != null)
             {
@@ -221,11 +225,14 @@ private void SpawnFireHitVFX(Transform enemyTransform)
                         
                         if (executionExplosionPrefab != null) Instantiate(executionExplosionPrefab, targetEnemy.transform.position, Quaternion.identity);
 
-                        Collider2D[] aoeHits = Physics2D.OverlapCircleAll(targetEnemy.transform.position, 2.5f, enemyLayer);
-                        foreach (var hit in aoeHits)
+                        int aoeHitCount = Physics2D.OverlapCircle(targetEnemy.transform.position, 2.5f, CreateEnemyContactFilter(), areaHitsBuffer);
+                        for (int i = 0; i < aoeHitCount; i++)
                         {
-                            if (hit.gameObject != targetEnemy.gameObject)
-                                hit.GetComponent<Enemy>()?.TakeDamage(executionDamage);
+                            Collider2D hit = areaHitsBuffer[i];
+                            if (hit != null && hit.gameObject != targetEnemy.gameObject && hit.TryGetComponent(out Enemy hitEnemy))
+                            {
+                                hitEnemy.TakeDamage(executionDamage);
+                            }
                         }
                     }
                     break;
@@ -240,7 +247,7 @@ private void SpawnFireHitVFX(Transform enemyTransform)
                 case SpecialMechanic.Acceleration: 
                     if (targetDied && sourcePlayerHealth != null)
                     {
-                        PlayerController pc = sourcePlayerHealth.GetComponent<PlayerController>();
+                        PlayerController pc = GetSourcePlayerController();
                         if (pc != null) pc.ApplyAccelerationBuff();   
                     }
                     break;
@@ -267,10 +274,12 @@ case SpecialMechanic.FireBurn:
 
                     SpawnIceImpactVFX(transform.position);
                     
-                    Collider2D[] slowHits = Physics2D.OverlapCircleAll(transform.position, 3f, enemyLayer);
-                    foreach (Collider2D hit in slowHits)
+                    int slowHitCount = Physics2D.OverlapCircle(transform.position, 3f, CreateEnemyContactFilter(), areaHitsBuffer);
+                    for (int i = 0; i < slowHitCount; i++)
                     {
-                        Enemy caughtEnemy = hit.GetComponent<Enemy>();
+                        Collider2D hit = areaHitsBuffer[i];
+                        if (hit == null || !hit.TryGetComponent(out Enemy caughtEnemy)) continue;
+
                         if (caughtEnemy != null) caughtEnemy.ApplySlow(0.6f, 2f); 
                     }
                     break;
@@ -285,14 +294,15 @@ case SpecialMechanic.FireBurn:
 
                 case SpecialMechanic.LightningChain:
                     SpawnLightningVFX(targetEnemy.transform);
-                    Collider2D[] nearbyEnemies = Physics2D.OverlapCircleAll(transform.position, 5f, enemyLayer);
+                    int nearbyEnemyCount = Physics2D.OverlapCircle(transform.position, 5f, CreateEnemyContactFilter(), areaHitsBuffer);
                     int hitCount = 0;
 
-                    foreach (Collider2D col in nearbyEnemies)
+                    for (int i = 0; i < nearbyEnemyCount; i++)
                     {
-                        if (col.gameObject != targetEnemy.gameObject) 
+                        Collider2D col = areaHitsBuffer[i];
+                        if (col != null && col.gameObject != targetEnemy.gameObject) 
                         {
-                            Enemy chainTarget = col.GetComponent<Enemy>();
+                            col.TryGetComponent(out Enemy chainTarget);
                             if (chainTarget != null)
                             {
 bool chainCrit = Random.value < 0.05f;
@@ -313,22 +323,42 @@ chainTarget.TakeDamage(chainDmg, chainCrit, DamagePopupManager.Instance.lightnin
 
     private Transform FindNearestEnemy(Transform excludeTransform)
     {
-        Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, 8f, enemyLayer);
         Transform bestTarget = null;
-        float closestDist = Mathf.Infinity;
+        float closestDistSqr = Mathf.Infinity;
+        int hitCount = Physics2D.OverlapCircle(transform.position, 8f, CreateEnemyContactFilter(), areaHitsBuffer);
 
-        foreach (var hit in hits)
+        for (int i = 0; i < hitCount; i++)
         {
+            Collider2D hit = areaHitsBuffer[i];
+            if (hit == null) continue;
             if (hit.transform == excludeTransform) continue; 
             
-            float dist = Vector2.Distance(transform.position, hit.transform.position);
-            if (dist < closestDist)
+            float distSqr = ((Vector2)transform.position - (Vector2)hit.transform.position).sqrMagnitude;
+            if (distSqr < closestDistSqr)
             {
-                closestDist = dist;
+                closestDistSqr = distSqr;
                 bestTarget = hit.transform;
             }
         }
         return bestTarget;
+    }
+
+    private PlayerController GetSourcePlayerController()
+    {
+        if (sourcePlayerController == null && sourcePlayerHealth != null)
+        {
+            sourcePlayerController = sourcePlayerHealth.GetComponent<PlayerController>();
+        }
+
+        return sourcePlayerController;
+    }
+
+    private ContactFilter2D CreateEnemyContactFilter()
+    {
+        ContactFilter2D filter = new ContactFilter2D();
+        filter.useTriggers = Physics2D.queriesHitTriggers;
+        filter.SetLayerMask(enemyLayer);
+        return filter;
     }
 
     private void SpawnSplitProjectiles(Enemy targetEnemy)

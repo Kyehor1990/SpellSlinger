@@ -64,6 +64,8 @@ public class EnemyWaveManager : MonoBehaviour
     private bool isWaitingForNextWaveStart;
     private WaveConfig currentWaveConfig;
     private int spawnSessionId;
+    private int lastDisplayedTimerSeconds = int.MinValue;
+    private bool lastDisplayedBossState;
     private Coroutine waveRoutine;
     private readonly List<Coroutine> eliteEnemySpawnRoutines = new List<Coroutine>();
 
@@ -420,16 +422,29 @@ public class EnemyWaveManager : MonoBehaviour
 
         if (isBossWave)
         {
-            waveTimerText.text = BossTimerLabel;
+            if (forceRefresh || !lastDisplayedBossState || waveTimerText.text != BossTimerLabel)
+            {
+                waveTimerText.text = BossTimerLabel;
+                lastDisplayedBossState = true;
+                lastDisplayedTimerSeconds = int.MinValue;
+            }
+
             ForceWaveTimerRefresh(forceRefresh);
             return;
         }
 
         remainingTime = Mathf.Max(0f, remainingTime);
         int totalSeconds = Mathf.CeilToInt(remainingTime);
+        if (!forceRefresh && !lastDisplayedBossState && totalSeconds == lastDisplayedTimerSeconds)
+        {
+            return;
+        }
+
         int minutes = totalSeconds / 60;
         int seconds = totalSeconds % 60;
         waveTimerText.text = $"{minutes:00}:{seconds:00}";
+        lastDisplayedBossState = false;
+        lastDisplayedTimerSeconds = totalSeconds;
         ForceWaveTimerRefresh(forceRefresh);
     }
 

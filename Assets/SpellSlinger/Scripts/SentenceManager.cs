@@ -262,6 +262,7 @@ public class SentenceManager : MonoBehaviour
     [SerializeField] private GameObject wordUIPrefab;
     [SerializeField] private PlayerInventory playerInventory;
     [SerializeField] private PlayerManaCapacity manaCapacity;
+    [SerializeField] private bool logSentenceUpdates = false;
 
     private void Awake()
     {
@@ -291,6 +292,7 @@ public class SentenceManager : MonoBehaviour
 
         SpellBuilderUIFeedback.Instance?.ClearPreview();
 
+        if (!logSentenceUpdates) return;
         Debug.Log($"<color=cyan>Cümle Güncellendi! Sıra: {GetSentenceNames()}</color>");
     }
 
