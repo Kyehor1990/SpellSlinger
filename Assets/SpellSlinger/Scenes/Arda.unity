@@ -2429,7 +2429,7 @@ MonoBehaviour:
   currentWave: 1
   waveConfigs:
   - waveName: 1
-    duration: 40
+    duration: 5
     isBossWave: 0
     bossPrefab: {fileID: 0}
     enemySpawnOptions:
@@ -108994,7 +108994,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1534219849
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -109742,6 +109742,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SentenceManager
   currentSentence:
   - {fileID: 11400000, guid: 54ca2723538fbdb4eadfdf6782cc66b0, type: 2}
+  currentOwnedSentence: []
   sentencePanel: {fileID: 98397533}
   buildStartingSentenceFromCurrentSentence: 1
   wordUIPrefab: {fileID: 1746416089654678440, guid: b48992f5b15c93a4db6cba7d40ff29f2, type: 3}
@@ -111320,6 +111321,7 @@ MonoBehaviour:
   burnColor: {r: 1, g: 0.6470588, b: 0, a: 1}
   iceColor: {r: 0.537, g: 0.831, b: 0.961, a: 1}
   waterColor: {r: 0.12, g: 0.23, b: 0.53, a: 1}
+  prewarmCount: 20
 --- !u!1 &2082391368
 GameObject:
   m_ObjectHideFlags: 0

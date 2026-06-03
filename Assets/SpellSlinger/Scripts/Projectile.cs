@@ -39,11 +39,15 @@ public class Projectile : MonoBehaviour
 
     [HideInInspector] public PlayerHealth sourcePlayerHealth;
     internal List<SpecialMechanic> activeMechanics;
+    internal List<SpecialMechanicStats> activeMechanicStats;
 
     [HideInInspector] public GameObject ignoredEnemy; 
 
     private int bouncesLeft = 0;
     private bool canSplit = false;
+    private int splitProjectileCount = 2;
+    private int piercesLeft = 0;
+    private float pierceDamageMultiplier = 0.5f;
     private PlayerController sourcePlayerController;
 
     private sealed class TimedVFXPoolReturner : MonoBehaviour
@@ -89,13 +93,23 @@ public class Projectile : MonoBehaviour
         if (activeMechanics == null) return;
 
         if (activeMechanics.Contains(SpecialMechanic.DamageBoost)) 
-            baseDamage *= 1.10f;
+            baseDamage *= GetMechanicStats(SpecialMechanic.DamageBoost)?.damageBonusMultiplier ?? 1.10f;
 
         if (activeMechanics.Contains(SpecialMechanic.Bounce)) 
-            bouncesLeft = 2;
+            bouncesLeft = GetMechanicStats(SpecialMechanic.Bounce)?.bounceCount ?? 2;
 
-        if (activeMechanics.Contains(SpecialMechanic.Split)) 
+        if (activeMechanics.Contains(SpecialMechanic.Split))
+        {
             canSplit = true;
+            splitProjectileCount = GetMechanicStats(SpecialMechanic.Split)?.splitProjectileCount ?? 2;
+        }
+
+        if (activeMechanics.Contains(SpecialMechanic.Pierce))
+        {
+            WordLevelStats pierceStats = GetMechanicStats(SpecialMechanic.Pierce);
+            piercesLeft = pierceStats?.pierceCount ?? 4;
+            pierceDamageMultiplier = pierceStats?.pierceDamageMultiplier ?? 0.5f;
+        }
     }
 
     private void Update()
@@ -288,7 +302,8 @@ private void SpawnFireHitVFX(Transform enemyTransform)
                 case SpecialMechanic.Execution:
                     if (targetDied)
                     {
-                        float executionDamage = (targetEnemy.maxHealth / baseDamage) * 10f; 
+                        float executionMultiplier = GetMechanicStats(SpecialMechanic.Execution)?.executionDamageMultiplier ?? 10f;
+                        float executionDamage = (targetEnemy.maxHealth / Mathf.Max(0.01f, baseDamage)) * executionMultiplier; 
                         
                         if (executionExplosionPrefab != null) Instantiate(executionExplosionPrefab, targetEnemy.transform.position, Quaternion.identity);
 
@@ -305,28 +320,39 @@ private void SpawnFireHitVFX(Transform enemyTransform)
                     break;
 
                 case SpecialMechanic.Pierce: 
-                    destroyOnHit = false;
-                    ignoredEnemy = targetEnemy.gameObject; 
-                    baseDamage /= 2f;
-                    if (baseDamage < 1f) destroyOnHit = true;
+                    if (piercesLeft > 0)
+                    {
+                        piercesLeft--;
+                        destroyOnHit = false;
+                        ignoredEnemy = targetEnemy.gameObject;
+                        baseDamage *= pierceDamageMultiplier;
+                        if (baseDamage < 1f) destroyOnHit = true;
+                    }
+                    else
+                    {
+                        destroyOnHit = true;
+                    }
                     break;
 
                 case SpecialMechanic.Acceleration: 
                     if (targetDied && sourcePlayerHealth != null)
                     {
+                        float accelerationDuration = GetMechanicStats(SpecialMechanic.Acceleration)?.accelerationDuration ?? 3f;
                         PlayerController pc = GetSourcePlayerController();
-                        if (pc != null) pc.ApplyAccelerationBuff();   
+                        if (pc != null) pc.ApplyAccelerationBuff(accelerationDuration);   
                     }
                     break;
 
 
 case SpecialMechanic.FireBurn: 
-                    targetEnemy.ApplyBurn(6f, 3f);
+                    WordLevelStats fireStats = GetMechanicStats(SpecialMechanic.FireBurn);
+                    targetEnemy.ApplyBurn(fireStats?.burnDamage ?? 6f, fireStats?.burnDuration ?? 3f);
                     SpawnFireHitVFX(targetEnemy.transform);
                     break;
 
                 case SpecialMechanic.WaterSlow: 
-                    targetEnemy.ApplySlow(0.4f, 1.5f); 
+                    WordLevelStats waterStats = GetMechanicStats(SpecialMechanic.WaterSlow);
+                    targetEnemy.ApplySlow(waterStats?.waterSlowPercent ?? 0.4f, waterStats?.waterSlowDuration ?? 1.5f); 
                     break;
 
                 case SpecialMechanic.RockStun: 
@@ -334,6 +360,7 @@ case SpecialMechanic.FireBurn:
                     break;
 
                 case SpecialMechanic.IceArrow:
+                    WordLevelStats iceStats = GetMechanicStats(SpecialMechanic.IceArrow);
                     if (iceExplosionPrefab != null)
                     {
                         Instantiate(iceExplosionPrefab, transform.position, Quaternion.identity);
@@ -341,28 +368,31 @@ case SpecialMechanic.FireBurn:
 
                     SpawnIceImpactVFX(transform.position);
                     
-                    int slowHitCount = Physics2D.OverlapCircle(transform.position, 3f, CreateEnemyContactFilter(), areaHitsBuffer);
+                    int slowHitCount = Physics2D.OverlapCircle(transform.position, iceStats?.iceExplosionRadius ?? 3f, CreateEnemyContactFilter(), areaHitsBuffer);
                     for (int i = 0; i < slowHitCount; i++)
                     {
                         Collider2D hit = areaHitsBuffer[i];
                         if (hit == null || !hit.TryGetComponent(out Enemy caughtEnemy)) continue;
 
-                        if (caughtEnemy != null) caughtEnemy.ApplySlow(0.6f, 2f); 
+                        if (caughtEnemy != null) caughtEnemy.ApplySlow(iceStats?.iceSlowPercent ?? 0.6f, iceStats?.iceSlowDuration ?? 2f); 
                     }
                     break;
 
                 case SpecialMechanic.AirSlash:
                     destroyOnHit = false; 
                     ignoredEnemy = targetEnemy.gameObject;
-                    baseDamage /= 2f; 
+                    baseDamage *= GetMechanicStats(SpecialMechanic.AirSlash)?.airSlashDamageMultiplier ?? 0.5f; 
                     
                     if (baseDamage < 1f) destroyOnHit = true; 
                     break;
 
                 case SpecialMechanic.LightningChain:
+                    WordLevelStats lightningStats = GetMechanicStats(SpecialMechanic.LightningChain);
                     SpawnLightningVFX(targetEnemy.transform);
-                    int nearbyEnemyCount = Physics2D.OverlapCircle(transform.position, 5f, CreateEnemyContactFilter(), areaHitsBuffer);
+                    int nearbyEnemyCount = Physics2D.OverlapCircle(transform.position, lightningStats?.lightningChainRadius ?? 5f, CreateEnemyContactFilter(), areaHitsBuffer);
                     int hitCount = 0;
+                    int chainTargetLimit = lightningStats?.lightningChainTargets ?? 3;
+                    float chainDamageMultiplier = lightningStats?.lightningChainDamageMultiplier ?? 0.3333333f;
 
                     for (int i = 0; i < nearbyEnemyCount; i++)
                     {
@@ -373,7 +403,7 @@ case SpecialMechanic.FireBurn:
                             if (chainTarget != null)
                             {
 bool chainCrit = Random.value < 0.05f;
-float chainDmg = baseDamage / 3f;
+float chainDmg = baseDamage * chainDamageMultiplier;
 if (chainCrit) chainDmg *= 1.5f;
 chainTarget.TakeDamage(chainDmg, chainCrit, DamagePopupManager.Instance.lightningColor);
                                 hitCount++;
@@ -381,7 +411,7 @@ chainTarget.TakeDamage(chainDmg, chainCrit, DamagePopupManager.Instance.lightnin
                                 Debug.DrawLine(transform.position, col.transform.position, Color.yellow, 0.5f);
                             }
                         }
-                        if (hitCount >= 3) break;
+                        if (hitCount >= chainTargetLimit) break;
                     }
                     break;
             }
@@ -428,17 +458,41 @@ chainTarget.TakeDamage(chainDmg, chainCrit, DamagePopupManager.Instance.lightnin
         return filter;
     }
 
+    private WordLevelStats GetMechanicStats(SpecialMechanic mechanic)
+    {
+        if (activeMechanicStats == null) return null;
+
+        for (int i = 0; i < activeMechanicStats.Count; i++)
+        {
+            SpecialMechanicStats mechanicStats = activeMechanicStats[i];
+            if (mechanicStats != null && mechanicStats.mechanic == mechanic)
+            {
+                return mechanicStats.stats;
+            }
+        }
+
+        return null;
+    }
+
     private void SpawnSplitProjectiles(Enemy targetEnemy)
     {
-        float splitAngle = 25f; 
-        for (int i = -1; i <= 1; i += 2) 
+        if (splitProjectileCount <= 0) return;
+
+        const float totalSplitAngle = 50f;
+        float angleStep = splitProjectileCount > 1 ? totalSplitAngle / (splitProjectileCount - 1) : 0f;
+        float startAngle = splitProjectileCount > 1 ? -totalSplitAngle * 0.5f : 0f;
+
+        for (int i = 0; i < splitProjectileCount; i++) 
         {
             GameObject clone = Instantiate(gameObject, transform.position, transform.rotation);
-            clone.transform.Rotate(0, 0, i * splitAngle);
+            clone.transform.Rotate(0, 0, startAngle + angleStep * i);
 
             Projectile p = clone.GetComponent<Projectile>();
             p.baseDamage = this.baseDamage / 2f; 
             p.activeMechanics = new List<SpecialMechanic>(this.activeMechanics);
+            p.activeMechanicStats = this.activeMechanicStats != null
+                ? new List<SpecialMechanicStats>(this.activeMechanicStats)
+                : null;
             
             p.ignoredEnemy = targetEnemy.gameObject; 
             

@@ -140,9 +140,27 @@ public class PlayerAutoAttack : MonoBehaviour
         Vector3 spawnPosition = firePoint.position;
         if (spell.spawnsOnTarget && target != null) spawnPosition = target.position;
 
-        GameObject bullet = Instantiate(spell.projectilePrefab, spawnPosition, Quaternion.identity);
+        int projectileCount = Mathf.Max(1, spell.projectileCount);
+        float spreadAngle = projectileCount > 1 ? 12f : 0f;
+        float startAngleOffset = -spreadAngle * (projectileCount - 1) * 0.5f;
 
-       Projectile bulletScript = bullet.GetComponent<Projectile>();
+        for (int i = 0; i < projectileCount; i++)
+        {
+            GameObject bullet = Instantiate(spell.projectilePrefab, spawnPosition, Quaternion.identity);
+            ConfigureProjectile(bullet, target, spell);
+
+            if (!spell.spawnsOnTarget && projectileCount > 1)
+            {
+                bullet.transform.Rotate(0f, 0f, startAngleOffset + spreadAngle * i);
+            }
+        }
+    }
+
+    private void ConfigureProjectile(GameObject bullet, Transform target, CompiledSpell spell)
+    {
+        if (bullet == null) return;
+
+        Projectile bulletScript = bullet.GetComponent<Projectile>();
         if (bulletScript != null)
         {
             float multiplier = playerStats != null ? playerStats.GetStat(StatType.DamageMultiplier) : 1f;
@@ -150,6 +168,7 @@ public class PlayerAutoAttack : MonoBehaviour
             bulletScript.sourcePlayerHealth = this.playerHealth;
             
             bulletScript.activeMechanics = spell.specialMechanics;
+            bulletScript.activeMechanicStats = spell.specialMechanicStats;
 
             bulletScript.SetupModifiers();
         }

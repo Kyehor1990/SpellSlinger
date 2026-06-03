@@ -26,6 +26,8 @@ MonoBehaviour:
   readingPattern: 0
   cooldownReduction: 0
   mechanicToAdd: 12
+  maxLevel: 3
+  levelStats: []
   isUnlocked: 0
   secretHint: 
   manaCost: 1

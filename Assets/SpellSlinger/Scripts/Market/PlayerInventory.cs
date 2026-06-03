@@ -12,11 +12,16 @@ public class OwnedWord
         wordData = data;
         level = 1;
     }
+
+    public bool IsMaxLevel()
+    {
+        return wordData == null || wordData.IsMaxLevel(level);
+    }
 }
 
 public class PlayerInventory : MonoBehaviour
 {
-    [Header("UI Referansları")]
+    [Header("UI Referanslari")]
     public GameObject wordUIPrefab;
     public Transform inventoryPanel;
 
@@ -43,26 +48,61 @@ public class PlayerInventory : MonoBehaviour
         Debug.Log($"<color=green>Envantere Eklendi: {newWord.runeText}</color>");
 
         GameObject newWordUI = Instantiate(wordUIPrefab, inventoryPanel);
-        newWordUI.GetComponent<DraggableWord>().Setup(addedWord);
+        DraggableWord draggableWord = newWordUI.GetComponent<DraggableWord>();
+        if (draggableWord != null)
+        {
+            draggableWord.Setup(addedWord);
+        }
     }
 
     public void TryUpgradeWord(OwnedWord wordToUpgrade)
     {
-        OwnedWord duplicateWord = myWords.Find(w => w.wordData == wordToUpgrade.wordData 
-                                                 && w.level == wordToUpgrade.level 
+        if (wordToUpgrade == null || wordToUpgrade.wordData == null) return;
+
+        OwnedWord duplicateWord = myWords.Find(w => w != null
+                                                 && w.wordData == wordToUpgrade.wordData
+                                                 && w.level == wordToUpgrade.level
                                                  && w != wordToUpgrade);
 
-        if (duplicateWord != null)
+        if (TryMergeWords(wordToUpgrade, duplicateWord, out OwnedWord upgradedWord, out _))
         {
-            myWords.Remove(duplicateWord);
-
-            wordToUpgrade.level++;
-            
-            Debug.Log($"<color=magenta>BİRLEŞTİRME BAŞARILI! {wordToUpgrade.wordData.runeText} artık Seviye {wordToUpgrade.level}!</color>");
+            Debug.Log($"<color=magenta>Birlestirme basarili! {upgradedWord.wordData.runeText} artik Seviye {upgradedWord.level}!</color>");
         }
         else
         {
-            Debug.Log($"<color=red>Yükseltme başarısız! Envanterinde aynı seviyede başka bir '{wordToUpgrade.wordData.runeText}' yok.</color>");
+            Debug.Log($"<color=red>Yukseltme basarisiz! Envanterinde ayni seviyede baska bir '{wordToUpgrade.wordData.runeText}' yok.</color>");
         }
+    }
+
+    public bool CanMergeWords(OwnedWord wordToKeep, OwnedWord wordToConsume)
+    {
+        if (wordToKeep == null || wordToConsume == null) return false;
+        if (wordToKeep == wordToConsume) return false;
+        if (wordToKeep.wordData == null || wordToConsume.wordData == null) return false;
+        if (wordToKeep.wordData != wordToConsume.wordData) return false;
+        if (wordToKeep.level != wordToConsume.level) return false;
+        if (wordToKeep.IsMaxLevel() || wordToConsume.IsMaxLevel()) return false;
+
+        return true;
+    }
+
+    public bool TryMergeWords(OwnedWord wordToKeep, OwnedWord wordToConsume, out OwnedWord upgradedWord, out OwnedWord consumedWord)
+    {
+        upgradedWord = null;
+        consumedWord = null;
+
+        if (!CanMergeWords(wordToKeep, wordToConsume)) return false;
+
+        if (!myWords.Contains(wordToKeep))
+        {
+            myWords.Add(wordToKeep);
+        }
+
+        myWords.Remove(wordToConsume);
+        wordToKeep.level = Mathf.Min(wordToKeep.level + 1, wordToKeep.wordData.MaxLevel);
+
+        upgradedWord = wordToKeep;
+        consumedWord = wordToConsume;
+        return true;
     }
 }

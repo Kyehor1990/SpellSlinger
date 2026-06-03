@@ -8,10 +8,39 @@ public class CompiledSpell
     public GameObject projectilePrefab;
     public float totalDamage;
     public float totalCooldown;
+    public int projectileCount = 1;
     public bool spawnsOnTarget;
     public TargetType targetingLogic;
     
     public List<SpecialMechanic> specialMechanics = new List<SpecialMechanic>();
+    public List<SpecialMechanicStats> specialMechanicStats = new List<SpecialMechanicStats>();
+
+    public WordLevelStats GetStatsForMechanic(SpecialMechanic mechanic)
+    {
+        for (int i = 0; i < specialMechanicStats.Count; i++)
+        {
+            SpecialMechanicStats mechanicStats = specialMechanicStats[i];
+            if (mechanicStats != null && mechanicStats.mechanic == mechanic)
+            {
+                return mechanicStats.stats;
+            }
+        }
+
+        return null;
+    }
+}
+
+[System.Serializable]
+public class SpecialMechanicStats
+{
+    public SpecialMechanic mechanic;
+    public WordLevelStats stats;
+
+    public SpecialMechanicStats(SpecialMechanic mechanic, WordLevelStats stats)
+    {
+        this.mechanic = mechanic;
+        this.stats = stats;
+    }
 }
 
 public class RunePatternPreview
@@ -252,7 +281,8 @@ public static class RunePatternResolver
 public class SentenceManager : MonoBehaviour
 {
     [Header("Oyuncunun Dizdiği Cümle")]
-    public List<WordData> currentSentence = new List<WordData>(); 
+    public List<WordData> currentSentence = new List<WordData>();
+    public List<OwnedWord> currentOwnedSentence = new List<OwnedWord>();
 
     [Header("UI Bağlantıları (YENİ)")]
     public Transform sentencePanel;
@@ -271,7 +301,8 @@ public class SentenceManager : MonoBehaviour
 
     public void RebuildSentenceFromUI()
     {
-        currentSentence.Clear(); 
+        currentSentence.Clear();
+        currentOwnedSentence.Clear();
 
         if (sentencePanel == null)
         {
@@ -284,7 +315,11 @@ public class SentenceManager : MonoBehaviour
             DraggableWord wordUI = child.GetComponent<DraggableWord>();
             if (wordUI != null)
             {
-                currentSentence.Add(wordUI.myWordData.wordData);
+                currentOwnedSentence.Add(wordUI.myWordData);
+                if (wordUI.myWordData != null)
+                {
+                    currentSentence.Add(wordUI.myWordData.wordData);
+                }
             }
         }
 
@@ -414,23 +449,31 @@ public class SentenceManager : MonoBehaviour
         
         if (currentSentence.Count == 0) return activeSpells;
 
-        for (int i = 0; i < currentSentence.Count; i++)
+        EnsureOwnedSentenceCache();
+
+        for (int i = 0; i < currentOwnedSentence.Count; i++)
         {
-            WordData currentWord = currentSentence[i];
+            OwnedWord currentOwnedWord = currentOwnedSentence[i];
+            if (currentOwnedWord == null || currentOwnedWord.wordData == null) continue;
+
+            WordData currentWord = currentOwnedWord.wordData;
 
             if (currentWord.wordType == WordType.Object)
             {
+                WordLevelStats levelStats = currentWord.GetStatsForLevel(currentOwnedWord.level);
                 CompiledSpell newSpell = new CompiledSpell();
                 newSpell.spellName = currentWord.translatedText;
                 newSpell.projectilePrefab = currentWord.projectilePrefab;
                 newSpell.totalCooldown = currentWord.baseCooldown;
                 newSpell.targetingLogic = currentWord.targetingLogic;
                 newSpell.spawnsOnTarget = currentWord.spawnsOnTarget;
-                newSpell.totalDamage = currentWord.baseDamage;
+                newSpell.totalDamage = levelStats != null ? levelStats.damage : currentWord.baseDamage;
+                newSpell.projectileCount = levelStats != null ? Mathf.Max(1, levelStats.projectileCount) : 1;
 
                 if (currentWord.mechanicToAdd != SpecialMechanic.None)
                 {
                     newSpell.specialMechanics.Add(currentWord.mechanicToAdd);
+                    newSpell.specialMechanicStats.Add(new SpecialMechanicStats(currentWord.mechanicToAdd, levelStats));
                 }
 
                 ApplyModifiersBasedOnPattern(currentWord, newSpell, i);
@@ -446,18 +489,40 @@ public class SentenceManager : MonoBehaviour
     {
         foreach (int modifierIndex in RunePatternResolver.GetAffectedModifierIndices(currentSentence, startIndex))
         {
-            AddModifierToSpell(currentSentence[modifierIndex], spell);
+            if (modifierIndex < 0 || modifierIndex >= currentOwnedSentence.Count) continue;
+            AddModifierToSpell(currentOwnedSentence[modifierIndex], spell);
         }
     }
 
-    private void AddModifierToSpell(WordData modifierWord, CompiledSpell spell)
+    private void AddModifierToSpell(OwnedWord modifierOwnedWord, CompiledSpell spell)
     {
-        spell.totalCooldown -= modifierWord.cooldownReduction;
+        if (modifierOwnedWord == null || modifierOwnedWord.wordData == null) return;
+
+        WordData modifierWord = modifierOwnedWord.wordData;
+        WordLevelStats levelStats = modifierWord.GetStatsForLevel(modifierOwnedWord.level);
+        float cooldownReductionForLevel = levelStats != null ? levelStats.cooldownReduction : modifierWord.cooldownReduction;
+
+        spell.totalCooldown -= cooldownReductionForLevel;
         if (spell.totalCooldown < 0.1f) spell.totalCooldown = 0.1f; 
 
         if (modifierWord.mechanicToAdd != SpecialMechanic.None && !spell.specialMechanics.Contains(modifierWord.mechanicToAdd))
         {
             spell.specialMechanics.Add(modifierWord.mechanicToAdd);
+            spell.specialMechanicStats.Add(new SpecialMechanicStats(modifierWord.mechanicToAdd, levelStats));
+        }
+    }
+
+    private void EnsureOwnedSentenceCache()
+    {
+        if (currentOwnedSentence.Count == currentSentence.Count) return;
+
+        currentOwnedSentence.Clear();
+        for (int i = 0; i < currentSentence.Count; i++)
+        {
+            WordData wordData = currentSentence[i];
+            currentOwnedSentence.Add(playerInventory != null
+                ? playerInventory.GetOrCreateOwnedWord(wordData)
+                : new OwnedWord(wordData));
         }
     }
 }

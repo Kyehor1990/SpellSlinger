@@ -39,6 +39,11 @@ public class DraggableWord : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     [SerializeField] private Color sharedCountBadgeGlowColor = new Color(0.16f, 0.09f, 0.03f, 0.72f);
     [SerializeField] private Color sharedCountTextColor = new Color(0.08f, 0.06f, 0.02f, 1f);
 
+    [Header("Merge")]
+    [SerializeField, Range(0.1f, 2f)] private float mergeHoldDuration = 0.65f;
+    [SerializeField] private Image mergeProgressImage;
+    [SerializeField] private Color mergeProgressColor = new Color(0.55f, 1f, 0.75f, 0.9f);
+
     [Header("Görsel Geri Bildirim")]
     public Image backgroundImage;
     [SerializeField] private Material hoveredObjectGlowMaterial;
@@ -107,6 +112,14 @@ public class DraggableWord : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     private Transform highlightedRune = null;
     private Vector3 highlightedRuneOriginalScale;
     private SentenceDropZone cachedSentenceDropZone;
+    private PlayerInventory cachedPlayerInventory;
+    private SentenceManager cachedSentenceManager;
+    private DraggableWord mergeTarget;
+    private float mergeHoldTimer;
+    private bool isDraggingWord;
+    private bool mergeCompleted;
+    private Vector2 lastPointerPosition;
+    private Camera lastEventCamera;
 
     private void Awake()
     {
@@ -122,6 +135,7 @@ public class DraggableWord : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         ConfigureBoundaryVisual(rightBoundaryVisual);
         ConfigureBoundaryVisual(leftBoundaryVisual);
         EnsureStateFrameVisuals();
+        EnsureMergeProgressVisual();
         PrewarmFeedbackVisuals();
         
         if (glowImage != null)
@@ -141,6 +155,33 @@ public class DraggableWord : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         }
 
         ResetVisualsImmediate();
+    }
+
+    private void Update()
+    {
+        if (!isDraggingWord || mergeCompleted || mergeTarget == null) return;
+
+        if (!IsPointerStillOnMergeTarget())
+        {
+            CancelMergeCandidate();
+            return;
+        }
+
+        PlayerInventory inventory = GetPlayerInventory();
+        if (inventory == null || !inventory.CanMergeWords(mergeTarget.myWordData, myWordData))
+        {
+            CancelMergeCandidate();
+            return;
+        }
+
+        mergeHoldTimer += Time.unscaledDeltaTime;
+        float progress = mergeHoldDuration > 0f ? Mathf.Clamp01(mergeHoldTimer / mergeHoldDuration) : 1f;
+        mergeTarget.SetMergeProgress(progress, true);
+
+        if (progress >= 1f)
+        {
+            CompleteMerge();
+        }
     }
 
     public void Setup(OwnedWord wordData)
@@ -618,6 +659,11 @@ public class DraggableWord : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     {
         SpellBuilderUIFeedback.Instance?.ClearPreview();
         RestoreOriginalBackgroundMaterial();
+        CancelMergeCandidate();
+        isDraggingWord = true;
+        mergeCompleted = false;
+        lastPointerPosition = eventData.position;
+        lastEventCamera = eventData.pressEventCamera;
 
         parentAfterDrag = transform.parent;
         isFromInventory = parentAfterDrag.GetComponent<InventoryDropZone>() != null; 
@@ -651,6 +697,8 @@ public class DraggableWord : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     public void OnDrag(PointerEventData eventData)
     {
         transform.position = eventData.position;
+        lastPointerPosition = eventData.position;
+        lastEventCamera = eventData.pressEventCamera;
 
         // Kartın sürükleme hızına (delta.x) ve hassasiyetine göre eğilmesi
         float tiltAmount = Mathf.Clamp(eventData.delta.x * -tiltSensitivity, -maxTiltAngle, maxTiltAngle);
@@ -662,7 +710,11 @@ public class DraggableWord : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         }
 
         SentenceDropZone sentenceZone = cachedSentenceDropZone;
-        if (sentenceZone == null) return;
+        if (sentenceZone == null)
+        {
+            UpdateMergeCandidate(eventData);
+            return;
+        }
 
         RectTransform zoneRect = sentenceZone.GetComponent<RectTransform>();
         if (RectTransformUtility.RectangleContainsScreenPoint(zoneRect, eventData.position, eventData.pressEventCamera))
@@ -724,10 +776,17 @@ public class DraggableWord : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
                 placeholder.transform.SetParent(parentAfterDrag);
             }
         }
+
+        UpdateMergeCandidate(eventData);
     }
 
     public void OnEndDrag(PointerEventData eventData)
     {
+        if (mergeCompleted) return;
+
+        isDraggingWord = false;
+        CancelMergeCandidate();
+
         canvasGroup.blocksRaycasts = true;
         canvasGroup.alpha = 1f;
         RestoreOriginalBackgroundMaterial();
@@ -754,6 +813,179 @@ public class DraggableWord : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         }
 
         SpellBuilderUIFeedback.Instance?.ClearPreview();
+    }
+
+    private void UpdateMergeCandidate(PointerEventData eventData)
+    {
+        DraggableWord candidate = FindMergeCandidate(eventData);
+        if (candidate == mergeTarget) return;
+
+        CancelMergeCandidate();
+
+        if (candidate == null) return;
+
+        mergeTarget = candidate;
+        mergeHoldTimer = 0f;
+        mergeTarget.SetMergeProgress(0f, true);
+    }
+
+    private DraggableWord FindMergeCandidate(PointerEventData eventData)
+    {
+        if (parentAfterDrag == null || myWordData == null) return null;
+        if (!IsSupportedMergeContainer(parentAfterDrag)) return null;
+
+        PlayerInventory inventory = GetPlayerInventory();
+        if (inventory == null) return null;
+
+        for (int i = 0; i < parentAfterDrag.childCount; i++)
+        {
+            Transform child = parentAfterDrag.GetChild(i);
+            if (child == transform) continue;
+            if (placeholder != null && child == placeholder.transform) continue;
+            if (!child.TryGetComponent(out DraggableWord candidate) || candidate == null) continue;
+            if (!inventory.CanMergeWords(candidate.myWordData, myWordData)) continue;
+
+            RectTransform candidateRect = child as RectTransform;
+            if (candidateRect != null && RectTransformUtility.RectangleContainsScreenPoint(candidateRect, eventData.position, eventData.pressEventCamera))
+            {
+                return candidate;
+            }
+        }
+
+        return null;
+    }
+
+    private bool IsSupportedMergeContainer(Transform container)
+    {
+        if (container == null) return false;
+        return container.GetComponent<InventoryDropZone>() != null || container.GetComponent<SentenceDropZone>() != null;
+    }
+
+    private bool IsPointerStillOnMergeTarget()
+    {
+        if (mergeTarget == null) return false;
+
+        RectTransform targetRect = mergeTarget.transform as RectTransform;
+        return targetRect != null && RectTransformUtility.RectangleContainsScreenPoint(targetRect, lastPointerPosition, lastEventCamera);
+    }
+
+    private void CompleteMerge()
+    {
+        if (mergeTarget == null || mergeCompleted) return;
+
+        PlayerInventory inventory = GetPlayerInventory();
+        if (inventory == null || !inventory.TryMergeWords(mergeTarget.myWordData, myWordData, out OwnedWord upgradedWord, out _))
+        {
+            CancelMergeCandidate();
+            return;
+        }
+
+        mergeCompleted = true;
+        isDraggingWord = false;
+
+        mergeTarget.Setup(upgradedWord);
+        mergeTarget.SetMergeProgress(1f, false);
+        mergeTarget.PlayMergeSuccessFeedback();
+
+        if (placeholder != null)
+        {
+            Destroy(placeholder);
+            placeholder = null;
+        }
+
+        RefreshSentenceAfterMerge();
+        Destroy(gameObject);
+    }
+
+    private void RefreshSentenceAfterMerge()
+    {
+        SentenceManager sentenceManager = GetSentenceManager();
+        if (sentenceManager != null)
+        {
+            sentenceManager.RebuildSentenceFromUI();
+        }
+    }
+
+    private void CancelMergeCandidate()
+    {
+        if (mergeTarget != null)
+        {
+            mergeTarget.SetMergeProgress(0f, false);
+        }
+
+        mergeTarget = null;
+        mergeHoldTimer = 0f;
+    }
+
+    private PlayerInventory GetPlayerInventory()
+    {
+        if (cachedPlayerInventory == null)
+        {
+            cachedPlayerInventory = FindFirstObjectByType<PlayerInventory>();
+        }
+
+        return cachedPlayerInventory;
+    }
+
+    private SentenceManager GetSentenceManager()
+    {
+        if (cachedSentenceManager == null)
+        {
+            cachedSentenceManager = FindFirstObjectByType<SentenceManager>();
+        }
+
+        return cachedSentenceManager;
+    }
+
+    private void EnsureMergeProgressVisual()
+    {
+        if (mergeProgressImage == null)
+        {
+            Transform progressParent = backgroundImage != null ? backgroundImage.transform : transform;
+            GameObject progressObject = new GameObject("RuntimeMergeProgress", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
+            progressObject.layer = gameObject.layer;
+            progressObject.transform.SetParent(progressParent, false);
+
+            mergeProgressImage = progressObject.GetComponent<Image>();
+            mergeProgressImage.sprite = GetSoftRectSprite();
+        }
+
+        mergeProgressImage.raycastTarget = false;
+        mergeProgressImage.type = Image.Type.Filled;
+        mergeProgressImage.fillMethod = Image.FillMethod.Horizontal;
+        mergeProgressImage.fillOrigin = 0;
+        mergeProgressImage.color = mergeProgressColor;
+        mergeProgressImage.fillAmount = 0f;
+        mergeProgressImage.gameObject.SetActive(false);
+
+        RectTransform progressRect = mergeProgressImage.rectTransform;
+        progressRect.anchorMin = new Vector2(0.08f, 0f);
+        progressRect.anchorMax = new Vector2(0.92f, 0f);
+        progressRect.pivot = new Vector2(0.5f, 0f);
+        progressRect.anchoredPosition = new Vector2(0f, 4f);
+        progressRect.sizeDelta = new Vector2(0f, 5f);
+        progressRect.localRotation = Quaternion.identity;
+    }
+
+    private void SetMergeProgress(float progress, bool visible)
+    {
+        EnsureMergeProgressVisual();
+        if (mergeProgressImage == null) return;
+
+        mergeProgressImage.gameObject.SetActive(visible);
+        mergeProgressImage.fillAmount = Mathf.Clamp01(progress);
+    }
+
+    private void PlayMergeSuccessFeedback()
+    {
+        transform.DOKill(false);
+        transform.DOPunchScale(new Vector3(0.18f, 0.18f, 0f), 0.32f, 8, 0.85f).SetUpdate(true);
+
+        if (levelText != null)
+        {
+            levelText.transform.DOKill(true);
+            levelText.transform.DOPunchScale(new Vector3(0.18f, 0.18f, 0f), 0.28f, 7, 0.8f).SetUpdate(true);
+        }
     }
 
     private void CaptureOriginalBackgroundMaterial()
