@@ -54,6 +54,7 @@ public class EnemyWaveManager : MonoBehaviour
     public UpgradeManager upgradeManager;
     public ShopManager shopManager;
     public PlayerController playerController;
+    [SerializeField] private TMP_Text waveNumberText;
     [SerializeField] private TMP_Text waveTimerText;
 
     private float timer;
@@ -81,6 +82,7 @@ public class EnemyWaveManager : MonoBehaviour
             playerController = Object.FindFirstObjectByType<PlayerController>();
         }
 
+        UpdateWaveNumberUI(true);
         waveRoutine = StartCoroutine(WaveRoutine());
     }
 
@@ -157,6 +159,7 @@ public class EnemyWaveManager : MonoBehaviour
 
             isWaitingForNextWaveStart = false;
             currentWave++;
+            UpdateWaveNumberUI(true);
         }
     }
 
@@ -172,6 +175,7 @@ public class EnemyWaveManager : MonoBehaviour
         isWaitingForNextWaveStart = false;
         eliteEnemySpawnRoutines.Clear();
         spawner?.BeginSpawnSession(spawnSessionId, IsSpawnSessionActive);
+        UpdateWaveNumberUI(true);
         UpdateWaveTimerUI(true);
     }
 
@@ -202,6 +206,7 @@ public class EnemyWaveManager : MonoBehaviour
 
         isWaitingForNextWaveStart = false;
         currentWave++;
+        UpdateWaveNumberUI(true);
         RestartWaveRoutine();
         return true;
     }
@@ -411,6 +416,22 @@ public class EnemyWaveManager : MonoBehaviour
         }
 
         SetWaveTimerText(isCurrentWaveBossWave, timer, forceRefresh);
+    }
+
+    private void UpdateWaveNumberUI(bool forceRefresh = false)
+    {
+        if (waveNumberText == null)
+        {
+            return;
+        }
+
+        waveNumberText.text = $"{currentWave}. Dalga";
+
+        if (forceRefresh)
+        {
+            waveNumberText.ForceMeshUpdate();
+            Canvas.ForceUpdateCanvases();
+        }
     }
 
     private void SetWaveTimerText(bool isBossWave, float remainingTime, bool forceRefresh)
