@@ -2489,9 +2489,10 @@ MonoBehaviour:
       spawnWeight: 20
     - enemyPrefab: {fileID: 3166319738791716111, guid: a07eba1f7b9009c4ea9ffbf598cda825, type: 3}
       spawnWeight: 20
+    eliteEnemies:
     - enemyPrefab: {fileID: 4395884553050428915, guid: 3c87073e2aab9f4479dcf1ec6ff3272e, type: 3}
-      spawnWeight: 100
-    eliteEnemies: []
+      spawnDelay: 5
+      spawnCount: 1
   - waveName: 6
     duration: 60
     isBossWave: 0
@@ -111531,75 +111532,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2130088262}
   m_CullTransparentMesh: 1
---- !u!1001 &2412399296632646440
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 6293450643684465773, guid: 16749f614ec0be9438c4166a7389c473, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -6.29427
-      objectReference: {fileID: 0}
-    - target: {fileID: 6293450643684465773, guid: 16749f614ec0be9438c4166a7389c473, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -4.7946
-      objectReference: {fileID: 0}
-    - target: {fileID: 6293450643684465773, guid: 16749f614ec0be9438c4166a7389c473, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6293450643684465773, guid: 16749f614ec0be9438c4166a7389c473, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 0.7071068
-      objectReference: {fileID: 0}
-    - target: {fileID: 6293450643684465773, guid: 16749f614ec0be9438c4166a7389c473, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: -0.7071068
-      objectReference: {fileID: 0}
-    - target: {fileID: 6293450643684465773, guid: 16749f614ec0be9438c4166a7389c473, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6293450643684465773, guid: 16749f614ec0be9438c4166a7389c473, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6293450643684465773, guid: 16749f614ec0be9438c4166a7389c473, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: -90
-      objectReference: {fileID: 0}
-    - target: {fileID: 6293450643684465773, guid: 16749f614ec0be9438c4166a7389c473, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6293450643684465773, guid: 16749f614ec0be9438c4166a7389c473, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7229178166415419737, guid: 16749f614ec0be9438c4166a7389c473, type: 3}
-      propertyPath: looping
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7229178166415419737, guid: 16749f614ec0be9438c4166a7389c473, type: 3}
-      propertyPath: InitialModule.startSpeed.scalar
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7229178166415419737, guid: 16749f614ec0be9438c4166a7389c473, type: 3}
-      propertyPath: InitialModule.startLifetime.scalar
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8950514128768379327, guid: 16749f614ec0be9438c4166a7389c473, type: 3}
-      propertyPath: m_Name
-      value: FireVFX
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 16749f614ec0be9438c4166a7389c473, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -111613,5 +111545,4 @@ SceneRoots:
   - {fileID: 428789899}
   - {fileID: 1235450775}
   - {fileID: 930941508}
-  - {fileID: 2412399296632646440}
   - {fileID: 1188937974}

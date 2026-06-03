@@ -91,7 +91,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf434e884bb3b6a44b50482a4376fc8c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyDamage
-  damageAmount: 20
+  damageAmount: 10
 --- !u!1 &4395884553050428915
 GameObject:
   m_ObjectHideFlags: 0
