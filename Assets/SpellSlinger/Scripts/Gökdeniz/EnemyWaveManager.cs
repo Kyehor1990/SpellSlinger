@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 [System.Serializable]
 public class WaveConfig
@@ -11,6 +12,9 @@ public class WaveConfig
     public bool isBossWave;
     public GameObject bossPrefab;
     public List<EnemySpawnOption> enemySpawnOptions = new List<EnemySpawnOption>();
+    [FormerlySerializedAs("oneTimeEnemies")]
+    [Tooltip("Elite enemies that spawn once during this wave without affecting wave completion.")]
+    public List<EliteEnemySpawn> eliteEnemies = new List<EliteEnemySpawn>();
 }
 
 [System.Serializable]
@@ -18,6 +22,17 @@ public class EnemySpawnOption
 {
     public GameObject enemyPrefab;
     [Min(0f)] public float spawnWeight = 1f;
+}
+
+[System.Serializable]
+public class EliteEnemySpawn
+{
+    [Tooltip("Elite enemy prefab to spawn once during this wave.")]
+    public GameObject enemyPrefab;
+    [Tooltip("Delay after the wave starts before showing this elite enemy's spawn indicator.")]
+    [Min(0f)] public float spawnDelay;
+    [Tooltip("How many copies of this elite enemy spawn once when the delay completes.")]
+    [Min(1)] public int spawnCount = 1;
 }
 
 public class EnemyWaveManager : MonoBehaviour
@@ -50,6 +65,7 @@ public class EnemyWaveManager : MonoBehaviour
     private WaveConfig currentWaveConfig;
     private int spawnSessionId;
     private Coroutine waveRoutine;
+    private readonly List<Coroutine> eliteEnemySpawnRoutines = new List<Coroutine>();
 
     private void Start()
     {
@@ -92,6 +108,8 @@ public class EnemyWaveManager : MonoBehaviour
             {
                 Debug.LogWarning($"Wave {currentWave} has no valid enemy spawn options. No normal enemies will spawn.");
             }
+
+            StartEliteEnemySpawns();
 
             Debug.Log($"<color=green><b>[WAVE {currentWave} STARTED]</b></color> {GetWaveDisplayName(currentWaveConfig)} | Duration: {timer}s | Spawn Delay: {currentDelay:F2}s");
 
@@ -150,6 +168,7 @@ public class EnemyWaveManager : MonoBehaviour
         currentBoss = null;
         isWaitingForBossSpawn = false;
         isWaitingForNextWaveStart = false;
+        eliteEnemySpawnRoutines.Clear();
         spawner?.BeginSpawnSession(spawnSessionId, IsSpawnSessionActive);
         UpdateWaveTimerUI(true);
     }
@@ -157,6 +176,7 @@ public class EnemyWaveManager : MonoBehaviour
     private void EndCurrentWaveSpawns()
     {
         isWaveActive = false;
+        CancelEliteEnemySpawns();
         spawner?.EndSpawnSession(spawnSessionId);
         spawnSessionId++;
 
@@ -246,6 +266,85 @@ public class EnemyWaveManager : MonoBehaviour
         }
 
         return spawner.UseWaveSpawnOptions(currentWaveConfig.enemySpawnOptions);
+    }
+
+    private void StartEliteEnemySpawns()
+    {
+        if (currentWaveConfig == null || currentWaveConfig.eliteEnemies == null || currentWaveConfig.eliteEnemies.Count == 0)
+        {
+            return;
+        }
+
+        if (spawner == null)
+        {
+            Debug.LogWarning($"Wave {currentWave} has elite enemies configured, but no EnemySpawner reference is assigned.");
+            return;
+        }
+
+        int sessionId = spawnSessionId;
+        foreach (EliteEnemySpawn eliteEnemy in currentWaveConfig.eliteEnemies)
+        {
+            if (eliteEnemy == null)
+            {
+                continue;
+            }
+
+            Coroutine spawnRoutine = StartCoroutine(SpawnEliteEnemyAfterDelay(eliteEnemy, sessionId));
+            eliteEnemySpawnRoutines.Add(spawnRoutine);
+        }
+    }
+
+    private IEnumerator SpawnEliteEnemyAfterDelay(EliteEnemySpawn eliteEnemy, int sessionId)
+    {
+        if (eliteEnemy.enemyPrefab == null)
+        {
+            Debug.LogWarning($"Wave {currentWave} has an elite enemy entry with no enemy prefab assigned. It will be ignored.");
+            yield break;
+        }
+
+        if (eliteEnemy.spawnCount <= 0)
+        {
+            yield break;
+        }
+
+        float spawnDelay = Mathf.Max(0f, eliteEnemy.spawnDelay);
+        if (spawnDelay > 0f)
+        {
+            yield return new WaitForSeconds(spawnDelay);
+        }
+
+        if (!IsSpawnSessionActive(sessionId))
+        {
+            yield break;
+        }
+
+        for (int i = 0; i < eliteEnemy.spawnCount; i++)
+        {
+            if (!IsSpawnSessionActive(sessionId))
+            {
+                yield break;
+            }
+
+            bool spawnStarted = spawner != null && spawner.SpawnEnemy(eliteEnemy.enemyPrefab);
+            if (!spawnStarted)
+            {
+                Debug.LogWarning($"Wave {currentWave} could not spawn elite enemy '{eliteEnemy.enemyPrefab.name}'. Check the prefab and EnemySpawner spawn indicator setup.");
+            }
+        }
+    }
+
+    private void CancelEliteEnemySpawns()
+    {
+        for (int i = 0; i < eliteEnemySpawnRoutines.Count; i++)
+        {
+            Coroutine spawnRoutine = eliteEnemySpawnRoutines[i];
+            if (spawnRoutine != null)
+            {
+                StopCoroutine(spawnRoutine);
+            }
+        }
+
+        eliteEnemySpawnRoutines.Clear();
     }
 
     private void StartBossWave(bool spawnNormalEnemiesDuringBoss)

@@ -180,15 +180,25 @@ public class EnemySpawner : MonoBehaviour
 
     public bool SpawnEnemy(GameObject enemyPrefab, Action<GameObject> onSpawned = null)
     {
+        return SpawnEnemy(enemyPrefab, spawnWarningTime, onSpawned);
+    }
+
+    public bool SpawnEnemy(GameObject enemyPrefab, float warningTime, Action<GameObject> onSpawned = null)
+    {
         if (!TryGetSpawnData(enemyPrefab, out EnemySpawnData spawnData))
         {
             return false;
         }
 
-        return SpawnEnemy(spawnData, onSpawned);
+        return SpawnEnemy(spawnData, warningTime, onSpawned);
     }
 
     public bool SpawnEnemy(EnemySpawnData selectedEnemy, Action<GameObject> onSpawned = null)
+    {
+        return SpawnEnemy(selectedEnemy, spawnWarningTime, onSpawned);
+    }
+
+    public bool SpawnEnemy(EnemySpawnData selectedEnemy, float warningTime, Action<GameObject> onSpawned = null)
     {
         if (selectedEnemy == null || selectedEnemy.enemyPrefab == null || spawnIndicatorPrefab == null)
         {
@@ -199,7 +209,7 @@ public class EnemySpawner : MonoBehaviour
         EnemySpawnIndicator indicatorScript = indicator.GetComponent<EnemySpawnIndicator>();
         if (indicatorScript != null)
         {
-            indicatorScript.SetupIndicator(selectedEnemy, spawnWarningTime, onSpawned, this, activeSpawnSessionId);
+            indicatorScript.SetupIndicator(selectedEnemy, Mathf.Max(0f, warningTime), onSpawned, this, activeSpawnSessionId);
             return true;
         }
 

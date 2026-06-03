@@ -1717,7 +1717,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
-  m_hasFontAssetChanged: 1
+  m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
 --- !u!222 &352484475
@@ -2429,7 +2429,7 @@ MonoBehaviour:
   currentWave: 1
   waveConfigs:
   - waveName: 1
-    duration: 10
+    duration: 40
     isBossWave: 0
     bossPrefab: {fileID: 0}
     enemySpawnOptions:
@@ -2437,6 +2437,10 @@ MonoBehaviour:
       spawnWeight: 80
     - enemyPrefab: {fileID: 4395884553050428915, guid: d99434f5f408bf24fa34d9e3c17a34b7, type: 3}
       spawnWeight: 20
+    eliteEnemies:
+    - enemyPrefab: {fileID: 2302436802984296898, guid: aa0bfce1b52dcae418ce5f2d39142094, type: 3}
+      spawnDelay: 5
+      spawnCount: 1
   - waveName: 2
     duration: 40
     isBossWave: 0
@@ -2446,6 +2450,7 @@ MonoBehaviour:
       spawnWeight: 70
     - enemyPrefab: {fileID: 4395884553050428915, guid: d99434f5f408bf24fa34d9e3c17a34b7, type: 3}
       spawnWeight: 30
+    eliteEnemies: []
   - waveName: 3
     duration: 60
     isBossWave: 0
@@ -2455,6 +2460,7 @@ MonoBehaviour:
       spawnWeight: 70
     - enemyPrefab: {fileID: 4395884553050428915, guid: d99434f5f408bf24fa34d9e3c17a34b7, type: 3}
       spawnWeight: 30
+    eliteEnemies: []
   - waveName: 4
     duration: 60
     isBossWave: 0
@@ -2470,6 +2476,7 @@ MonoBehaviour:
       spawnWeight: 20
     - enemyPrefab: {fileID: 7434806528395758870, guid: 594469f692b2a8a46b9ca7c33801e786, type: 3}
       spawnWeight: 20
+    eliteEnemies: []
   - waveName: 5
     duration: 45
     isBossWave: 0
@@ -2487,6 +2494,7 @@ MonoBehaviour:
       spawnWeight: 20
     - enemyPrefab: {fileID: 4395884553050428915, guid: 3c87073e2aab9f4479dcf1ec6ff3272e, type: 3}
       spawnWeight: 100
+    eliteEnemies: []
   - waveName: 6
     duration: 60
     isBossWave: 0
@@ -2502,6 +2510,7 @@ MonoBehaviour:
       spawnWeight: 20
     - enemyPrefab: {fileID: 3166319738791716111, guid: a07eba1f7b9009c4ea9ffbf598cda825, type: 3}
       spawnWeight: 20
+    eliteEnemies: []
   - waveName: 7
     duration: 60
     isBossWave: 0
@@ -2515,6 +2524,7 @@ MonoBehaviour:
       spawnWeight: 30
     - enemyPrefab: {fileID: 6492680598914221471, guid: 4ae61a3aa3381e1458043218999f1bb3, type: 3}
       spawnWeight: 10
+    eliteEnemies: []
   - waveName: 8
     duration: 60
     isBossWave: 0
@@ -2528,6 +2538,7 @@ MonoBehaviour:
       spawnWeight: 30
     - enemyPrefab: {fileID: 6492680598914221471, guid: 4ae61a3aa3381e1458043218999f1bb3, type: 3}
       spawnWeight: 10
+    eliteEnemies: []
   - waveName: 9
     duration: 60
     isBossWave: 0
@@ -2541,6 +2552,7 @@ MonoBehaviour:
       spawnWeight: 30
     - enemyPrefab: {fileID: 6492680598914221471, guid: 4ae61a3aa3381e1458043218999f1bb3, type: 3}
       spawnWeight: 10
+    eliteEnemies: []
   - waveName: 10
     duration: 60
     isBossWave: 1
@@ -2554,6 +2566,7 @@ MonoBehaviour:
       spawnWeight: 30
     - enemyPrefab: {fileID: 6492680598914221471, guid: 4ae61a3aa3381e1458043218999f1bb3, type: 3}
       spawnWeight: 10
+    eliteEnemies: []
   initialSpawnDelay: 2
   difficultyMultiplier: 0.8
   spawner: {fileID: 1638670088}
@@ -109439,6 +109452,26 @@ MonoBehaviour:
     inkDropSprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
     dropColor: {r: 0.5294118, g: 0.8078432, b: 0.9803922, a: 1}
     dropScale: 2
+  - tier: 3
+    enemyPrefab: {fileID: 2302436802984296898, guid: aa0bfce1b52dcae418ce5f2d39142094, type: 3}
+    inkDropSprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+    dropColor: {r: 1, g: 0.38597694, b: 0, a: 1}
+    dropScale: 2
+  - tier: 3
+    enemyPrefab: {fileID: 8667752511720962632, guid: 58361f22f1cfc0d4f90eabc699589d62, type: 3}
+    inkDropSprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+    dropColor: {r: 1, g: 0.38597694, b: 0, a: 1}
+    dropScale: 2
+  - tier: 3
+    enemyPrefab: {fileID: 2431834682859874894, guid: 4aaf34e006be87f4a80e42d025e3dd23, type: 3}
+    inkDropSprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+    dropColor: {r: 1, g: 0.38597694, b: 0, a: 1}
+    dropScale: 2
+  - tier: 3
+    enemyPrefab: {fileID: 6492680598914221471, guid: 4ae61a3aa3381e1458043218999f1bb3, type: 3}
+    inkDropSprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+    dropColor: {r: 1, g: 0.38597694, b: 0, a: 1}
+    dropScale: 2
 --- !u!4 &1638670089
 Transform:
   m_ObjectHideFlags: 0
@@ -110654,7 +110687,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
-  m_hasFontAssetChanged: 1
+  m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
 --- !u!222 &1766477807
