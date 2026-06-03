@@ -21,6 +21,14 @@ public class ShopManager : MonoBehaviour
     public Button[] slotButtons;
     public TextMeshProUGUI[] slotNames;
     public TextMeshProUGUI[] slotPrices;
+
+    [Header("Shop Pixel Art")]
+    [SerializeField] private Image shopPanelImage;
+    [SerializeField] private Sprite shopPanelSprite;
+    [SerializeField] private Sprite shopButtonNormalSprite;
+    [SerializeField] private Sprite shopButtonHoverSprite;
+    [SerializeField] private RectTransform shopItemsContainer;
+
     private WordData[] currentShopWords = new WordData[5];
 
     [HideInInspector] public bool isShopActive = false;
@@ -39,6 +47,7 @@ public class ShopManager : MonoBehaviour
             enemyWaveManager = Object.FindFirstObjectByType<EnemyWaveManager>();
         }
 
+        ApplyShopVisuals();
         shopPanel.SetActive(false);
     }
 
@@ -49,6 +58,7 @@ public class ShopManager : MonoBehaviour
         Time.timeScale = 0f;
 
         RollShopItems();
+        RebuildShopItemsLayout();
     }
 
     public void RollShopItems()
@@ -83,7 +93,7 @@ public class ShopManager : MonoBehaviour
             currentShopWords[i] = selectedWord;
 
             slotNames[i].text = selectedWord.runeText;
-            slotPrices[i].text = GetWordPrice(selectedWord).ToString() + " Altın";
+            slotPrices[i].text = GetWordPrice(selectedWord).ToString();
             slotButtons[i].interactable = true; 
         }
     }
@@ -147,5 +157,115 @@ public class ShopManager : MonoBehaviour
     private int GetWordPrice(WordData word)
     {
         return word != null ? Mathf.Max(0, word.shopPrice) : 0;
+    }
+
+    private void OnValidate()
+    {
+        ApplyPanelSprite();
+        ApplySlotButtonSprites();
+    }
+
+    private void ApplyShopVisuals()
+    {
+        ApplyPanelSprite();
+        ApplySlotButtonSprites();
+        AssignSlotParents();
+        RebuildShopItemsLayout();
+    }
+
+    private void ApplyPanelSprite()
+    {
+        if (shopPanelImage == null && shopPanel != null)
+        {
+            shopPanelImage = shopPanel.GetComponent<Image>();
+        }
+
+        if (shopPanelImage == null || shopPanelSprite == null)
+        {
+            return;
+        }
+
+        shopPanelImage.sprite = shopPanelSprite;
+        shopPanelImage.color = Color.white;
+        shopPanelImage.preserveAspect = true;
+    }
+
+    private void ApplySlotButtonSprites()
+    {
+        if (slotButtons == null)
+        {
+            return;
+        }
+
+        foreach (Button slotButton in slotButtons)
+        {
+            if (slotButton == null)
+            {
+                continue;
+            }
+
+            Image buttonImage = slotButton.targetGraphic as Image;
+            if (buttonImage == null)
+            {
+                buttonImage = slotButton.GetComponent<Image>();
+            }
+
+            if (buttonImage != null && shopButtonNormalSprite != null)
+            {
+                buttonImage.sprite = shopButtonNormalSprite;
+                buttonImage.type = Image.Type.Simple;
+                buttonImage.preserveAspect = false;
+                slotButton.targetGraphic = buttonImage;
+            }
+
+            if (shopButtonHoverSprite == null)
+            {
+                continue;
+            }
+
+            SpriteState spriteState = slotButton.spriteState;
+            spriteState.highlightedSprite = shopButtonHoverSprite;
+            spriteState.pressedSprite = shopButtonHoverSprite;
+            spriteState.selectedSprite = shopButtonHoverSprite;
+            slotButton.spriteState = spriteState;
+            slotButton.transition = Selectable.Transition.SpriteSwap;
+        }
+    }
+
+    private void AssignSlotParents()
+    {
+        if (slotButtons == null || shopItemsContainer == null)
+        {
+            return;
+        }
+
+        for (int i = 0; i < slotButtons.Length; i++)
+        {
+            Button slotButton = slotButtons[i];
+            if (slotButton == null)
+            {
+                continue;
+            }
+
+            if (slotButton.transform.parent != shopItemsContainer)
+            {
+                slotButton.transform.SetParent(shopItemsContainer, false);
+            }
+        }
+    }
+
+    private void RebuildShopItemsLayout()
+    {
+        if (shopItemsContainer == null)
+        {
+            return;
+        }
+
+        if (shopItemsContainer.GetComponent<LayoutGroup>() == null)
+        {
+            return;
+        }
+
+        LayoutRebuilder.ForceRebuildLayoutImmediate(shopItemsContainer);
     }
 }
