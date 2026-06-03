@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using TMPro;
 
@@ -48,6 +49,7 @@ public class ShopManager : MonoBehaviour
         }
 
         ApplyShopVisuals();
+        RegisterShopTooltipHandlers();
         shopPanel.SetActive(false);
     }
 
@@ -63,6 +65,8 @@ public class ShopManager : MonoBehaviour
 
     public void RollShopItems()
     {
+        WordTooltipUI.HideAll();
+
         float luck = playerStats != null ? playerStats.GetStat(StatType.Luck) : 0f;
 
         float currentCommon = Mathf.Max(0, baseCommon - (luck * 1.5f)); 
@@ -126,6 +130,8 @@ public class ShopManager : MonoBehaviour
         if (slotIndex < 0 || slotIndex >= currentShopWords.Length) return;
         if (currentShopWords[slotIndex] == null) return;
 
+        WordTooltipUI.HideForSource(GetSlotRect(slotIndex));
+
         WordData selectedWord = currentShopWords[slotIndex];
         int price = GetWordPrice(selectedWord);
 
@@ -148,6 +154,7 @@ public class ShopManager : MonoBehaviour
         }
 
         isShopActive = false;
+        WordTooltipUI.HideAll();
         shopPanel.SetActive(false);
         Time.timeScale = 1f;
 
@@ -267,5 +274,89 @@ public class ShopManager : MonoBehaviour
         }
 
         LayoutRebuilder.ForceRebuildLayoutImmediate(shopItemsContainer);
+    }
+
+    private void RegisterShopTooltipHandlers()
+    {
+        if (slotButtons == null)
+        {
+            return;
+        }
+
+        for (int i = 0; i < slotButtons.Length; i++)
+        {
+            Button slotButton = slotButtons[i];
+            if (slotButton == null)
+            {
+                continue;
+            }
+
+            int slotIndex = i;
+            EventTrigger eventTrigger = slotButton.GetComponent<EventTrigger>();
+            if (eventTrigger == null)
+            {
+                eventTrigger = slotButton.gameObject.AddComponent<EventTrigger>();
+            }
+
+            AddShopTooltipEntry(eventTrigger, EventTriggerType.PointerEnter, eventData => ShowShopTooltip(slotIndex, eventData));
+            AddShopTooltipEntry(eventTrigger, EventTriggerType.PointerExit, _ => HideShopTooltip(slotIndex));
+        }
+    }
+
+    private void AddShopTooltipEntry(EventTrigger eventTrigger, EventTriggerType eventId, UnityEngine.Events.UnityAction<BaseEventData> callback)
+    {
+        if (eventTrigger == null || callback == null)
+        {
+            return;
+        }
+
+        EventTrigger.Entry entry = new EventTrigger.Entry { eventID = eventId };
+        entry.callback.AddListener(callback);
+        eventTrigger.triggers.Add(entry);
+    }
+
+    private void ShowShopTooltip(int slotIndex, BaseEventData eventData)
+    {
+        WordData wordData = GetCurrentShopWord(slotIndex);
+        if (wordData == null)
+        {
+            return;
+        }
+
+        PointerEventData pointerEventData = eventData as PointerEventData;
+        WordTooltipUI.ShowWordDelayed(wordData, 1, GetSlotRect(slotIndex), pointerEventData != null ? pointerEventData.position : null);
+    }
+
+    private void HideShopTooltip(int slotIndex)
+    {
+        WordTooltipUI.HideForSource(GetSlotRect(slotIndex));
+    }
+
+    private WordData GetCurrentShopWord(int slotIndex)
+    {
+        if (slotIndex < 0 || slotIndex >= currentShopWords.Length)
+        {
+            return null;
+        }
+
+        if (slotButtons != null &&
+            slotIndex < slotButtons.Length &&
+            slotButtons[slotIndex] != null &&
+            !slotButtons[slotIndex].interactable)
+        {
+            return null;
+        }
+
+        return currentShopWords[slotIndex];
+    }
+
+    private RectTransform GetSlotRect(int slotIndex)
+    {
+        if (slotButtons == null || slotIndex < 0 || slotIndex >= slotButtons.Length || slotButtons[slotIndex] == null)
+        {
+            return null;
+        }
+
+        return slotButtons[slotIndex].transform as RectTransform;
     }
 }

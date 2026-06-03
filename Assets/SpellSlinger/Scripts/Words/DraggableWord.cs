@@ -157,6 +157,16 @@ public class DraggableWord : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         ResetVisualsImmediate();
     }
 
+    private void OnDisable()
+    {
+        HideWordTooltip();
+    }
+
+    private void OnDestroy()
+    {
+        HideWordTooltip();
+    }
+
     private void Update()
     {
         if (!isDraggingWord || mergeCompleted || mergeTarget == null) return;
@@ -616,6 +626,8 @@ public class DraggableWord : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     public void OnPointerEnter(PointerEventData eventData)
     {
+        ShowWordTooltip(eventData);
+
         bool isSentenceRune = transform.parent != null && transform.parent.GetComponent<SentenceDropZone>() != null;
 
         if (isSentenceRune)
@@ -645,6 +657,8 @@ public class DraggableWord : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     public void OnPointerExit(PointerEventData eventData)
     {
+        HideWordTooltip();
+
         transform.DOKill(false);
         transform.DOScale(originalScale, 0.15f).SetEase(Ease.OutQuad).SetUpdate(true);
         
@@ -657,6 +671,7 @@ public class DraggableWord : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     }
     public void OnBeginDrag(PointerEventData eventData)
     {
+        HideWordTooltip();
         SpellBuilderUIFeedback.Instance?.ClearPreview();
         RestoreOriginalBackgroundMaterial();
         CancelMergeCandidate();
@@ -882,6 +897,7 @@ public class DraggableWord : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
         mergeCompleted = true;
         isDraggingWord = false;
+        HideWordTooltip();
 
         mergeTarget.Setup(upgradedWord);
         mergeTarget.SetMergeProgress(1f, false);
@@ -1736,5 +1752,15 @@ public class DraggableWord : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
             
             highlightedRune = null;
         }
+    }
+
+    private void ShowWordTooltip(PointerEventData eventData)
+    {
+        WordTooltipUI.ShowOwnedWordDelayed(myWordData, transform as RectTransform, eventData != null ? eventData.position : null);
+    }
+
+    private void HideWordTooltip()
+    {
+        WordTooltipUI.HideForSource(transform as RectTransform);
     }
 }
