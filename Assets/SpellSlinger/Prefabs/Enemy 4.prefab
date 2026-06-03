@@ -327,8 +327,8 @@ MonoBehaviour:
   isAnimating: 0
   deathSmokePrefab: {fileID: 0}
   inkStainPrefab: {fileID: 0}
-  xpDropPrefab: {fileID: 4404637123539996590, guid: 525fc5d2299ad9240893a3480787b002, type: 3}
-  coinDropPrefab: {fileID: 366768702120322022, guid: b04d1a36b37cc99438518988ad1e7f34, type: 3}
+  xpDropPrefab: {fileID: 366768702120322022, guid: 3ff10888f3e22c4429e41b2788ff5c8f, type: 3}
+  coinDropPrefab: {fileID: 366768702120322022, guid: f06cddf2b0ea5274ca153872f1c577d1, type: 3}
   xpDropAmount: {x: 1, y: 3}
   coinDropAmount: {x: 1, y: 2}
   scatterRadius: 0.6

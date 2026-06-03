@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 5068589295109108187}
   - component: {fileID: 13204360330045441}
   m_Layer: 0
-  m_Name: Experience
+  m_Name: 40 Experience
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -80,7 +80,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 813953835
-  m_SortingLayer: 2
+  m_SortingLayer: 4
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: -3048499642358425110, guid: 375620eff176e6645bcbf101899dcdb3, type: 3}
@@ -141,4 +141,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0611038338a0c3746b8b327e6eab151b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspirationDrop
-  xpAmount: 70
+  moveSpeed: 8
+  xpAmount: 40
