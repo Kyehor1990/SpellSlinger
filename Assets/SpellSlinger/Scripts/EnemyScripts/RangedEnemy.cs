@@ -6,6 +6,9 @@ public class RangedEnemy : Enemy
     [SerializeField] private float stopDistance = 5f;
     [SerializeField] private float retreatDistance = 3f;
 
+    [Header("Ranged Attack")]
+    [SerializeField] private float attackRange = 5.5f;
+
     private EnemyAttack enemyAttack;
     private Vector3 initialScale;
 
@@ -41,13 +44,15 @@ public class RangedEnemy : Enemy
         }
 
         float distanceToPlayer = Vector2.Distance(transform.position, PlayerTransform.position);
+        float effectiveStopDistance = Mathf.Min(stopDistance, attackRange);
+        float effectiveRetreatDistance = Mathf.Min(retreatDistance, effectiveStopDistance);
 
-        if (distanceToPlayer < retreatDistance)
+        if (distanceToPlayer < effectiveRetreatDistance)
         {
             Vector2 direction = TryGetDirectionAwayFromPlayer(out Vector2 retreatDirection) ? retreatDirection : Vector2.zero;
             MoveWithSeparation(direction);
         }
-        else if (distanceToPlayer > stopDistance)
+        else if (distanceToPlayer > effectiveStopDistance)
         {
             Vector2 direction = TryGetDirectionToPlayer(out Vector2 approachDirection) ? approachDirection : Vector2.zero;
             MoveWithSeparation(direction);
@@ -58,7 +63,20 @@ public class RangedEnemy : Enemy
         }
 
         FlipTowardsPlayer();
-        enemyAttack?.TryAttack(PlayerTransform);
+        enemyAttack?.TryAttack(PlayerTransform, attackRange);
+    }
+
+    private void OnValidate()
+    {
+        attackRange = Mathf.Max(0f, attackRange);
+        stopDistance = Mathf.Max(0f, stopDistance);
+        retreatDistance = Mathf.Max(0f, retreatDistance);
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(transform.position, attackRange);
     }
 
     private void FlipTowardsPlayer()

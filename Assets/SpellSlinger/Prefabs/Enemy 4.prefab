@@ -334,6 +334,7 @@ MonoBehaviour:
   scatterRadius: 0.6
   stopDistance: 5
   retreatDistance: 3
+  attackRange: 5.5
 --- !u!114 &9104997131639116966
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -349,4 +350,3 @@ MonoBehaviour:
   bulletPrefab: {fileID: 7154683837792539819, guid: de988cc8bb2de14418c70d7072cd2d2b, type: 3}
   firePoint: {fileID: 8617382013817264756}
   fireRate: 1.5
-  attackRange: 5.5

@@ -5,13 +5,10 @@ public class EnemyAttack : MonoBehaviour
     [SerializeField] private GameObject bulletPrefab;
     [SerializeField] private Transform firePoint;
     [SerializeField] private float fireRate = 1.5f;
-    [SerializeField] private float attackRange = 5.5f; 
 
     private float nextFireTime;
 
-    public float AttackRange => attackRange;
-
-    public bool TryAttack(Transform target)
+    public bool TryAttack(Transform target, float attackRange)
     {
         if (target == null || Time.time < nextFireTime)
         {
@@ -37,12 +34,5 @@ public class EnemyAttack : MonoBehaviour
         }
 
         Instantiate(bulletPrefab, firePoint.position, Quaternion.identity);
-    }
-
-    private void OnDrawGizmosSelected()
-    {
-       
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, attackRange);
     }
 }
