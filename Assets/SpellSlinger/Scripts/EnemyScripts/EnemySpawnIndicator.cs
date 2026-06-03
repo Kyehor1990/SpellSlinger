@@ -4,14 +4,18 @@ using UnityEngine;
 
 public class EnemySpawnIndicator : MonoBehaviour
 {
+    [SerializeField] private Transform visualRoot;
     public SpriteRenderer sr;
     [SerializeField] private Animator animator;
+    [SerializeField] private Vector3 visualOffset = new Vector3(0f, 0.25f, 0f);
     [SerializeField] private Sprite[] defaultInkDropFrames;
     [SerializeField] private Sprite[] eliteInkDropFrames;
     [SerializeField] private Sprite[] bossInkDropFrames;
     [SerializeField, Min(1f)] private float framesPerSecond = 15f;
     [SerializeField, Min(0.01f)] private float animatedIndicatorScale = 1f;
-    [SerializeField] private bool useEnemyDataColorForAnimation;
+    [SerializeField] private Sprite staticFallbackSprite;
+    [SerializeField] private Color staticFallbackColor = Color.white;
+    [SerializeField, Min(0.01f)] private float staticFallbackScale = 1f;
     public GameObject smokeParticlePrefab;
     
     private GameObject enemyToSpawn;
@@ -34,22 +38,27 @@ public class EnemySpawnIndicator : MonoBehaviour
         spawnSessionId = sessionId;
         ownerSpawner?.RegisterSpawnIndicator(this);
         activeInkDropFrames = GetInkDropFrames(data.tier);
+        ApplyVisualOffset();
 
         if (sr != null)
         {
             if (HasAnimatedInkDropFrames())
             {
                 sr.sprite = activeInkDropFrames[0];
-                sr.color = useEnemyDataColorForAnimation ? data.dropColor : Color.white;
+                sr.color = Color.white;
             }
             else
             {
-                sr.sprite = data.inkDropSprite;
-                sr.color = data.dropColor;
+                sr.sprite = staticFallbackSprite != null ? staticFallbackSprite : sr.sprite;
+                sr.color = staticFallbackColor;
             }
         }
 
-        transform.localScale = Vector3.one * (HasAnimatedInkDropFrames() ? animatedIndicatorScale : data.dropScale);
+        Transform targetVisualRoot = GetVisualRoot();
+        if (targetVisualRoot != null)
+        {
+            targetVisualRoot.localScale = Vector3.one * (HasAnimatedInkDropFrames() ? animatedIndicatorScale : staticFallbackScale);
+        }
 
         if (animator != null)
         {
@@ -57,6 +66,25 @@ public class EnemySpawnIndicator : MonoBehaviour
         }
 
         StartCoroutine(SpawnSequence(warningTime));
+    }
+
+    private void ApplyVisualOffset()
+    {
+        Transform targetVisualRoot = GetVisualRoot();
+        if (targetVisualRoot != null && targetVisualRoot != transform)
+        {
+            targetVisualRoot.localPosition = visualOffset;
+        }
+    }
+
+    private Transform GetVisualRoot()
+    {
+        if (visualRoot != null)
+        {
+            return visualRoot;
+        }
+
+        return sr != null ? sr.transform : null;
     }
 
     private IEnumerator SpawnSequence(float delay)

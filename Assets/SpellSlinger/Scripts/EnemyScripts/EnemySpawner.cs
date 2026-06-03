@@ -11,11 +11,6 @@ public class EnemySpawnData
 {
     public EnemyTier tier;
     public GameObject enemyPrefab;
-
-    [Header("Ink Drop Visual")]
-    public Sprite inkDropSprite;
-    public Color dropColor = Color.black;
-    public float dropScale = 1f;
 }
 
 public class EnemySpawner : MonoBehaviour
