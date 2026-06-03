@@ -109424,54 +109424,24 @@ MonoBehaviour:
   enemiesToSpawn:
   - tier: 0
     enemyPrefab: {fileID: 4395884553050428915, guid: 57b316701d2a5a8468c7d6fc50f9131d, type: 3}
-    inkDropSprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
-    dropColor: {r: 0.6666667, g: 0, b: 0, a: 1}
-    dropScale: 5
   - tier: 0
     enemyPrefab: {fileID: 4395884553050428915, guid: d99434f5f408bf24fa34d9e3c17a34b7, type: 3}
-    inkDropSprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
-    dropColor: {r: 0, g: 0, b: 0, a: 1}
-    dropScale: 2
   - tier: 0
     enemyPrefab: {fileID: 4395884553050428915, guid: 3c87073e2aab9f4479dcf1ec6ff3272e, type: 3}
-    inkDropSprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
-    dropColor: {r: 0, g: 0, b: 1, a: 1}
-    dropScale: 2
   - tier: 0
     enemyPrefab: {fileID: 6136126643793134618, guid: c29f7107d6ce08b4db2fb0ff94d8dcd2, type: 3}
-    inkDropSprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
-    dropColor: {r: 0.6, g: 0.6, b: 0.6, a: 1}
-    dropScale: 2
   - tier: 0
     enemyPrefab: {fileID: 7434806528395758870, guid: 594469f692b2a8a46b9ca7c33801e786, type: 3}
-    inkDropSprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
-    dropColor: {r: 0.9411765, g: 0.5019608, b: 0.5019608, a: 1}
-    dropScale: 2
   - tier: 0
     enemyPrefab: {fileID: 3166319738791716111, guid: a07eba1f7b9009c4ea9ffbf598cda825, type: 3}
-    inkDropSprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
-    dropColor: {r: 0.5294118, g: 0.8078432, b: 0.9803922, a: 1}
-    dropScale: 2
   - tier: 3
     enemyPrefab: {fileID: 2302436802984296898, guid: aa0bfce1b52dcae418ce5f2d39142094, type: 3}
-    inkDropSprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
-    dropColor: {r: 1, g: 0.38597694, b: 0, a: 1}
-    dropScale: 2
   - tier: 3
     enemyPrefab: {fileID: 8667752511720962632, guid: 58361f22f1cfc0d4f90eabc699589d62, type: 3}
-    inkDropSprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
-    dropColor: {r: 1, g: 0.38597694, b: 0, a: 1}
-    dropScale: 2
   - tier: 3
     enemyPrefab: {fileID: 2431834682859874894, guid: 4aaf34e006be87f4a80e42d025e3dd23, type: 3}
-    inkDropSprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
-    dropColor: {r: 1, g: 0.38597694, b: 0, a: 1}
-    dropScale: 2
   - tier: 3
     enemyPrefab: {fileID: 6492680598914221471, guid: 4ae61a3aa3381e1458043218999f1bb3, type: 3}
-    inkDropSprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
-    dropColor: {r: 1, g: 0.38597694, b: 0, a: 1}
-    dropScale: 2
 --- !u!4 &1638670089
 Transform:
   m_ObjectHideFlags: 0
@@ -111564,6 +111534,63 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2130088262}
   m_CullTransparentMesh: 1
+--- !u!1001 &148036396721276020
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 5561035228422058874, guid: 2bbdabaec5c22e243be5448340c98d38, type: 3}
+      propertyPath: m_Name
+      value: BossEnemy
+      objectReference: {fileID: 0}
+    - target: {fileID: 8076566006474790575, guid: 2bbdabaec5c22e243be5448340c98d38, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.57888055
+      objectReference: {fileID: 0}
+    - target: {fileID: 8076566006474790575, guid: 2bbdabaec5c22e243be5448340c98d38, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -7.7433424
+      objectReference: {fileID: 0}
+    - target: {fileID: 8076566006474790575, guid: 2bbdabaec5c22e243be5448340c98d38, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8076566006474790575, guid: 2bbdabaec5c22e243be5448340c98d38, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8076566006474790575, guid: 2bbdabaec5c22e243be5448340c98d38, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8076566006474790575, guid: 2bbdabaec5c22e243be5448340c98d38, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8076566006474790575, guid: 2bbdabaec5c22e243be5448340c98d38, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8076566006474790575, guid: 2bbdabaec5c22e243be5448340c98d38, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8076566006474790575, guid: 2bbdabaec5c22e243be5448340c98d38, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8076566006474790575, guid: 2bbdabaec5c22e243be5448340c98d38, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 2bbdabaec5c22e243be5448340c98d38, type: 3}
 --- !u!1001 &2412399296632646440
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -111648,3 +111675,4 @@ SceneRoots:
   - {fileID: 930941508}
   - {fileID: 2412399296632646440}
   - {fileID: 1188937974}
+  - {fileID: 148036396721276020}
