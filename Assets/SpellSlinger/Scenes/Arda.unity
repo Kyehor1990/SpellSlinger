@@ -110141,6 +110141,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SentenceManager
   currentSentence:
   - {fileID: 11400000, guid: 54ca2723538fbdb4eadfdf6782cc66b0, type: 2}
+  - {fileID: 11400000, guid: c9ed280fc1c33774e9bb0173823c8921, type: 2}
+  - {fileID: 11400000, guid: 96b2364ca03903749b5df9f616d783b2, type: 2}
   currentOwnedSentence: []
   sentencePanel: {fileID: 98397533}
   buildStartingSentenceFromCurrentSentence: 1
