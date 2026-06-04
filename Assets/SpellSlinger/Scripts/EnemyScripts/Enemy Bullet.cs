@@ -13,7 +13,13 @@ public class EnemyBullet : MonoBehaviour
         if (player != null)
         {
             Vector2 direction = (player.transform.position - transform.position).normalized;
-            GetComponent<Rigidbody2D>().linearVelocity = direction * speed;
+            transform.right = direction;
+
+            Rigidbody2D rb = GetComponent<Rigidbody2D>();
+            if (rb != null)
+            {
+                rb.linearVelocity = direction * speed;
+            }
         }
 
         

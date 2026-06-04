@@ -109814,7 +109814,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 611b0203f69543c4f9bf3aabaccdb3bf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemySpawner
-  mapBounds: {x: 9.8, y: 14.8}
+  mapBounds: {x: 21.4, y: 14.8}
   spawnIndicatorPrefab: {fileID: 4276238172337070665, guid: 3fef47aae4fadd4459784929bcbeb005, type: 3}
   timeBetweenSpawns: 1.2
   spawnWarningTime: 0.98

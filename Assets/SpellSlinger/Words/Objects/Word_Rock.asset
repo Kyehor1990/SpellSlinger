@@ -17,7 +17,7 @@ MonoBehaviour:
   translatedText: Rock Throw
   wordIcon: {fileID: 0}
   projectilePrefab: {fileID: 2507854483434154795, guid: 0398f731b7751b747a1ee0bda640c6f9, type: 3}
-  spawnsOnTarget: 0
+  spawnsOnTarget: 1
   wordType: 0
   targetingLogic: 2
   condition: 0

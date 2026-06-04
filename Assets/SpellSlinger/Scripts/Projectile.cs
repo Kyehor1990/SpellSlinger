@@ -9,6 +9,15 @@ public class Projectile : MonoBehaviour
     private static readonly Collider2D[] areaHitsBuffer = new Collider2D[AreaHitBufferSize];
     private static readonly Dictionary<GameObject, Queue<GameObject>> timedVFXPools = new Dictionary<GameObject, Queue<GameObject>>();
 
+[Header("Enemy Follow Ayarları")]
+[Tooltip("If true, this projectile will continuously turn toward the player while moving. Useful for enemy projectiles.")]
+public bool enemyFollow = false;
+
+[SerializeField] private string playerTag = "Player";
+private Transform playerTarget;
+private Vector2 followMoveDirection;
+
+
     [Header("Mermi Özellikleri")]
     public float speed = 15f;
     public float baseDamage = 10f; 
@@ -112,11 +121,19 @@ public class Projectile : MonoBehaviour
         }
     }
 
-    private void Update()
+private void Update()
+{
+    Vector3 moveDirection = transform.right;
+
+    if (enemyFollow)
     {
-        if (speed > 0)
-            transform.position += transform.right * speed * Time.deltaTime;
+        UpdatePlayerFollowDirection();
+        moveDirection = followMoveDirection;
     }
+
+    if (speed > 0)
+        transform.position += moveDirection * speed * Time.deltaTime;
+}
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -500,4 +517,39 @@ chainTarget.TakeDamage(chainDmg, chainCrit, DamagePopupManager.Instance.lightnin
             p.activeMechanics.Remove(SpecialMechanic.Bounce);
         }
     }
+
+private void CachePlayerTarget()
+{
+    if (!enemyFollow || playerTarget != null) return;
+
+    GameObject playerObject = GameObject.FindGameObjectWithTag(playerTag);
+    if (playerObject != null)
+    {
+        playerTarget = playerObject.transform;
+    }
+}
+
+private void UpdatePlayerFollowDirection()
+{
+    if (playerTarget == null)
+    {
+        CachePlayerTarget();
+    }
+
+    if (playerTarget == null)
+    {
+        followMoveDirection = transform.right;
+        return;
+    }
+
+    Vector2 directionToPlayer = (Vector2)(playerTarget.position - transform.position);
+
+    if (directionToPlayer.sqrMagnitude <= 0.0001f)
+    {
+        followMoveDirection = transform.right;
+        return;
+    }
+
+    followMoveDirection = directionToPlayer.normalized;
+}
 }
