@@ -171,6 +171,11 @@ public class PlayerAutoAttack : MonoBehaviour
             bulletScript.activeMechanicStats = spell.specialMechanicStats;
 
             bulletScript.SetupModifiers();
+
+            if (spell.spawnsOnTarget && target != null)
+            {
+                bulletScript.SetSpawnedFollowTarget(target);
+            }
         }
 
         if (target != null && !spell.spawnsOnTarget)

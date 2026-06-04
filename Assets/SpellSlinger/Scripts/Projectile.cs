@@ -10,12 +10,15 @@ public class Projectile : MonoBehaviour
     private static readonly Dictionary<GameObject, Queue<GameObject>> timedVFXPools = new Dictionary<GameObject, Queue<GameObject>>();
 
 [Header("Enemy Follow Ayarları")]
-[Tooltip("If true, this projectile will continuously turn toward the player while moving. Useful for enemy projectiles.")]
+[Tooltip("If true, this projectile follows the enemy target it was spawned on. Kept for existing prefab compatibility.")]
 public bool enemyFollow = false;
 
-[SerializeField] private string playerTag = "Player";
-private Transform playerTarget;
-private Vector2 followMoveDirection;
+    [SerializeField, Min(0f)] private float spawnedOnTargetLifetime = 0f;
+
+private Transform followTarget;
+private Vector3 followTargetOffset;
+private bool attachToTarget;
+private bool hasAppliedAttachedHit;
 
 
     [Header("Mermi Özellikleri")]
@@ -94,7 +97,28 @@ private Vector2 followMoveDirection;
 
     private void Start()
     {
-        Destroy(gameObject, lifeTime);
+        float activeLifetime = attachToTarget && spawnedOnTargetLifetime > 0f
+            ? spawnedOnTargetLifetime
+            : lifeTime;
+
+        Destroy(gameObject, activeLifetime);
+    }
+
+    public void SetSpawnedFollowTarget(Transform target)
+    {
+        if (target == null)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        followTarget = target;
+        followTargetOffset = transform.position - target.position;
+        attachToTarget = true;
+        enemyFollow = true;
+        transform.position = followTarget.position + followTargetOffset;
+
+        ApplyAttachedTargetHit();
     }
 
     public void SetupModifiers()
@@ -123,16 +147,20 @@ private Vector2 followMoveDirection;
 
 private void Update()
 {
-    Vector3 moveDirection = transform.right;
-
-    if (enemyFollow)
+    if (attachToTarget)
     {
-        UpdatePlayerFollowDirection();
-        moveDirection = followMoveDirection;
+        if (followTarget == null)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        transform.position = followTarget.position + followTargetOffset;
+        return;
     }
 
     if (speed > 0)
-        transform.position += moveDirection * speed * Time.deltaTime;
+        transform.position += transform.right * speed * Time.deltaTime;
 }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -143,36 +171,74 @@ private void Update()
         if (collision.CompareTag("Enemy"))
         {
             collision.TryGetComponent(out Enemy enemyScript);
-            
-if (enemyScript != null)
+
+            if (attachToTarget)
             {
-                bool wasDying = enemyScript.IsDying; 
-
-bool isIceArrow = activeMechanics != null && activeMechanics.Contains(SpecialMechanic.IceArrow);
-                bool isLightning = activeMechanics != null && activeMechanics.Contains(SpecialMechanic.LightningChain);
-                bool isWaterSlow = activeMechanics != null && activeMechanics.Contains(SpecialMechanic.WaterSlow);
-                bool isCrit = Random.value < 0.1f;
-                float finalDamage = baseDamage;
-                Color hitColor = DamagePopupManager.Instance.normalColor;
-                if (isIceArrow) {
-                    hitColor = DamagePopupManager.Instance.iceColor;
-                } else if (isLightning) {
-                    hitColor = DamagePopupManager.Instance.lightningColor;
-                } else if (isWaterSlow) {
-                    hitColor = DamagePopupManager.Instance.waterColor;
-                }
-                if (isCrit) {
-                    finalDamage *= 1.5f;
-                }
-                enemyScript.TakeDamage(finalDamage, isCrit, hitColor);
-                if (sourcePlayerHealth != null) sourcePlayerHealth.ApplyLifeSteal(baseDamage);
-
-                bool diedJustNow = !wasDying && enemyScript.IsDying; 
-
-                ApplySpecialMechanic(enemyScript, diedJustNow);
+                ApplyAttachedHitOnce(enemyScript);
+                return;
             }
 
+            if (enemyScript != null)
+            {
+                ApplyHitToEnemy(enemyScript);
+            }
+            
             if (destroyOnHit) Destroy(gameObject);
+        }
+    }
+
+    private void ApplyAttachedTargetHit()
+    {
+        if (followTarget == null) return;
+
+        Enemy targetEnemy = followTarget.GetComponentInParent<Enemy>();
+        ApplyAttachedHitOnce(targetEnemy);
+    }
+
+    private void ApplyAttachedHitOnce(Enemy enemyScript)
+    {
+        if (hasAppliedAttachedHit) return;
+        if (enemyScript == null) return;
+
+        hasAppliedAttachedHit = true;
+        ApplyHitToEnemy(enemyScript);
+        DisableHitColliders();
+    }
+
+    private void ApplyHitToEnemy(Enemy enemyScript)
+    {
+        bool wasDying = enemyScript.IsDying;
+
+        bool isIceArrow = activeMechanics != null && activeMechanics.Contains(SpecialMechanic.IceArrow);
+        bool isLightning = activeMechanics != null && activeMechanics.Contains(SpecialMechanic.LightningChain);
+        bool isWaterSlow = activeMechanics != null && activeMechanics.Contains(SpecialMechanic.WaterSlow);
+        bool isCrit = Random.value < 0.1f;
+        float finalDamage = baseDamage;
+        Color hitColor = DamagePopupManager.Instance.normalColor;
+        if (isIceArrow) {
+            hitColor = DamagePopupManager.Instance.iceColor;
+        } else if (isLightning) {
+            hitColor = DamagePopupManager.Instance.lightningColor;
+        } else if (isWaterSlow) {
+            hitColor = DamagePopupManager.Instance.waterColor;
+        }
+        if (isCrit) {
+            finalDamage *= 1.5f;
+        }
+        enemyScript.TakeDamage(finalDamage, isCrit, hitColor);
+        if (sourcePlayerHealth != null) sourcePlayerHealth.ApplyLifeSteal(baseDamage);
+
+        bool diedJustNow = !wasDying && enemyScript.IsDying;
+
+        ApplySpecialMechanic(enemyScript, diedJustNow);
+    }
+
+    private void DisableHitColliders()
+    {
+        Collider2D[] colliders = GetComponentsInChildren<Collider2D>();
+        for (int i = 0; i < colliders.Length; i++)
+        {
+            colliders[i].enabled = false;
         }
     }
     private void SpawnLightningVFX(Transform enemyTransform)
@@ -512,44 +578,19 @@ chainTarget.TakeDamage(chainDmg, chainCrit, DamagePopupManager.Instance.lightnin
                 : null;
             
             p.ignoredEnemy = targetEnemy.gameObject; 
+            p.ClearSpawnedFollowTarget();
             
             p.activeMechanics.Remove(SpecialMechanic.Split); 
             p.activeMechanics.Remove(SpecialMechanic.Bounce);
         }
     }
 
-private void CachePlayerTarget()
-{
-    if (!enemyFollow || playerTarget != null) return;
-
-    GameObject playerObject = GameObject.FindGameObjectWithTag(playerTag);
-    if (playerObject != null)
+    private void ClearSpawnedFollowTarget()
     {
-        playerTarget = playerObject.transform;
+        followTarget = null;
+        followTargetOffset = Vector3.zero;
+        attachToTarget = false;
+        hasAppliedAttachedHit = false;
+        enemyFollow = false;
     }
-}
-
-private void UpdatePlayerFollowDirection()
-{
-    if (playerTarget == null)
-    {
-        CachePlayerTarget();
-    }
-
-    if (playerTarget == null)
-    {
-        followMoveDirection = transform.right;
-        return;
-    }
-
-    Vector2 directionToPlayer = (Vector2)(playerTarget.position - transform.position);
-
-    if (directionToPlayer.sqrMagnitude <= 0.0001f)
-    {
-        followMoveDirection = transform.right;
-        return;
-    }
-
-    followMoveDirection = directionToPlayer.normalized;
-}
 }
